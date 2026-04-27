@@ -1,0 +1,75 @@
+@use '../../../styles/variables' as *;
+
+.app-key-value-list {
+  width: 100%;
+
+  .section-title {
+    color: $text-dark;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    margin-bottom: 16px;
+    border-left: 4px solid $primary-color;
+    padding-left: 12px;
+  }
+
+  .key-value-grid {
+    display: grid;
+    gap: 12px;
+
+    &.columns-1 {
+      grid-template-columns: 1fr;
+    }
+
+    &.columns-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .key-value-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .key-label {
+    color: $text-muted;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    min-width: 200px;
+    flex-shrink: 0;
+  }
+
+  .value-label {
+    color: $text-dark;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-normal;
+    flex: 1;
+    word-break: break-word;
+
+    &.multiline {
+      white-space: pre-wrap;
+      line-height: 1.5;
+    }
+  }
+
+  // Responsive Design
+  @media (max-width: 768px) {
+    .key-value-grid.columns-2 {
+      grid-template-columns: 1fr;
+    }
+
+    .key-value-item {
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .key-label {
+      min-width: auto;
+      font-size: $font-size-xs;
+    }
+
+    .value-label {
+      font-size: $font-size-xs;
+    }
+  }
+}

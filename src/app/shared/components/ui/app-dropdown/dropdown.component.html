@@ -1,0 +1,17 @@
+<div class="app-dropdown" [class.open]="isOpen">
+  <button
+    class="app-dropdown-toggle"
+    [class]="buttonClass"
+    [disabled]="disabled"
+    (click)="toggleDropdown($event)"
+    [attr.aria-expanded]="isOpen"
+  >
+    <span class="dropdown-label">{{ label }}</span>
+    <span *ngIf="showArrow" class="dropdown-arrow" [class.rotate-180]="isOpen">▼</span>
+  </button>
+  <ul class="app-dropdown-menu" [class]="menuClass" [class.show]="isOpen">
+    <li *ngFor="let item of items" class="app-dropdown-item" [class.disabled]="item.disabled" (click)="selectItem(item, $event)">
+      {{ item.label }}
+    </li>
+  </ul>
+</div>

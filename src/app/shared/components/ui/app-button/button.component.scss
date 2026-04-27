@@ -1,0 +1,161 @@
+@use '../../../styles/variables' as *;
+
+.app-btn {
+  background: $bg-white;
+  color: $primary-color;
+  border: 1px solid $border-color;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-soft;
+  padding: 12px 20px;
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  transition: all $transition-base;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  &:hover:not(:disabled) {
+    box-shadow: $shadow-soft-hover;
+    border-color: $primary-color;
+    color: $primary-color;
+  }
+
+  &:active:not(:disabled) {
+    box-shadow: $shadow-inset;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: $bg-gray-light;
+  }
+
+  // Size Variants
+  &.btn-sm {
+    padding: $spacing-sm $spacing-lg;
+    font-size: $font-size-sm;
+    border-radius: $radius-md;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.06), -2px -2px 4px rgba(255, 255, 255, 0.8);
+
+    &:hover:not(:disabled) {
+      box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.08), -3px -3px 6px rgba(255, 255, 255, 0.9);
+    }
+
+    &:active:not(:disabled) {
+      box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.08), inset -1px -1px 3px rgba(255, 255, 255, 0.9);
+    }
+  }
+
+  &.btn-lg {
+    padding: $spacing-lg $spacing-3xl;
+    font-size: $font-size-md;
+  }
+
+  // Color Variants
+  &.btn-primary {
+    background: $primary-color;
+    color: $bg-white;
+    border-color: $primary-color;
+    box-shadow: $shadow-primary;
+
+    &:hover:not(:disabled) {
+      background: $primary-hover;
+      border-color: $primary-hover;
+      box-shadow: $shadow-primary-hover;
+    }
+
+    &:active:not(:disabled) {
+      box-shadow: $shadow-primary-inset;
+    }
+  }
+
+  &.btn-secondary {
+    color: $secondary-color;
+  }
+
+  &.btn-success {
+    background: $success-color;
+    color: $bg-white;
+    border-color: $success-color;
+
+    &:hover:not(:disabled) {
+      background: $success-hover;
+      border-color: $success-hover;
+    }
+  }
+
+  &.btn-warning {
+    background: $warning-color;
+    color: $bg-white;
+    border-color: $warning-color;
+
+    &:hover:not(:disabled) {
+      background: $warning-hover;
+      border-color: $warning-hover;
+    }
+  }
+
+  &.btn-danger {
+    background: $danger-color;
+    color: $bg-white;
+    border-color: $danger-color;
+
+    &:hover:not(:disabled) {
+      background: $danger-hover;
+      border-color: $danger-hover;
+    }
+  }
+
+  &.btn-info {
+    background: $info-color;
+    color: $bg-white;
+    border-color: $info-color;
+
+    &:hover:not(:disabled) {
+      background: $info-hover;
+      border-color: $info-hover;
+    }
+  }
+
+  // Dashboard-specific variants
+  &.btn-details {
+    background: $info-color;
+    color: $bg-white;
+    border-color: $info-color;
+
+    &:hover:not(:disabled) {
+      background: $info-hover;
+    }
+  }
+
+  &.btn-edit {
+    background: $warning-color;
+    color: $bg-white;
+    border-color: $warning-color;
+
+    &:hover:not(:disabled) {
+      background: $warning-hover;
+    }
+  }
+
+  &.btn-transfer {
+    background: $success-color;
+    color: $bg-white;
+    border-color: $success-color;
+
+    &:hover:not(:disabled) {
+      background: $success-hover;
+    }
+  }
+
+  // Custom dark blue hover
+  &.btn-dark-blue-hover {
+    &:hover:not(:disabled) {
+      background: #1a237e;
+      border-color: #1a237e;
+      color: #fff;
+    }
+  }
+}

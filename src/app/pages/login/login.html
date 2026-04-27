@@ -1,0 +1,128 @@
+<div class="d-flex min-vh-100 align-items-center justify-content-center login-container">
+  <div class="d-flex w-100 login-wrapper">
+    <!-- Left Section - Replaceable Container -->
+    <div class="left-section d-flex align-items-center justify-content-center" style="width: 50%;">
+      <div class="brand-container w-100 h-100">
+        <!-- This content can be replaced with any image or title -->
+        <div class="d-flex flex-column align-items-center gap-4 brand-content">
+          <div class="brand-icon">
+            <img src="Car.png" alt="Car" class="brand-car-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+            <i class="fas fa-car" style="display: none;"></i>
+          </div>
+          <img src="vms_logo.png" alt="VMS Logo" class="brand-logo" />
+          <div class="brand-title-container text-center">
+            <h1 class="brand-title h3 fw-bold mb-0">Vehicle Management</h1>
+            <h2 class="brand-subtitle h3 fw-bold mb-0">System</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Section - Login Form -->
+    <div class="right-section d-flex align-items-center justify-content-center" style="width: 50%;">
+
+      <div class="login-form-container">
+        <h2 class="form-title h4 fw-bold text-center mb-3">Sign In</h2>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <!-- Username Field -->
+          <div class="mb-3">
+            <label for="username" class="form-label fw-semibold" style="font-size: 14px;">Username</label>
+            <div class="input-wrapper">
+              <i class="fas fa-user input-icon"></i>
+              <input
+                type="text"
+                id="username"
+                class="form-control pill-input"
+                formControlName="username"
+                placeholder="Enter username"
+              />
+            </div>
+          </div>
+
+          <!-- Password Field -->
+          <div class="mb-3">
+            <label for="password" class="form-label fw-semibold" style="font-size: 14px;">Password</label>
+            <div class="input-wrapper">
+              <i class="fas fa-lock input-icon"></i>
+              <input
+                type="password"
+                id="password"
+                class="form-control pill-input"
+                formControlName="password"
+                placeholder="Enter password"
+              />
+            </div>
+          </div>
+
+          <!-- Captcha Field -->
+          <div class="mb-3">
+            <label for="captcha" class="form-label fw-semibold" style="font-size: 14px;">Captcha</label>
+            <div class="d-flex gap-2 align-items-center">
+              <div class="input-wrapper" style="width: 240px;">
+                <i class="fas fa-shield-alt input-icon"></i>
+                <input
+                  type="text"
+                  id="captcha"
+                  class="form-control pill-input"
+                  formControlName="captcha"
+                  placeholder="Enter captcha"
+                  maxlength="6"
+                  style="height: 38px;"
+                />
+              </div>
+              <div class="captcha-display d-flex align-items-center justify-content-center rounded" style="width: 100px; height: 38px; background: #e0e5ec; box-shadow: inset 3px 3px 6px #a7aab1, inset -3px -3px 6px #ffffff; overflow: hidden;">
+                <img *ngIf="captchaImageUrl" [src]="captchaImageUrl" alt="Captcha" style="width: 100%; height: 100%; object-fit: contain;" />
+              </div>
+              <button type="button" (click)="refreshCaptcha()" class="captcha-refresh-btn d-flex align-items-center justify-content-center rounded" style="width: 38px; height: 38px; background: #1a237e; border: none; cursor: pointer;" title="Refresh Captcha">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M23 4v6h-6"></path>
+                  <path d="M1 20v-6h6"></path>
+                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Remember Me & Forgot Password -->
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="form-check">
+              <input
+                type="checkbox"
+                id="rememberMe"
+                class="form-check-input"
+                formControlName="rememberMe"
+              />
+              <label for="rememberMe" class="form-check-label" style="font-size: 14px;">Remember me</label>
+            </div>
+            <a href="#" class="text-decoration-none fw-semibold" style="font-size: 14px;">Forgot password?</a>
+          </div>
+
+          <!-- Sign In Button -->
+          <button type="submit" class="btn w-100 neumorphic-btn mb-2" [disabled]="loginForm.invalid" style="font-size: 14px; padding: 10px;">
+            Sign In
+          </button>
+
+          <!-- Login as Guest Button -->
+          <button type="button" class="btn w-100 neumorphic-btn" (click)="onGuestLogin()" style="color: #667eea !important; font-size: 14px; padding: 10px;">
+            Login as Guest
+          </button>
+        </form>
+
+        <!-- Sign Up Link -->
+        <div class="text-center mt-3">
+          <p class="mb-0" style="font-size: 14px;">
+            Don't have an account? <a routerLink="/signup" class="fw-semibold" style="color: #667eea;">Sign up</a>
+          </p>
+        </div>
+
+        <!-- Copyright -->
+        <div class="text-center mt-3">
+          <p class="mb-0" style="color: #888; font-size: 11px;">
+            © 2026, Design and Developed by NIC Punjab
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

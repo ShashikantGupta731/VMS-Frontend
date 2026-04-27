@@ -1,0 +1,149 @@
+.login-container {
+  background: transparent;
+  padding: 20px;
+}
+
+.login-wrapper {
+  max-width: 1000px;
+  background: rgba(224, 229, 236, 0.85);
+  border-radius: 20px;
+  box-shadow: 10px 10px 20px #a7aab1, -10px -10px 20px #ffffff;
+  overflow: hidden;
+}
+
+.left-section {
+  padding: 30px 30px;
+  background: transparent;
+}
+
+.brand-container {
+  max-width: 350px;
+  background: rgba(224, 229, 236, 0.6);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: inset 5px 5px 10px #a7aab1, inset -5px -5px 10px #ffffff;
+}
+
+.brand-icon {
+  font-size: 50px;
+  color: #667eea;
+}
+
+.brand-car-image {
+  max-width: 300px;
+  height: auto;
+  display: block;
+}
+
+.brand-logo {
+  max-width: 200px;
+  height: auto;
+  display: block;
+}
+
+.brand-title {
+  color: #333;
+}
+
+.brand-subtitle {
+  color: #333;
+  margin-top: 5px;
+}
+
+.right-section {
+  padding: 30px 30px;
+  background: transparent;
+}
+
+.login-form-container {
+  width: 100%;
+  background: rgba(224, 229, 236, 0.85);
+  border-radius: 20px;
+  padding: 15px 20px;
+  box-shadow: 10px 10px 20px #a7aab1, -10px -10px 20px #ffffff;
+}
+
+.neumorphic-input {
+  background: #e0e5ec !important;
+  border: none !important;
+  box-shadow: inset 5px 5px 10px #a7aab1, inset -5px -5px 10px #ffffff;
+  color: #333;
+
+  &:focus {
+    box-shadow: inset 5px 5px 10px #a7aab1, inset -5px -5px 10px #ffffff;
+  }
+
+  &::placeholder {
+    color: #999;
+  }
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+
+  .input-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    font-size: 16px;
+    z-index: 10;
+  }
+
+  .pill-input {
+    padding-left: 45px;
+    border-radius: 50px;
+    border: 1px solid #e0e0e0;
+    background: #f8f9fa;
+    color: #333;
+    font-size: 14px;
+    height: 45px;
+    transition: all 0.3s ease;
+
+    &:focus {
+      background: #fff;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    &::placeholder {
+      color: #aaa;
+    }
+  }
+}
+
+.neumorphic-btn {
+  background: #e0e5ec !important;
+  color: #667eea !important;
+  border: none !important;
+  box-shadow: 6px 6px 12px #a7aab1, -6px -6px 12px #ffffff;
+
+  &:hover:not(:disabled) {
+    box-shadow: 8px 8px 16px #a7aab1, -8px -8px 16px #ffffff;
+  }
+
+  &:active:not(:disabled) {
+    box-shadow: inset 4px 4px 8px #a7aab1, inset -4px -4px 8px #ffffff;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+  }
+}
+
+@media (max-width: 768px) {
+  .login-wrapper {
+    flex-direction: column !important;
+  }
+
+  .left-section,
+  .right-section {
+    padding: 40px 20px;
+  }
+
+  .brand-container {
+    padding: 30px 20px;
+  }
+}

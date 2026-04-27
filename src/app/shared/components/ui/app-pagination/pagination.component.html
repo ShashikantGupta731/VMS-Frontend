@@ -1,0 +1,29 @@
+<div class="app-pagination" [class]="customClass">
+  <div *ngIf="showInfo" class="app-pagination-info">
+    <span>Showing {{ startIndex }}-{{ endIndex }} of {{ totalItems }} entries</span>
+  </div>
+  <div class="app-pagination-controls">
+    <button
+      class="app-btn btn-sm"
+      (click)="onPrevious()"
+      [disabled]="currentPage === 1"
+    >
+      Previous
+    </button>
+    <button
+      *ngFor="let page of pages"
+      class="app-btn btn-sm"
+      [class.active]="page === currentPage"
+      (click)="onPageChange(page)"
+    >
+      {{ page }}
+    </button>
+    <button
+      class="app-btn btn-sm"
+      (click)="onNext()"
+      [disabled]="currentPage === totalPages"
+    >
+      Next
+    </button>
+  </div>
+</div>

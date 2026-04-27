@@ -1,0 +1,91 @@
+.captcha-container {
+  margin-bottom: 20px;
+  
+  .captcha-label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #333;
+  }
+  
+  .captcha-image-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    
+    .captcha-image {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background-color: #f5f5f5;
+      max-width: 200px;
+      height: 60px;
+    }
+    
+    .captcha-loading {
+      width: 200px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #f5f5f5;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .captcha-refresh {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background-color: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+      
+      &:hover:not(:disabled) {
+        background-color: #f5f5f5;
+        border-color: #999;
+      }
+      
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      
+      svg {
+        color: #666;
+      }
+    }
+  }
+  
+  .captcha-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    
+    &:focus {
+      outline: none;
+      border-color: #007bff;
+    }
+    
+    &:placeholder {
+      color: #999;
+    }
+  }
+  
+  .captcha-hint {
+    display: block;
+    margin-top: 5px;
+    color: #666;
+    font-size: 12px;
+  }
+}

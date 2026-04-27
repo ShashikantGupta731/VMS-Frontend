@@ -1,0 +1,9 @@
+<div class="app-key-value-list" [class.columns-1]="columns === 1" [class.columns-2]="columns === 2">
+  <div *ngIf="sectionTitle" class="section-title">{{ sectionTitle }}</div>
+  <div class="key-value-grid">
+    <div *ngFor="let item of items" class="key-value-item">
+      <div class="key-label" [style.min-width]="labelWidth">{{ item.label }}</div>
+      <div class="value-label" [class.multiline]="item.isMultiline">{{ formatValue(item) }}</div>
+    </div>
+  </div>
+</div>

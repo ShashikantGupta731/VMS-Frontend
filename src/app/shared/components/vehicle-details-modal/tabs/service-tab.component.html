@@ -1,0 +1,9 @@
+<app-card>
+  <app-data-table
+    [columns]="columns"
+    [data]="serviceBills"
+    [isLoading]="isLoading"
+    emptyMessage="No Record Found"
+  ></app-data-table>
+  <div *ngIf="error" class="error-message">{{ error }}</div>
+</app-card>

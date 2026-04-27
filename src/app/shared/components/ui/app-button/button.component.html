@@ -1,0 +1,9 @@
+<button
+  [class]="buttonClass"
+  [disabled]="disabled || loading"
+  (click)="handleClick($event)"
+>
+  <span *ngIf="loading" class="app-spinner sm me-2"></span>
+  <span *ngIf="icon" class="icon">{{ icon }}</span>
+  <span class="label">{{ label }}</span>
+</button>

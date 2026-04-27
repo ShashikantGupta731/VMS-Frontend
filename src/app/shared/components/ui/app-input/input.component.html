@@ -1,0 +1,77 @@
+<div class="app-input-wrapper">
+  <label *ngIf="label" class="app-input-label">
+    {{ label }}
+    <span *ngIf="required" class="required">*</span>
+  </label>
+
+  <div class="input-wrapper" *ngIf="icon">
+    <i [class]="icon" class="input-icon"></i>
+    <input
+      *ngIf="!isSelect && type !== 'file'"
+      [type]="type"
+      [class]="inputClass"
+      [placeholder]="placeholder"
+      [value]="value"
+      [disabled]="disabled"
+      [attr.maxlength]="maxLength"
+      [style.width]="width"
+      (input)="onInputChange($event)"
+    />
+
+    <select
+      *ngIf="isSelect"
+      [class]="inputClass"
+      [disabled]="disabled"
+      [style.width]="width"
+      (change)="onSelectChange($event)"
+    >
+      <option value="">{{ placeholder || 'Select' }}</option>
+      <option *ngFor="let option of options" [value]="option.value">{{ option.label }}</option>
+    </select>
+
+    <input
+      *ngIf="type === 'file'"
+      type="file"
+      [class]="inputClass"
+      [disabled]="disabled"
+      [accept]="accept"
+      [style.width]="width"
+      (change)="onFileChange($event)"
+    />
+  </div>
+
+  <ng-container *ngIf="!icon">
+    <input
+      *ngIf="!isSelect && type !== 'file'"
+      [type]="type"
+      [class]="inputClass"
+      [placeholder]="placeholder"
+      [value]="value"
+      [disabled]="disabled"
+      [attr.maxlength]="maxLength"
+      [style.width]="width"
+      (input)="onInputChange($event)"
+    />
+
+    <select
+      *ngIf="isSelect"
+      [class]="inputClass"
+      [disabled]="disabled"
+      [style.width]="width"
+      (change)="onSelectChange($event)"
+    >
+      <option value="">{{ placeholder || 'Select' }}</option>
+      <option *ngFor="let option of options" [value]="option.value">{{ option.label }}</option>
+    </select>
+
+    <input
+      *ngIf="type === 'file'"
+      type="file"
+      [class]="inputClass"
+      [disabled]="disabled"
+      [accept]="accept"
+      [style.width]="width"
+      (change)="onFileChange($event)"
+    />
+  </ng-container>
+</div>

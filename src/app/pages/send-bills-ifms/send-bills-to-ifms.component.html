@@ -1,0 +1,71 @@
+<div class="send-bills-container">
+  <app-card customClass="no-padding">
+      <!-- Header Section -->
+      <div class="page-header">
+        <div class="page-title-section">
+          <h1 class="page-title">Send Bills to IFMS</h1>
+          <div class="breadcrumb">
+            <span>Vehicle</span>
+            <span class="separator">/</span>
+            <span class="current">Send Bills to IFMS</span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <a href="#" class="help-link">Know how to post Bills to new IFMS!</a>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="isLoading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading bills...</p>
+      </div>
+
+      <!-- Main Content -->
+      <div *ngIf="!isLoading">
+        <!-- Bills Section -->
+        <div class="bills-section">
+          <h2 class="section-title">Bills ready for Submission</h2>
+
+          <!-- Table -->
+          <div class="table-wrapper">
+            <app-data-table
+              [columns]="tableColumns"
+              [data]="bills"
+              [selectable]="true"
+              [selectAll]="selectAll"
+              [actions]="tableActions"
+              [isLoading]="isLoading"
+              [emptyMessage]="'No bills available for submission.'"
+              [rowSelected]="isRowSelected"
+              [rowDisabled]="isRowDisabled"
+              (select)="onRowSelect($event)"
+              (selectAllChange)="toggleSelectAllFromTable($event)"
+            ></app-data-table>
+          </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="summary-section" *ngIf="bills.length > 0">
+          <div class="summary-item">
+            <span class="summary-label">Total Tax:</span>
+            <span class="summary-value">₹ {{ totalTax | number:'1.0-0' }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Total Amount of Bills:</span>
+            <span class="summary-value">₹ {{ totalAmount | number:'1.0-0' }}</span>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="action-section" *ngIf="bills.length > 0">
+          <app-btn
+            label="Process Selected Bills ({{ selectedBills.length }})"
+            variant="primary"
+            [disabled]="selectedBills.length === 0 || isLoading"
+            (click)="processSelectedBills()"
+          ></app-btn>
+        </div>
+      </div>
+  </app-card>
+</div>

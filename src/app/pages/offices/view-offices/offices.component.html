@@ -1,0 +1,57 @@
+<app-card>
+  <!-- Header Section -->
+  <div class="offices-header">
+    <h1 class="page-title">Offices</h1>
+    <app-btn label="Go back to Home" (click)="onGoBackToHome()" variant="default"></app-btn>
+  </div>
+
+  <!-- Top Action Section -->
+  <div class="offices-actions mt-2">
+    <app-btn label="Add New Office" (click)="onAddNewOffice()" variant="primary"></app-btn>
+  </div>
+
+  <!-- Table Section -->
+  <div class="mb-4">
+    <table class="table" *ngIf="!isLoading && offices.length > 0">
+      <thead>
+        <tr>
+          <th *ngFor="let column of tableColumns">{{ column.label }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let office of offices; let i = index">
+          <td>{{ office.officeName }}</td>
+          <td>{{ office.officeAddress }}</td>
+          <td>{{ office.officeAbbreviation }}</td>
+          <td>{{ office.officeType }}</td>
+          <td>{{ office.department }}</td>
+          <td>{{ office.district }}</td>
+          <td>{{ office.tehsil }}</td>
+          <td>
+            <app-btn label="Edit" (click)="onEditOffice(office, i)" customClass="btn-sm"></app-btn>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && offices.length === 0" class="empty-state">
+      <p>No Record Found</p>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-state">
+      <p>Loading...</p>
+    </div>
+  </div>
+
+  <!-- Pagination Section -->
+  <app-pagination
+    *ngIf="offices.length > 0"
+    [currentPage]="currentPage"
+    [totalPages]="totalPages"
+    [totalItems]="totalItems"
+    [itemsPerPage]="itemsPerPage"
+    (pageChange)="onPageChange($event)"
+  ></app-pagination>
+</app-card>

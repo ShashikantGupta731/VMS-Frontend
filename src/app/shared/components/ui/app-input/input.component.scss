@@ -1,0 +1,84 @@
+@use '../../../styles/variables' as *;
+
+.app-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.app-input-label {
+  font-size: $font-size-base;
+  color: $text-dark;
+  font-weight: $font-weight-medium;
+
+  .required {
+    color: $danger-color;
+  }
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+
+  .input-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    font-size: 16px;
+    z-index: 10;
+  }
+}
+
+.app-input {
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  color: $text-dark;
+  font-size: $font-size-base;
+  padding: 2px 20px;
+  border-radius: 50px;
+  outline: none;
+  transition: all 0.3s ease;
+  height: 35px;
+
+  &:focus {
+    background: #fff;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: $bg-gray-light;
+  }
+
+  &::placeholder {
+    color: #aaa;
+  }
+
+  // Select Dropdown
+  &.app-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 35px;
+
+    &:disabled {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    }
+  }
+}
+
+// When input is inside a wrapper with icon
+.input-wrapper .app-input,
+.input-wrapper .app-select {
+  padding-left: 45px;
+}
+
+.input-wrapper .app-select {
+  background-position: right 16px center;
+  padding-right: 40px;
+}

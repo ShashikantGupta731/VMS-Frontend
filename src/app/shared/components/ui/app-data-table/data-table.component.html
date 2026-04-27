@@ -1,0 +1,85 @@
+<div class="app-data-table-wrapper" [class]="customClass">
+  <table class="app-data-table">
+    <thead>
+      <tr>
+        <th *ngIf="selectable" class="checkbox-column">
+          <input
+            type="checkbox"
+            class="app-data-table-checkbox"
+            [checked]="selectAll"
+            (change)="onSelectAll($event)"
+          />
+        </th>
+        <th
+          *ngFor="let column of columns"
+          [class.sortable]="column.sortable && sortable"
+          [style.width]="column.width"
+          [style.text-align]="column.textAlign || 'left'"
+          (click)="onSort(column)"
+        >
+          {{ column.label }}
+          <span *ngIf="column.sortable && sortable" class="sort-icon">{{ getSortIcon(column.key) }}</span>
+        </th>
+        <th *ngIf="actions && actions.length > 0" class="actions-column">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Loading State -->
+      <tr *ngIf="isLoading">
+        <td [attr.colspan]="columns.length + (selectable ? 1 : 0) + (actions ? 1 : 0)" class="text-center py-5">
+          <div class="app-data-table-spinner"></div>
+          <p class="mt-2">Loading...</p>
+        </td>
+      </tr>
+
+      <!-- Empty State -->
+      <tr *ngIf="!isLoading && data.length === 0">
+        <td [attr.colspan]="columns.length + (selectable ? 1 : 0) + (actions ? 1 : 0)" class="text-center py-5">
+          <div class="app-data-table-empty" *ngIf="showEmptyIcon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+          </div>
+          <p class="mt-3">{{ emptyMessage }}</p>
+        </td>
+      </tr>
+
+      <!-- Data Rows -->
+      <tr
+        *ngFor="let row of data"
+        [class]="getRowClass(row)"
+      >
+        <td *ngIf="selectable" class="checkbox-column">
+          <input
+            type="checkbox"
+            class="app-data-table-checkbox"
+            [checked]="isRowSelected(row)"
+            [disabled]="isRowDisabled(row)"
+            (change)="onRowSelect(row, $event)"
+          />
+        </td>
+        <td
+          *ngFor="let column of columns"
+          [style.text-align]="column.textAlign || 'left'"
+        >
+          <div *ngIf="column.allowHtml" [innerHTML]="row[column.key]"></div>
+          <span *ngIf="!column.allowHtml">{{ row[column.key] }}</span>
+        </td>
+        <td *ngIf="actions && actions.length > 0" class="actions-column">
+          <button
+            *ngFor="let action of actions"
+            class="app-data-table-action-btn"
+            [disabled]="isActionDisabled(action, row)"
+            (click)="executeAction(action, row)"
+            [title]="action.label"
+          >
+            <span *ngIf="!action.icon">{{ action.label }}</span>
+            <span *ngIf="action.icon" [innerHTML]="action.icon"></span>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

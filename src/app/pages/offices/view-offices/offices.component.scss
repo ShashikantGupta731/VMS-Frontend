@@ -1,0 +1,80 @@
+@use '../../shared/styles/variables' as *;
+
+/* Offices-specific styles */
+.offices-container {
+  padding: $spacing-3xl;
+  background: transparent;
+  min-height: 100vh;
+}
+
+.offices-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-2xl;
+}
+
+.page-title {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-semibold;
+  color: $text-dark;
+  margin: 0;
+}
+
+.offices-actions {
+  margin-bottom: $spacing-xl;
+}
+
+/* Table styles */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: $font-size-base;
+}
+
+.table thead {
+  border-bottom: 2px solid $border-color;
+}
+
+.table th {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  padding: $spacing-md;
+  text-align: left;
+  color: $text-dark;
+  border-bottom: 1px solid $border-color;
+}
+
+.table td {
+  padding: $spacing-md;
+  border-bottom: 1px solid $border-color;
+  color: $text-dark;
+}
+
+.table tbody tr:hover {
+  background-color: $bg-gray-light;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: $spacing-3xl;
+  color: $text-muted;
+}
+
+.empty-state p {
+  font-size: $font-size-lg;
+  margin: 0;
+}
+
+/* Loading state */
+.loading-state {
+  text-align: center;
+  padding: $spacing-3xl;
+  color: $text-muted;
+}
+
+.loading-state p {
+  font-size: $font-size-lg;
+  margin: 0;
+}

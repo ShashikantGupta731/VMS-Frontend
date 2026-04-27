@@ -1,0 +1,27 @@
+.main-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: transparent;
+  overflow: visible;
+
+  &.sidebar-collapsed {
+    .main-content {
+      margin-left: 70px;
+    }
+  }
+
+  &.sidebar-hidden {
+    .main-content {
+      margin-left: 0;
+    }
+  }
+}
+
+.main-content {
+  flex: 1;
+  background: transparent;
+  padding: 96px 24px 24px 24px;
+  margin-left: 0;
+  transition: margin-left 0.3s ease;
+}

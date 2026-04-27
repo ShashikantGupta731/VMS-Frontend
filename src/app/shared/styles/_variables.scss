@@ -1,0 +1,107 @@
+// ==========================================
+// Color Variables
+// ==========================================
+$primary-color: #667eea;
+$primary-hover: #5568d3;
+$primary-light: #e8ecff;
+
+$secondary-color: #666;
+$secondary-hover: #555;
+
+$success-color: #059669;
+$success-hover: #047857;
+$success-light: #d4edda;
+
+$warning-color: #d97706;
+$warning-hover: #b45309;
+$warning-light: #fff3cd;
+
+$danger-color: #dc2626;
+$danger-hover: #b91c1c;
+$danger-light: #f8d7da;
+
+$info-color: #2563eb;
+$info-hover: #1d4ed8;
+$info-light: #dbeafe;
+
+$border-color: #e0e0e0;
+$border-color-light: #f0f0f0;
+
+$bg-white: #ffffff;
+$bg-gray: #f8f9fa;
+$bg-gray-light: #f5f5f5;
+
+$text-dark: #333;
+$text-muted: #666;
+$text-light: #999;
+
+// ==========================================
+// Shadow Variables
+// ==========================================
+$shadow-soft: 3px 3px 6px rgba(0, 0, 0, 0.08), -3px -3px 6px rgba(255, 255, 255, 0.8);
+$shadow-soft-hover: 4px 4px 8px rgba(0, 0, 0, 0.1), -4px -4px 8px rgba(255, 255, 255, 0.9);
+$shadow-inset: inset 2px 2px 4px rgba(0, 0, 0, 0.05), inset -2px -2px 4px rgba(255, 255, 255, 0.8);
+$shadow-inset-focus: inset 2px 2px 4px rgba(0, 0, 0, 0.08), inset -2px -2px 4px rgba(255, 255, 255, 0.9);
+$shadow-card: 0 2px 8px rgba(0, 0, 0, 0.1);
+$shadow-dropdown: 0 4px 12px rgba(0, 0, 0, 0.15);
+$shadow-primary: 3px 3px 6px rgba(102, 126, 234, 0.3), -3px -3px 6px rgba(255, 255, 255, 0.8);
+$shadow-primary-hover: 4px 4px 8px rgba(102, 126, 234, 0.4), -4px -4px 8px rgba(255, 255, 255, 0.9);
+$shadow-primary-inset: inset 2px 2px 4px rgba(102, 126, 234, 0.3), inset -2px -2px 4px rgba(255, 255, 255, 0.9);
+
+// ==========================================
+// Border Radius Variables
+// ==========================================
+$radius-sm: 8px;
+$radius-md: 10px;
+$radius-lg: 15px;
+$radius-xl: 20px;
+$radius-full: 9999px;
+
+// ==========================================
+// Spacing Variables
+// ==========================================
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 12px;
+$spacing-lg: 16px;
+$spacing-xl: 20px;
+$spacing-2xl: 25px;
+$spacing-3xl: 30px;
+
+// ==========================================
+// Font Size Variables
+// ==========================================
+$font-size-xs: 10px;
+$font-size-sm: 12px;
+$font-size-base: 14px;
+$font-size-md: 16px;
+$font-size-lg: 18px;
+$font-size-xl: 20px;
+$font-size-2xl: 24px;
+$font-size-3xl: 28px;
+
+// ==========================================
+// Font Weight Variables
+// ==========================================
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+// ==========================================
+// Z-Index Variables
+// ==========================================
+$z-index-dropdown: 1000;
+$z-index-sticky: 1020;
+$z-index-fixed: 1030;
+$z-index-modal-backdrop: 1040;
+$z-index-modal: 1050;
+$z-index-popover: 1060;
+$z-index-tooltip: 1070;
+
+// ==========================================
+// Transition Variables
+// ==========================================
+$transition-fast: 0.15s ease;
+$transition-base: 0.2s ease;
+$transition-slow: 0.3s ease;

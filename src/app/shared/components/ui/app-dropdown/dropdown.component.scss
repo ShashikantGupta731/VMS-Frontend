@@ -1,0 +1,112 @@
+@use '../../../styles/variables' as *;
+
+.app-dropdown {
+  position: relative;
+  display: inline-block;
+
+  &-toggle {
+    background: $bg-white;
+    color: $primary-color;
+    border: 1px solid $border-color;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-soft;
+    padding: 12px 20px;
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
+    cursor: pointer;
+    transition: all $transition-base;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    &:hover:not(:disabled) {
+      box-shadow: $shadow-soft-hover;
+      border-color: $primary-color;
+      color: $primary-color;
+    }
+
+    &:active:not(:disabled) {
+      box-shadow: $shadow-inset;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: $bg-gray-light;
+    }
+
+    &.btn-dark-blue-hover:hover:not(:disabled) {
+      background: #1a237e;
+      border-color: #1a237e;
+      color: #fff;
+    }
+
+    .dropdown-label {
+      display: flex;
+      align-items: center;
+    }
+
+    .dropdown-arrow {
+      font-size: $font-size-xs;
+      transition: transform $transition-base;
+    }
+  }
+
+  &-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 200px;
+    background: $bg-white;
+    border-radius: $radius-md;
+    box-shadow: $shadow-dropdown;
+    padding: $spacing-sm 0;
+    margin: 0;
+    list-style: none;
+    z-index: $z-index-dropdown;
+    border: 1px solid $border-color;
+    display: none;
+
+    &.show {
+      display: block;
+    }
+
+    .app-dropdown-item {
+      font-size: $font-size-base;
+      color: $text-dark;
+      padding: $spacing-sm $spacing-lg;
+      cursor: pointer;
+      transition: background $transition-base;
+
+      &:hover:not(.disabled) {
+        background: $bg-gray;
+        color: $primary-color;
+      }
+
+      &.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 768px) {
+  .app-dropdown {
+    width: 100%;
+
+    .app-dropdown-toggle {
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .app-dropdown-menu {
+      min-width: 100%;
+    }
+  }
+}

@@ -1,0 +1,108 @@
+<div class="dashboard-container">
+  <app-card customClass="no-padding">
+      <!-- Header Section -->
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pb-4 mb-4 border-bottom">
+        <div>
+          <h1 class="fs-28 fw-bold text-dark mb-1">Vehicle Management System</h1>
+          <h2 class="fs-18 fw-semibold text-custom-primary m-0">Vehicles</h2>
+        </div>
+        <div class="mt-2 mt-md-0">
+          <app-input type="text" placeholder="Search vehicles..." width="300px"></app-input>
+        </div>
+      </div>
+
+      <!-- Action Buttons Section -->
+      <div class="d-flex flex-column flex-md-row flex-wrap gap-3 mb-4">
+        <app-btn label="Add Vehicle" routerLink="/vehicles/add" customClass="btn-dark-blue-hover"></app-btn>
+        <app-dropdown
+          label="Bill Vouchers"
+          [items]="billVoucherItems"
+          (select)="onBillVoucherSelect($event)"
+          buttonClass="btn-dark-blue-hover"
+        ></app-dropdown>
+        <app-btn label="Send Bills to IFMS" routerLink="/bill-integration" customClass="btn-dark-blue-hover"></app-btn>
+        <app-btn label="Treasury (IFMS) Claims" routerLink="/ifms-claims" customClass="btn-dark-blue-hover"></app-btn>
+        <app-btn label="Verify Vehicle" routerLink="/verify-vehicles" customClass="btn-dark-blue-hover"></app-btn>
+        <app-dropdown
+          label="Download Vehicle list"
+          [items]="downloadItems"
+          (select)="onDownloadSelect($event)"
+          buttonClass="btn-dark-blue-hover"
+        ></app-dropdown>
+      </div>
+
+      <!-- Table Section -->
+      <div class="mb-4">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>
+                <div>Department</div>
+                <div>Location</div>
+              </th>
+              <th>
+                <div>Office Name</div>
+                <div>DDO Code & Address</div>
+                <div>Officer Name</div>
+                <div>Designation</div>
+              </th>
+              <th>
+                <div>Vehicle Number</div>
+                <div>Vehicle Type</div>
+                <div>Make / Model</div>
+                <div>Manufacturer</div>
+                <div>Manufacture Year</div>
+                <div>Seating Capacity</div>
+              </th>
+              <th>
+                <div>Fuel Used</div>
+                <div>Fitness Upto</div>
+                <div>Engine No / Chassis No</div>
+                <div>Current Status</div>
+                <div>Is Verified</div>
+                <div>Treasury Type</div>
+              </th>
+              <th>Fitness Status</th>
+              <th>ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of tableData">
+              <td [innerHTML]="row.departmentLocation"></td>
+              <td [innerHTML]="row.officeInfo"></td>
+              <td [innerHTML]="row.vehicleDetails"></td>
+              <td [innerHTML]="row.fuelFitness"></td>
+              <td>{{ row.status }}</td>
+              <td>
+                <div class="action-button">
+                  <app-btn label="Details" icon="�️" (click)="onAction('Details', row)" customClass="btn-sm btn-full-width"></app-btn>
+                </div>
+                <div class="action-button">
+                  <app-btn label="Edit (Restricted)" icon="✎" (click)="onAction('Edit', row)" customClass="btn-sm btn-full-width"></app-btn>
+                </div>
+                <div class="action-button">
+                  <app-btn label="Transfer" icon="↔" (click)="onAction('Transfer', row)" customClass="btn-sm btn-full-width"></app-btn>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination Section -->
+      <app-pagination
+        [currentPage]="currentPage"
+        [totalPages]="totalPages"
+        [totalItems]="totalItems"
+        [itemsPerPage]="itemsPerPage"
+        (pageChange)="onPageChange($event)"
+      ></app-pagination>
+  </app-card>
+
+  <!-- Vehicle Details Modal -->
+  <app-vehicle-details-modal
+    [vehicleNumber]="selectedVehicleNumber"
+    [isVisible]="showVehicleDetailsModal"
+    (close)="closeVehicleDetailsModal()"
+  ></app-vehicle-details-modal>
+</div>

@@ -1,0 +1,41 @@
+@use '../../../styles/variables' as *;
+
+.app-card {
+  background: $bg-white;
+  box-shadow: $shadow-card;
+  border: 1px solid $border-color;
+
+  &.no-padding {
+    padding: 0;
+  }
+
+  &.no-border {
+    border: none;
+  }
+}
+
+.app-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid $border-color;
+}
+
+.app-card-title {
+  color: $text-dark;
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  margin: 0;
+}
+
+.app-card-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.app-card-body {
+  padding: 0;
+}

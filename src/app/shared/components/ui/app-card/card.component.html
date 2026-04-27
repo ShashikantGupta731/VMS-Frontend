@@ -1,0 +1,11 @@
+<div class="app-card" [class]="customClass" [style.padding]="padding" [style.border-radius]="borderRadius">
+  <div *ngIf="showHeader" class="app-card-header">
+    <div *ngIf="title" class="app-card-title">{{ title }}</div>
+    <div *ngIf="showActions" class="app-card-actions">
+      <ng-content select="[card-actions]"></ng-content>
+    </div>
+  </div>
+  <div class="app-card-body">
+    <ng-content></ng-content>
+  </div>
+</div>
