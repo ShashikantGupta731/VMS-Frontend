@@ -1,0 +1,161 @@
+<div class="hired-voucher-container p-4">
+  <!-- Breadcrumb and Title -->
+  <div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h1 class="page-title h4 fw-bold mb-0 text-primary">Hired Vehicle Bill Entry</h1>
+      </div>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item"><a [routerLink]="['/bill-voucher']">Billing</a></li>
+          <li class="breadcrumb-item active">New Hired Bill</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <form [formGroup]="voucherForm" (ngSubmit)="addBillAndSaveAsDraft()">
+    <!-- Section 1: Voucher and Sanction Details -->
+    <div class="card border-0 mb-4">
+      <div class="card-header bg-transparent border-bottom-primary px-0 mb-3">
+        <h6 class="text-primary fw-bold mb-1">Add Voucher and Sanction Details DDO</h6>
+      </div>
+      <div class="card-body p-0">
+        <div class="row mb-3">
+          <div class="col-12">
+            <label class="fw-bold me-3">Forwarded to Treasury?</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="forwardedToTreasury" id="treasuryYes" value="yes" formControlName="forwardedToTreasury">
+              <label class="form-check-label" for="treasuryYes">Yes</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="forwardedToTreasury" id="treasuryNo" value="no" formControlName="forwardedToTreasury">
+              <label class="form-check-label" for="treasuryNo">No</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <app-input label="Sub Voucher No." formControlName="subVoucherNo" placeholder="Sub Voucher No."></app-input>
+          </div>
+          <div class="col-md-6">
+            <app-input label="Sub Voucher Description" formControlName="subVoucherDescription" placeholder="Sub Voucher Description"></app-input>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <app-input label="Sanction Order No." formControlName="sanctionOrderNo" placeholder="Sanction Order No."></app-input>
+          </div>
+          <div class="col-md-6">
+            <app-input label="Select Sanction Order Date" type="date" formControlName="sanctionOrderDate" placeholder="Sanction Order Date (DD/MM/YYYY)"></app-input>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <app-input label="Sanction Authority" formControlName="sanctionAuthority" placeholder="Sanction Authority"></app-input>
+          </div>
+          <div class="col-md-6">
+            <app-input label="Firm Name" formControlName="firmName" placeholder="Firm Name"></app-input>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <app-input label="Tax(in Rs.)" type="number" formControlName="tax" placeholder="0"></app-input>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Add Hired Vehicle Bills -->
+    <div class="card border-0 mb-4">
+      <div class="card-header bg-transparent border-bottom-primary px-0 mb-3">
+        <h6 class="text-primary fw-bold mb-1">Add Hired Vehicle Bills</h6>
+      </div>
+      <div class="card-body p-0">
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <app-input label="Bill No." formControlName="billNumber" placeholder="Bill no."></app-input>
+          </div>
+          <div class="col-md-4">
+            <app-input label="Bill Date" type="date" formControlName="billDate" placeholder="Bill Date"></app-input>
+          </div>
+          <div class="col-md-4">
+            <app-input label="Office Name" formControlName="officeName" placeholder="Office Name"></app-input>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <app-input label="Contractor Name" formControlName="contractorName" placeholder="Contractor Name"></app-input>
+          </div>
+          <div class="col-md-4">
+            <app-input label="Contractor Phone" formControlName="contractorPhone" placeholder="Contractor Phone"></app-input>
+          </div>
+          <div class="col-md-4">
+            <app-input label="Vehicle Type" type="select" [options]="vehicleTypeOptions" formControlName="vehicleType" placeholder="Select Type"></app-input>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <app-input label="No. of Vehicles" type="number" formControlName="noOfVehicles" placeholder="1"></app-input>
+          </div>
+          <div class="col-md-4">
+            <app-input label="Vehicle Number" formControlName="vehicleNumber" placeholder="Vehicle No."></app-input>
+          </div>
+          <div class="col-md-4">
+            <app-input label="KM Covered" type="number" formControlName="kmCovered" placeholder="KM Covered"></app-input>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <app-input label="Hired From" type="date" formControlName="hiredFrom" placeholder="From"></app-input>
+          </div>
+          <div class="col-md-4">
+            <app-input label="Hired To" type="date" formControlName="hiredTo" placeholder="To"></app-input>
+          </div>
+          <div class="col-md-4">
+            <app-input label="Amount (in Rs.)" type="number" formControlName="amount" placeholder="Amount"></app-input>
+          </div>
+        </div>
+
+        <div class="text-end mb-4">
+          <app-btn type="submit" label="Add Bill & Save as Draft" variant="primary" [disabled]="voucherForm.invalid || isLoading()"></app-btn>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <!-- Table Summary -->
+  <div class="row">
+    <div class="col-12">
+      <app-data-table
+        [columns]="tableColumns"
+        [data]="draftedBillsResource.value() || []"
+        [actions]="tableActions"
+      ></app-data-table>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="row mt-4 mb-5">
+    <div class="col-md-4 offset-md-4 text-center">
+      <label class="fw-bold small text-muted d-block mb-1">Total Claim Amount</label>
+      <div class="bg-light p-4 rounded mb-4 shadow-sm border border-primary-subtle">
+        <h3 class="m-0 fw-bold text-primary">₹ {{totalBillAmount | number:'1.2-2'}}</h3>
+      </div>
+      <app-btn label="Generate Claim & Submit" variant="primary" size="lg" [disabled]="(draftedBillsResource.value() || []).length === 0 || isLoading()" (click)="lockBills()"></app-btn>
+    </div>
+  </div>
+</div>
+
+<style>
+  .border-bottom-primary {
+    border-bottom: 2px solid #6f42c1 !important;
+  }
+</style>

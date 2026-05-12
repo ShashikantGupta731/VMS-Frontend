@@ -1,0 +1,147 @@
+<app-card>
+  <!-- Header Section -->
+  <div class="add-office-header">
+    <div>
+      <h1 class="page-title">Offices</h1>
+      <h2 class="sub-heading">{{ isEditMode ? 'Edit Office' : 'Add Office' }}</h2>
+    </div>
+    <app-btn label="← Back" (click)="onBack()" variant="dark-blue"></app-btn>
+  </div>
+
+  <!-- Form Section -->
+  <form [formGroup]="officeForm" (ngSubmit)="onSubmit()">
+    <div class="form-grid">
+      <!-- Department -->
+      <div class="form-field">
+        <label for="department">Department *</label>
+        <select id="department" formControlName="department" class="form-select">
+          <option value="">Select Department</option>
+          <option *ngFor="let dept of departments" [value]="dept.id">
+            {{ dept.name }}
+          </option>
+        </select>
+        <div *ngIf="department?.invalid && department?.touched" class="error-message">
+          Department is required
+        </div>
+      </div>
+
+      <!-- District -->
+      <div class="form-field">
+        <label for="district">District *</label>
+        <select id="district" formControlName="district" class="form-select" (change)="onDistrictChange()">
+          <option value="">Select District</option>
+          <option *ngFor="let dist of districts" [value]="dist.id">
+            {{ dist.name }}
+          </option>
+        </select>
+        <div *ngIf="district?.invalid && district?.touched" class="error-message">
+          District is required
+        </div>
+      </div>
+
+      <!-- Tehsil -->
+      <div class="form-field">
+        <label for="tehsil">Tehsil *</label>
+        <select id="tehsil" formControlName="tehsil" class="form-select">
+          <option value="">Select Tehsil</option>
+          <option *ngFor="let tehsil of tehsils" [value]="tehsil.id">
+            {{ tehsil.name }}
+          </option>
+        </select>
+        <div *ngIf="tehsil?.invalid && tehsil?.touched" class="error-message">
+          Tehsil is required
+        </div>
+      </div>
+
+      <!-- Office Name -->
+      <div class="form-field">
+        <label for="officeName">Office Name *</label>
+        <input
+          id="officeName"
+          type="text"
+          formControlName="officeName"
+          class="form-input"
+          placeholder="Enter office name"
+        />
+        <div *ngIf="officeName?.invalid && officeName?.touched" class="error-message">
+          Office name is required
+        </div>
+      </div>
+
+      <!-- Office Address -->
+      <div class="form-field">
+        <label for="officeAddress">Office Address *</label>
+        <input
+          id="officeAddress"
+          type="text"
+          formControlName="officeAddress"
+          class="form-input"
+          placeholder="Enter office address"
+        />
+        <div *ngIf="officeAddress?.invalid && officeAddress?.touched" class="error-message">
+          Office address is required
+        </div>
+      </div>
+
+      <!-- Office Abbreviation -->
+      <div class="form-field">
+        <label for="officeAbbreviation">Office Abbreviation *</label>
+        <input
+          id="officeAbbreviation"
+          type="text"
+          formControlName="officeAbbreviation"
+          class="form-input"
+          placeholder="Enter office abbreviation"
+        />
+        <div *ngIf="officeAbbreviation?.invalid && officeAbbreviation?.touched" class="error-message">
+          Office abbreviation is required
+        </div>
+      </div>
+
+      <!-- Office Type -->
+      <div class="form-field">
+        <label for="officeType">Office Type *</label>
+        <select id="officeType" formControlName="officeType" class="form-select">
+          <option value="">Select Office Type</option>
+          <option *ngFor="let type of officeTypes" [value]="type.id">
+            {{ type.name }}
+          </option>
+        </select>
+        <div *ngIf="officeType?.invalid && officeType?.touched" class="error-message">
+          Office type is required
+        </div>
+      </div>
+
+      <!-- Other Office Type (shown only when "Other" is selected) -->
+      <div class="form-field" *ngIf="showOtherOfficeType">
+        <label for="officeTypeOther">Other Office Type *</label>
+        <input
+          id="officeTypeOther"
+          type="text"
+          formControlName="officeTypeOther"
+          class="form-input"
+          placeholder="Please specify office type"
+        />
+        <div *ngIf="officeTypeOther?.touched && !officeTypeOther?.value?.trim()" class="error-message">
+          Office type details are required
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="form-actions">
+      <app-btn
+        [label]="isLoading ? 'Saving...' : (isEditMode ? 'Update' : 'Submit')"
+        (click)="onSubmit()"
+        variant="primary"
+        [disabled]="isLoading"
+      ></app-btn>
+      <app-btn
+        label="Back"
+        (click)="onBack()"
+        variant="secondary"
+        [disabled]="isLoading"
+      ></app-btn>
+    </div>
+  </form>
+</app-card>

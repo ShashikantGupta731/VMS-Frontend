@@ -11,8 +11,8 @@
   </div>
 
   <div class="header-right">
-    <span class="user-greeting" *ngIf="currentUser">Hi, {{ currentUser.name }}</span>
-    <div class="user-profile" *ngIf="currentUser">
+    <span class="user-greeting" *ngIf="currentUser()">Hi, {{ currentUser()?.name }}</span>
+    <div class="user-profile" *ngIf="currentUser()">
       <button class="profile-button" (click)="toggleDropdown(); $event.stopPropagation()">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>

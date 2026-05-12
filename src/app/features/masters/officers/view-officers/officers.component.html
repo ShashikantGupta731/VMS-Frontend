@@ -1,0 +1,36 @@
+<div class="container-fluid p-4">
+  <app-card>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="mb-1">Officers Management</h2>
+      <p class="text-muted mb-0">View and manage government officials and project heads.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <app-btn variant="outline" (click)="onGoBackToHome()" label="Back to Dashboard">
+        <i class="bi bi-arrow-left me-2"></i>
+      </app-btn>
+      <app-btn variant="primary" (click)="onAddNewOfficer()" label="Add New Officer">
+        <i class="bi bi-plus-lg me-2"></i>
+      </app-btn>
+    </div>
+  </div>
+
+  
+    <div class="p-3">
+      <app-data-table 
+        [columns]="tableColumns" 
+        [data]="paginatedOfficers()" 
+        [isLoading]="isLoading()"
+        [actions]="tableActions">
+      </app-data-table>
+
+      <div class="mt-4 d-flex justify-content-center" *ngIf="totalPages() > 1">
+        <app-pagination 
+          [currentPage]="currentPage()" 
+          [totalPages]="totalPages()" 
+          (pageChange)="onPageChange($event)">
+        </app-pagination>
+      </div>
+    </div>
+  </app-card>
+</div>

@@ -2,14 +2,14 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AppCardComponent } from '../ui/app-card/card.component';
 import { AppButtonComponent } from '../ui/app-button/button.component';
-import { VehicleDetailTabComponent } from './tabs/vehicle-detail-tab.component';
-import { FitnessTabComponent } from './tabs/fitness-tab.component';
-import { FuelTabComponent } from './tabs/fuel-tab.component';
-import { MaintenanceTabComponent } from './tabs/maintenance-tab.component';
-import { ServiceTabComponent } from './tabs/service-tab.component';
-import { BatteryTabComponent } from './tabs/battery-tab.component';
-import { TyresTabComponent } from './tabs/tyres-tab.component';
-import { TransferTabComponent } from './tabs/transfer-tab.component';
+import { VehicleDetailTabComponent } from './tabs/vehicle-detail/vehicle-detail-tab.component';
+import { FitnessTabComponent } from './tabs/fitness/fitness-tab.component';
+import { FuelTabComponent } from './tabs/fuel/fuel-tab.component';
+import { MaintenanceTabComponent } from './tabs/maintenance/maintenance-tab.component';
+import { ServiceTabComponent } from './tabs/service/service-tab.component';
+import { BatteryTabComponent } from './tabs/battery/battery-tab.component';
+import { TyresTabComponent } from './tabs/tyres/tyres-tab.component';
+import { TransferTabComponent } from './tabs/transfer/transfer-tab.component';
 import { TabType } from './vehicle-details-modal.interfaces';
 
 @Component({

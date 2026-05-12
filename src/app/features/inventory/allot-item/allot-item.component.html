@@ -1,0 +1,55 @@
+<div class="p-4">
+  <div class="card neumorphic-card border-0 p-4 mx-auto" style="max-width: 600px;">
+    <h2 class="h4 fw-bold mb-4">Allot Inventory Item</h2>
+
+    <form [formGroup]="allotForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Select Vehicle</label>
+        <select class="form-select pill-input" formControlName="vehicleId">
+          <option value="">Choose Vehicle</option>
+          @for (v of vehicles(); track v.id) {
+            <option [value]="v.id">{{ v.registrationNumber }} - {{ v.make }} {{ v.model }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Inventory Item</label>
+        <select class="form-select pill-input" formControlName="itemId">
+          <option value="">Select Item</option>
+          @for (item of items(); track item.id) {
+            <option [value]="item.id">{{ item.name }}</option>
+          }
+        </select>
+        @if (availableStock() !== null) {
+          <div class="mt-1 small" [class.text-danger]="availableStock() === 0" [class.text-success]="availableStock()! > 0">
+            Available Stock: {{ availableStock() }}
+          </div>
+        }
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Quantity</label>
+          <input type="number" class="form-control pill-input" formControlName="quantity" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Odometer Reading</label>
+          <input type="text" class="form-control pill-input" formControlName="odometer" placeholder="Current Odometer" />
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label fw-semibold">Remarks</label>
+        <textarea class="form-control pill-input" formControlName="remarks" rows="3" placeholder="Reason for allotment..."></textarea>
+      </div>
+
+      <div class="d-flex gap-2">
+        <app-btn [label]="'Confirm Allotment'" [type]="'submit'" [disabled]="allotForm.invalid || (availableStock() || 0) < allotForm.get('quantity')?.value" 
+          [loading]="isSubmitting()" [customClass]="'flex-grow-1 neumorphic-btn'"></app-btn>
+        <app-btn [label]="'Cancel'" [routerLink]="'/inventory'" [variant]="'secondary'"
+          [customClass]="'neumorphic-btn-secondary'"></app-btn>
+      </div>
+    </form>
+  </div>
+</div>

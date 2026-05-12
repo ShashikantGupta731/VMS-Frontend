@@ -1,0 +1,28 @@
+.billing-dashboard {
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 60px);
+}
+
+.stats-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bg-warning-subtle { background-color: #fff3cd; }
+.bg-success-subtle { background-color: #d1e7dd; }
+.bg-danger-subtle { background-color: #f8d7da; }
+
+.table-container {
+  min-height: 400px;
+}
+
+:host ::ng-deep {
+  .badge {
+    padding: 0.5em 0.8em;
+    font-weight: 500;
+  }
+}

@@ -1,5 +1,6 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TableModule } from 'primeng/table';
 
 export interface TableColumn {
   key: string;
@@ -8,6 +9,7 @@ export interface TableColumn {
   width?: string;
   textAlign?: 'left' | 'center' | 'right';
   allowHtml?: boolean;
+  render?: (value: any, row?: any) => any;
 }
 
 export interface TableAction {
@@ -21,9 +23,10 @@ export interface TableAction {
 @Component({
   selector: 'app-data-table',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TableModule],
   templateUrl: './data-table.component.html',
   styleUrl: './data-table.component.scss',
+  encapsulation: ViewEncapsulation.None,
 })
 export class AppDataTableComponent {
   @Input() columns: TableColumn[] = [];
@@ -43,38 +46,28 @@ export class AppDataTableComponent {
   @Output() select = new EventEmitter<{ row: any; selected: boolean }>();
   @Output() selectAllChange = new EventEmitter<boolean>();
 
-  sortColumn: string = '';
-  sortDirection: 'asc' | 'desc' = 'asc';
+  // For PrimeNG selection
+  selectedRows: any[] = [];
 
-  onSort(column: TableColumn): void {
-    if (!column.sortable || !this.sortable) return;
-
-    if (this.sortColumn === column.key) {
-      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
-    } else {
-      this.sortColumn = column.key;
-      this.sortDirection = 'asc';
-    }
-
-    this.sort.emit({ column: this.sortColumn, direction: this.sortDirection });
+  onSort(event: any): void {
+    if (!this.sortable) return;
+    this.sort.emit({ 
+      column: event.field, 
+      direction: event.order === 1 ? 'asc' : 'desc' 
+    });
   }
 
-  getSortIcon(column: string): string {
-    if (this.sortColumn !== column) return '↕';
-    return this.sortDirection === 'asc' ? '↑' : '↓';
+  onRowSelect(event: any): void {
+    if (this.rowDisabled && this.rowDisabled(event.data)) return;
+    this.select.emit({ row: event.data, selected: true });
   }
 
-  onRowSelect(row: any, event: Event): void {
-    event.stopPropagation();
-    if (this.rowDisabled && this.rowDisabled(row)) return;
-    
-    const selected = !this.rowSelected?.(row);
-    this.select.emit({ row, selected });
+  onRowUnselect(event: any): void {
+    this.select.emit({ row: event.data, selected: false });
   }
 
-  onSelectAll(event: Event): void {
-    event.stopPropagation();
-    this.selectAllChange.emit(!this.selectAll);
+  onHeaderCheckboxToggle(event: any): void {
+    this.selectAllChange.emit(event.checked);
   }
 
   isRowDisabled(row: any): boolean {

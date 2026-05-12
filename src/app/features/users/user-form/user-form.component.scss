@@ -1,0 +1,35 @@
+.user-form-container {
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.page-title {
+  color: var(--primary-color, #2c3e50);
+  font-weight: 600;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #495057;
+}
+
+.form-control, .form-select {
+  border: 1px solid #ced4da;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.9rem;
+  
+  &:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(var(--primary-rgb, 44, 62, 80), 0.15);
+  }
+
+  &::placeholder {
+    color: #adb5bd;
+    opacity: 0.8;
+  }
+}
+
+.text-decoration-none:hover {
+  text-decoration: underline !important;
+}

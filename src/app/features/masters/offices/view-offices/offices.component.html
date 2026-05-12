@@ -1,0 +1,26 @@
+<app-card>
+  <!-- Header Section -->
+  <div class="offices-header">
+    <h1 class="page-title">Offices</h1>
+    <app-btn label="← Back" (click)="onGoBackToHome()" variant="dark-blue"></app-btn>
+  </div>
+
+  <!-- Top Action Section -->
+  <div class="offices-actions mt-2">
+    <app-btn label="Add New Office" (click)="onAddNewOffice()" variant="primary"></app-btn>
+  </div>
+
+  <!-- Table Section -->
+  <div class="mb-4">
+    <app-data-table [columns]="tableColumns" [data]="paginatedOffices()" [isLoading]="isLoading()" [sortable]="true"
+      [actions]="tableActions">
+    </app-data-table>
+  </div>
+
+  <!-- Pagination Section -->
+  @if (allOffices().length > 0) {
+    <app-pagination [currentPage]="currentPage()" [totalPages]="totalPages()"
+      [totalItems]="totalItems()" [itemsPerPage]="itemsPerPage()" (pageChange)="onPageChange($event)">
+    </app-pagination>
+  }
+</app-card>

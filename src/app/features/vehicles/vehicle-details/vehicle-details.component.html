@@ -1,0 +1,139 @@
+<div class="vehicle-details-container">
+  <app-card>
+    <!-- Header Section -->
+    <div class="header-section">
+      <div class="header-left">
+        <h1 class="page-title">Vehicle Management System</h1>
+        <div class="vehicle-count">No. Of Vehicle: {{ totalVehicleCount() }}</div>
+      </div>
+      <div class="header-right">
+        <app-btn label="Go back to Home" routerLink="/vehicle" variant="secondary"></app-btn>
+      </div>
+    </div>
+
+    <!-- Top Action Section -->
+    <div class="top-action-section">
+      <div class="search-section">
+        <app-input
+          type="text"
+          placeholder="Search by Vehicle Number"
+          [(ngModel)]="searchTerm"
+          width="300px"
+        ></app-input>
+        <app-btn label="Search" (click)="onSearch()"></app-btn>
+      </div>
+      <div class="action-buttons">
+        <app-btn label="Export to PDF" (click)="onExportPdf()"></app-btn>
+        <app-btn label="Print" (click)="onPrint()"></app-btn>
+      </div>
+    </div>
+
+    <!-- Vehicle Identifier Section -->
+    <div class="vehicle-identifier-section">
+      <div class="registration-number">
+        <span class="label">Registration Number:</span>
+        <span class="value">{{ vehicleDetails()?.registrationNumber || 'N/A' }}</span>
+      </div>
+      <div class="ddo-code">
+        <span class="label">DDO Code:</span>
+        <span class="value">{{ vehicleDetails()?.ddoCode || 'N/A' }}</span>
+      </div>
+    </div>
+
+    <!-- Details Section -->
+    @if (vehicleDetails() || isLoading()) {
+      <div class="details-section">
+        <!-- Loading State -->
+        @if (isLoading()) {
+          <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+          </div>
+        }
+
+        <!-- Empty State -->
+        @if (!vehicleDetails() && !isLoading()) {
+          <div class="empty-state">
+            <p>No vehicle details found</p>
+          </div>
+        }
+
+        <!-- Vehicle Details -->
+        @if (vehicleDetails() && !isLoading()) {
+          <div class="vehicle-details-content">
+            <div class="details-grid">
+              <!-- Office Details -->
+              <div class="detail-section">
+                <app-key-value-list
+                  [items]="officeDetails()"
+                  [columns]="2"
+                  sectionTitle="Office Details"
+                ></app-key-value-list>
+              </div>
+
+              <!-- Allocation Details -->
+              <div class="detail-section">
+                <app-key-value-list
+                  [items]="allocationDetails()"
+                  [columns]="2"
+                  sectionTitle="Allocation Details"
+                ></app-key-value-list>
+              </div>
+
+              <!-- Driver Details -->
+              <div class="detail-section">
+                <app-key-value-list
+                  [items]="driverDetails()"
+                  [columns]="2"
+                  sectionTitle="Driver Details"
+                ></app-key-value-list>
+              </div>
+
+              <!-- Vehicle Details -->
+              <div class="detail-section">
+                <app-key-value-list
+                  [items]="vehicleDetailsKvItems()"
+                  [columns]="2"
+                  sectionTitle="Vehicle Details"
+                ></app-key-value-list>
+              </div>
+
+              <!-- Usage & Status -->
+              <div class="detail-section">
+                <app-key-value-list
+                  [items]="usageStatusDetails()"
+                  [columns]="2"
+                  sectionTitle="Usage & Status"
+                ></app-key-value-list>
+              </div>
+
+              <!-- Financial Details -->
+              <div class="detail-section">
+                <app-key-value-list
+                  [items]="financialDetails()"
+                  [columns]="2"
+                  sectionTitle="Financial Details"
+                ></app-key-value-list>
+              </div>
+
+              <!-- Purchase Details -->
+              <div class="detail-section">
+                <app-key-value-list
+                  [items]="purchaseDetails()"
+                  [columns]="2"
+                  sectionTitle="Purchase Details"
+                ></app-key-value-list>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Navigation Section -->
+    <div class="navigation-section">
+      <app-btn label="Previous" (click)="onPrevious()"></app-btn>
+      <app-btn label="Next" (click)="onNext()"></app-btn>
+    </div>
+  </app-card>
+</div>

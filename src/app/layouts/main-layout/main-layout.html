@@ -2,9 +2,9 @@
   <app-header (sidebarToggle)="onSidebarToggle()"></app-header>
   <app-sidebar
     *ngIf="!isSidebarHidden"
-    [menuItems]="menuItems"
+    [menuItems]="menuItems()"
     [config]="{ position: 'left', collapsed: true, showUserSection: true }"
-    [currentUser]="currentUser ? { name: currentUser.name, avatar: undefined } : undefined"
+    [currentUser]="currentUser() ? { name: currentUser()?.name || '', avatar: undefined } : undefined"
     (toggleCollapse)="onSidebarToggle()"
     (menuItemClick)="onMenuClick($event)"
     (logout)="onLogout()"

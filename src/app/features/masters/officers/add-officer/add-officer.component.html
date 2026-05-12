@@ -1,0 +1,143 @@
+<div class="container-fluid p-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="mb-1">{{ isEditMode() ? 'Edit Officer' : 'Add New Officer' }}</h2>
+      <p class="text-muted mb-0">Enter officer details and set fuel/maintenance limits.</p>
+    </div>
+    <app-btn variant="outline" (click)="onBack()" label="Back to List">
+      <i class="bi bi-arrow-left me-2"></i>
+    </app-btn>
+  </div>
+
+  <form [formGroup]="officerForm" (ngSubmit)="onSubmit()">
+    <div class="row g-4">
+      <!-- Personal Info -->
+      <div class="col-md-12">
+        <app-card [title]="'HRMS & Personal Details'">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="d-flex gap-2 align-items-end">
+                <app-input 
+                  label="HRMS Code" 
+                  formControlName="hrmsCode" 
+                  placeholder="Enter HRMS Code"
+                  [error]="officerForm.get('hrmsCode')?.touched && officerForm.get('hrmsCode')?.invalid ? 'HRMS Code is required' : ''">
+                </app-input>
+                <app-btn 
+                  type="button" 
+                  variant="outline" 
+                  class="mb-3"
+                  (click)="verifyHrms()" 
+                  [isLoading]="isVerifying()"
+                  label="Verify">
+                </app-btn>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <app-input 
+                label="First Name" 
+                formControlName="firstName" 
+                placeholder="First Name"
+                [error]="officerForm.get('firstName')?.touched && officerForm.get('firstName')?.invalid ? 'First Name is required' : ''">
+              </app-input>
+            </div>
+            <div class="col-md-4">
+              <app-input 
+                label="Last Name" 
+                formControlName="lastName" 
+                placeholder="Last Name"
+                [error]="officerForm.get('lastName')?.touched && officerForm.get('lastName')?.invalid ? 'Last Name is required' : ''">
+              </app-input>
+            </div>
+          </div>
+        </app-card>
+      </div>
+
+      <!-- Assignment -->
+      <div class="col-md-12">
+        <app-card [title]="'Office & Designation'">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <app-input 
+                type="select" 
+                label="Designation" 
+                formControlName="designationId" 
+                [options]="designations"
+                placeholder="Select Designation"
+                [error]="officerForm.get('designationId')?.touched && officerForm.get('designationId')?.invalid ? 'Designation is required' : ''">
+              </app-input>
+            </div>
+            <div class="col-md-6">
+              <app-input 
+                type="select" 
+                label="Office" 
+                formControlName="officeId" 
+                [options]="offices"
+                placeholder="Select Office"
+                [error]="officerForm.get('officeId')?.touched && officerForm.get('officeId')?.invalid ? 'Office is required' : ''">
+              </app-input>
+            </div>
+          </div>
+        </app-card>
+      </div>
+
+      <!-- Limits -->
+      <div class="col-md-12">
+        <app-card [title]="'Fuel & Maintenance Limits (Overrides)'">
+          <div class="row g-3">
+            <div class="col-md-3">
+              <app-input 
+                type="number" 
+                label="Petrol Fuel Limit (Liters)" 
+                formControlName="petrolFuelLimit"
+                [error]="officerForm.get('petrolFuelLimit')?.touched && officerForm.get('petrolFuelLimit')?.invalid ? 'Valid limit required' : ''">
+              </app-input>
+            </div>
+            <div class="col-md-3">
+              <app-input 
+                type="number" 
+                label="Diesel Fuel Limit (Liters)" 
+                formControlName="dieselFuelLimit"
+                [error]="officerForm.get('dieselFuelLimit')?.touched && officerForm.get('dieselFuelLimit')?.invalid ? 'Valid limit required' : ''">
+              </app-input>
+            </div>
+            <div class="col-md-3">
+              <app-input 
+                type="number" 
+                label="Petrol Maint. Limit (₹)" 
+                formControlName="petrolMaintenanceLimit"
+                [error]="officerForm.get('petrolMaintenanceLimit')?.touched && officerForm.get('petrolMaintenanceLimit')?.invalid ? 'Valid limit required' : ''">
+              </app-input>
+            </div>
+            <div class="col-md-3">
+              <app-input 
+                type="number" 
+                label="Diesel Maint. Limit (₹)" 
+                formControlName="dieselMaintenanceLimit"
+                [error]="officerForm.get('dieselMaintenanceLimit')?.touched && officerForm.get('dieselMaintenanceLimit')?.invalid ? 'Valid limit required' : ''">
+              </app-input>
+            </div>
+          </div>
+        </app-card>
+      </div>
+
+      <!-- Remarks -->
+      <div class="col-md-12">
+        <app-card [title]="'Other Details'">
+          <app-input 
+            type="textarea" 
+            label="Remarks" 
+            formControlName="remarks" 
+            placeholder="Any additional information...">
+          </app-input>
+        </app-card>
+      </div>
+
+      <div class="col-md-12 d-flex justify-content-end gap-3 mb-5">
+        <app-btn type="button" variant="outline" (click)="onBack()" label="Cancel"></app-btn>
+        <app-btn type="submit" variant="primary" [isLoading]="isLoading()" [label]="isEditMode() ? 'Update Officer' : 'Save Officer'">
+        </app-btn>
+      </div>
+    </div>
+  </form>
+</div>

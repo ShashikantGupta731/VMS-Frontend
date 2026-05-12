@@ -1,0 +1,97 @@
+<div class="modal-backdrop fade show"></div>
+<div class="modal d-block" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-primary text-white border-0">
+        <h5 class="modal-title d-flex align-items-center gap-2">
+          <i class="pi pi-directions"></i>
+          Transfer Vehicle: {{ vehicle?.registrationNumber }}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="onClose()"></button>
+      </div>
+      
+      <form [formGroup]="transferForm" (ngSubmit)="onSubmit()">
+        <div class="modal-body p-4">
+          <div class="row g-3">
+            <!-- Target Office -->
+            <div class="col-12">
+              <app-input
+                label="Target Office"
+                type="select"
+                [options]="officeOptions"
+                formControlName="toOfficeId"
+                placeholder="Select destination office"
+                [required]="true"
+                width="100%"
+                [isLoading]="isLoadingOffices()"
+              ></app-input>
+            </div>
+
+            <!-- Transfer Date -->
+            <div class="col-md-6">
+              <app-input
+                label="Transfer Date"
+                type="date"
+                formControlName="transferDate"
+                [required]="true"
+                width="100%"
+              ></app-input>
+            </div>
+
+            <!-- Order Number -->
+            <div class="col-md-6">
+              <app-input
+                label="Order Number"
+                type="text"
+                formControlName="transferOrderNumber"
+                placeholder="Enter order no."
+                [required]="true"
+                width="100%"
+              ></app-input>
+            </div>
+
+            <!-- Transfer Order File -->
+            <div class="col-12">
+              <app-input
+                label="Upload Transfer Order Copy"
+                type="file"
+                accept=".jpg,.jpeg,.png,.pdf"
+                (change)="onFileChange($event)"
+                width="100%"
+              ></app-input>
+              <small class="text-muted mt-1 d-block">Max: 5MB (JPG, PNG, PDF)</small>
+            </div>
+
+            <!-- Remarks -->
+            <div class="col-12">
+              <app-input
+                label="Remarks"
+                type="textarea"
+                formControlName="remarks"
+                placeholder="Enter transfer reason or remarks"
+                width="100%"
+              ></app-input>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer border-0 p-3 bg-light rounded-bottom">
+          <app-btn 
+            label="Cancel" 
+            variant="secondary" 
+            type="button" 
+            (click)="onClose()"
+            [disabled]="isSubmitting()"
+          ></app-btn>
+          <app-btn 
+            label="Confirm Transfer" 
+            variant="primary" 
+            type="submit" 
+            [isLoading]="isSubmitting()"
+            [disabled]="transferForm.invalid"
+          ></app-btn>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

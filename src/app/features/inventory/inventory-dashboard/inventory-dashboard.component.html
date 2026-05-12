@@ -1,0 +1,65 @@
+<div class="inventory-container p-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h4 fw-bold mb-0">Inventory Dashboard</h2>
+    <div class="d-flex gap-2">
+      <app-btn [label]="'Add Stock'" [routerLink]="'/inventory/add-stock'" [customClass]="'neumorphic-btn'" [size]="'sm'"></app-btn>
+      <app-btn [label]="'Allot Item'" [routerLink]="'/inventory/allot'" [customClass]="'neumorphic-btn'" [size]="'sm'"></app-btn>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Stock Summary Cards -->
+    @for (item of items(); track item.id) {
+      <div class="col-md-3">
+        <div class="card neumorphic-card border-0 p-3 h-100">
+          <div class="d-flex align-items-center gap-3 mb-2">
+            <div class="icon-circle bg-primary-subtle text-primary p-2 rounded-circle">
+              <i class="fas fa-box"></i>
+            </div>
+            <h3 class="h6 fw-bold mb-0">{{ item.name }}</h3>
+          </div>
+          <p class="text-muted small mb-1">{{ item.category }}</p>
+          <div class="d-flex justify-content-between align-items-end mt-auto">
+            <span class="h4 fw-bold mb-0 text-primary">--</span> <!-- Stock value will be loaded dynamically -->
+            <span class="small text-muted">Available</span>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Recent Allotments Table -->
+  <div class="card neumorphic-card border-0 mt-5 p-4">
+    <h3 class="h5 fw-bold mb-4">Recent Allotments</h3>
+    <div class="table-responsive">
+      <table class="table custom-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Item</th>
+            <th>Vehicle</th>
+            <th>Quantity</th>
+            <th>Allotted By</th>
+            <th>Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (allotment of allotments(); track allotment.id) {
+            <tr>
+              <td>{{ allotment.allotmentDate | date:'mediumDate' }}</td>
+              <td>{{ allotment.inventoryItem?.name }}</td>
+              <td>{{ allotment.vehicle?.registrationNumber || 'N/A' }}</td>
+              <td><span class="badge bg-info-subtle text-info">{{ allotment.quantity }}</span></td>
+              <td>{{ allotment.allottedByUser?.name }}</td>
+              <td>{{ allotment.remarks }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="text-center py-4 text-muted">No allotments found.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

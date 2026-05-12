@@ -1,0 +1,48 @@
+.modal-backdrop {
+  z-index: 1040;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.modal {
+  z-index: 1050;
+  display: block;
+}
+
+.modal-content {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 1rem 1.5rem;
+  
+  .modal-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    
+    i {
+      font-size: 1.25rem;
+    }
+  }
+}
+
+.modal-body {
+  background-color: #ffffff;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-footer {
+  gap: 10px;
+}
+
+.btn-close-white {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+h6 {
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}

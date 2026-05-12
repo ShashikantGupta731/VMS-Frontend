@@ -1,0 +1,35 @@
+<app-card>
+  @if (isLoading()) {
+    <div>Loading...</div>
+  }
+  @if (error()) {
+    <div class="error-message">{{ error() }}</div>
+  }
+  @if (vehicleDetail() && !isLoading()) {
+    <div>
+      <app-key-value-list
+        [items]="[
+          { label: 'DDO Code', value: vehicleDetail()?.ddoCode || '' },
+          { label: 'Nodal Officer Name', value: vehicleDetail()?.nodalOfficer?.name || '' },
+          { label: 'Nodal Officer Email', value: vehicleDetail()?.nodalOfficer?.email || '' },
+          { label: 'Nodal Officer Phone', value: vehicleDetail()?.nodalOfficer?.phone || '' },
+          { label: 'Current Status', value: vehicleDetail()?.currentStatus || '' },
+          { label: 'Treasury Type', value: vehicleDetail()?.treasuryType || '' },
+          { label: 'Verification Status', value: vehicleDetail()?.verificationStatus || '' },
+          { label: 'Office', value: vehicleDetail()?.office || '' },
+          { label: 'Office Address', value: vehicleDetail()?.officeAddress || '', isMultiline: true },
+          { label: 'District', value: vehicleDetail()?.district || '' },
+          { label: 'Tehsil', value: vehicleDetail()?.tehsil || '' },
+          { label: 'Department', value: vehicleDetail()?.department || '' },
+          { label: 'Vehicle Allocation Type', value: vehicleDetail()?.vehicleAllocationType || '' }
+        ]"
+        [columns]="2"
+      ></app-key-value-list>
+    </div>
+  }
+  @if (!vehicleDetail() && !isLoading() && !error()) {
+    <div class="empty-state">
+      No Record Found
+    </div>
+  }
+</app-card>

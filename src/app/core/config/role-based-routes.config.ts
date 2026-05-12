@@ -9,29 +9,15 @@ export interface RoleRouteConfig {
 }
 
 export const ROLE_BASED_ROUTES: RoleRouteConfig[] = [
-  // Admin role - redirect to admin dashboard
-  {
-    role: 'Admin',
-    redirectUrl: '/vehicle'
-  },
-
-  // User role - redirect to user dashboard
-  {
-    role: 'User',
-    redirectUrl: '/vehicle'
-  },
-
-  // Agent role - redirect to agent dashboard
-  {
-    role: 'Agent',
-    redirectUrl: '/vehicle'
-  },
-
-  // Guest role - redirect to guest dashboard
-  {
-    role: 'Guest',
-    redirectUrl: '/vehicle'
-  }
+  { role: 'DDO', redirectUrl: '/vehicle' },
+  { role: 'ADMN', redirectUrl: '/verify-vehicles' },
+  { role: 'NDOF', redirectUrl: '/non-ifms-claims' },
+  { role: 'SEC', redirectUrl: '/vehicle' },
+  { role: 'HOD', redirectUrl: '/vehicle' },
+  { role: 'DCL', redirectUrl: '/vehicle' },
+  { role: 'FD', redirectUrl: '/vehicle' },
+  { role: 'PPOF', redirectUrl: '/vehicle' },
+  { role: 'GUEST', redirectUrl: '/vehicle' }
 ];
 
 /**

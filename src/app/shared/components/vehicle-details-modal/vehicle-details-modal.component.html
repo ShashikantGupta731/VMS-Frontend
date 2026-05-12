@@ -1,71 +1,82 @@
-<app-card *ngIf="isVisible" class="modal-overlay">
-  <div class="modal-container">
-    <div class="modal-header">
-      <h2 class="modal-title">Vehicle Number : {{ vehicleNumber }}</h2>
-      <app-btn (click)="onClose()" variant="default" class="close-button">✕</app-btn>
-    </div>
-
-    <div class="modal-body">
-      <div class="tabs-navigation">
-        <app-btn
-          *ngFor="let tab of tabs"
-          (click)="onTabChange(tab.id)"
-          [variant]="isTabActive(tab.id) ? 'primary' : 'default'"
-          [class.active]="isTabActive(tab.id)"
-        >
-          {{ tab.label }}
-        </app-btn>
+@if (isVisible) {
+  <app-card class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2 class="modal-title">Vehicle Number : {{ vehicleNumber }}</h2>
+        <app-btn (click)="onClose()" variant="default" class="close-button">✕</app-btn>
       </div>
 
-      <div class="tab-content">
-        <app-vehicle-detail-tab
-          *ngIf="isTabLoaded('vehicle-detail')"
-          [vehicleNumber]="vehicleNumber"
-          [class.hidden]="!isTabActive('vehicle-detail')"
-        ></app-vehicle-detail-tab>
+      <div class="modal-body">
+        <div class="tabs-navigation">
+          @for (tab of tabs; track tab.id) {
+            <app-btn
+              (click)="onTabChange(tab.id)"
+              [variant]="isTabActive(tab.id) ? 'primary' : 'default'"
+              [class.active]="isTabActive(tab.id)"
+            >
+              {{ tab.label }}
+            </app-btn>
+          }
+        </div>
 
-        <app-fitness-tab
-          *ngIf="isTabLoaded('fitness')"
-          [vehicleNumber]="vehicleNumber"
-          [class.hidden]="!isTabActive('fitness')"
-        ></app-fitness-tab>
+        <div class="tab-content">
+          @if (isTabLoaded('vehicle-detail')) {
+            <app-vehicle-detail-tab
+              [vehicleNumber]="vehicleNumber"
+              [class.hidden]="!isTabActive('vehicle-detail')"
+            ></app-vehicle-detail-tab>
+          }
 
-        <app-fuel-tab
-          *ngIf="isTabLoaded('fuel')"
-          [vehicleNumber]="vehicleNumber"
-          [class.hidden]="!isTabActive('fuel')"
-        ></app-fuel-tab>
+          @if (isTabLoaded('fitness')) {
+            <app-fitness-tab
+              [vehicleNumber]="vehicleNumber"
+              [class.hidden]="!isTabActive('fitness')"
+            ></app-fitness-tab>
+          }
 
-        <app-maintenance-tab
-          *ngIf="isTabLoaded('maintenance')"
-          [vehicleNumber]="vehicleNumber"
-          [class.hidden]="!isTabActive('maintenance')"
-        ></app-maintenance-tab>
+          @if (isTabLoaded('fuel')) {
+            <app-fuel-tab
+              [vehicleNumber]="vehicleNumber"
+              [class.hidden]="!isTabActive('fuel')"
+            ></app-fuel-tab>
+          }
 
-        <app-service-tab
-          *ngIf="isTabLoaded('service')"
-          [vehicleNumber]="vehicleNumber"
-          [class.hidden]="!isTabActive('service')"
-        ></app-service-tab>
+          @if (isTabLoaded('maintenance')) {
+            <app-maintenance-tab
+              [vehicleNumber]="vehicleNumber"
+              [class.hidden]="!isTabActive('maintenance')"
+            ></app-maintenance-tab>
+          }
 
-        <app-battery-tab
-          *ngIf="isTabLoaded('battery')"
-          [vehicleNumber]="vehicleNumber"
-          [class.hidden]="!isTabActive('battery')"
-        ></app-battery-tab>
+          @if (isTabLoaded('service')) {
+            <app-service-tab
+              [vehicleNumber]="vehicleNumber"
+              [class.hidden]="!isTabActive('service')"
+            ></app-service-tab>
+          }
 
-        <app-tyres-tab
-          *ngIf="isTabLoaded('tyres')"
-          [vehicleNumber]="vehicleNumber"
-          [class.hidden]="!isTabActive('tyres')"
-        ></app-tyres-tab>
+          @if (isTabLoaded('battery')) {
+            <app-battery-tab
+              [vehicleNumber]="vehicleNumber"
+              [class.hidden]="!isTabActive('battery')"
+            ></app-battery-tab>
+          }
 
-        <app-transfer-tab
-          *ngIf="isTabLoaded('transfer')"
-          [vehicleNumber]="vehicleNumber"
-          [class.hidden]="!isTabActive('transfer')"
-        ></app-transfer-tab>
+          @if (isTabLoaded('tyres')) {
+            <app-tyres-tab
+              [vehicleNumber]="vehicleNumber"
+              [class.hidden]="!isTabActive('tyres')"
+            ></app-tyres-tab>
+          }
+
+          @if (isTabLoaded('transfer')) {
+            <app-transfer-tab
+              [vehicleNumber]="vehicleNumber"
+              [class.hidden]="!isTabActive('transfer')"
+            ></app-transfer-tab>
+          }
+        </div>
       </div>
     </div>
-  </div>
-</app-card>
+  </app-card>
+}

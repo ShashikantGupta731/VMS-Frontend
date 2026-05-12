@@ -36,11 +36,12 @@
   border: 1px solid #e0e0e0;
   color: $text-dark;
   font-size: $font-size-base;
-  padding: 2px 20px;
+  padding: 0 20px; /* Removed top/bottom padding */
   border-radius: 50px;
   outline: none;
   transition: all 0.3s ease;
   height: 35px;
+  line-height: 33px; /* Vertically centers text in 35px height */
 
   &:focus {
     background: #fff;
@@ -82,3 +83,68 @@
   background-position: right 16px center;
   padding-right: 40px;
 }
+/* File Input Styling */
+input[type="file"] {
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  color: $text-dark;
+  font-size: $font-size-base;
+  padding: 8px 20px;
+  border-radius: 50px;
+  outline: none;
+  transition: all 0.3s ease;
+  height: auto;
+  line-height: normal;
+  cursor: pointer;
+
+  &:focus {
+    background: #fff;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: $bg-gray-light;
+  }
+
+  &::file-selector-button {
+    background: #1a237e;
+    color: #fff;
+    border: 1px solid #1a237e;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-right: 10px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+
+    &:hover {
+      background: #fff;
+      color: #1a237e;
+    }
+  }
+}
+
+/* When file input is inside a wrapper with icon */
+.input-wrapper input[type="file"] {
+  padding-left: 45px;
+}
+
+/* Global Font Size Control for Inputs and PrimeNG Selects */
+::ng-deep .app-input,
+::ng-deep .p-select-label {
+  font-size: 14px !important;
+}
+
+/* Fix vertical centering inside PrimeNG Select */
+::ng-deep .p-select-label {
+  padding: 0 !important;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+

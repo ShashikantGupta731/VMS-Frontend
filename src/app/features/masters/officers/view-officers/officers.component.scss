@@ -1,0 +1,14 @@
+:host {
+  display: block;
+  background-color: var(--app-bg-secondary);
+  min-height: 100vh;
+}
+
+h2 {
+  font-weight: 700;
+  color: var(--app-text-primary);
+}
+
+.text-muted {
+  font-size: 0.9rem;
+}

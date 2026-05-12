@@ -1,0 +1,71 @@
+<div class="container-fluid p-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="mb-1">{{ isEditMode() ? 'Edit Project' : 'Add New Project' }}</h2>
+      <p class="text-muted mb-0">Define project name, department, and allocated limits.</p>
+    </div>
+    <app-btn variant="outline" (click)="onBack()" label="Back to List">
+      <i class="bi bi-arrow-left me-2"></i>
+    </app-btn>
+  </div>
+
+  <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+    <div class="row g-4">
+      <!-- Project Info -->
+      <div class="col-md-12">
+        <app-card [title]="'Project Details'">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <app-input 
+                label="Project Name" 
+                formControlName="name" 
+                placeholder="Enter Project Name"
+                [error]="projectForm.get('name')?.touched && projectForm.get('name')?.invalid ? 'Project Name is required' : ''">
+              </app-input>
+            </div>
+            <div class="col-md-6">
+              <app-input 
+                type="select" 
+                label="Department" 
+                formControlName="departmentId" 
+                [options]="departments"
+                placeholder="Select Department"
+                [error]="projectForm.get('departmentId')?.touched && projectForm.get('departmentId')?.invalid ? 'Department is required' : ''">
+              </app-input>
+            </div>
+          </div>
+        </app-card>
+      </div>
+
+      <!-- Limits -->
+      <div class="col-md-12">
+        <app-card [title]="'Budgetary Limits'">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <app-input 
+                type="number" 
+                label="Monthly Fuel Limit (Liters)" 
+                formControlName="petrolFuelLimit"
+                [error]="projectForm.get('petrolFuelLimit')?.touched && projectForm.get('petrolFuelLimit')?.invalid ? 'Valid limit required' : ''">
+              </app-input>
+            </div>
+            <div class="col-md-6">
+              <app-input 
+                type="number" 
+                label="Monthly Maintenance Limit (₹)" 
+                formControlName="petrolMaintenanceLimit"
+                [error]="projectForm.get('petrolMaintenanceLimit')?.touched && projectForm.get('petrolMaintenanceLimit')?.invalid ? 'Valid limit required' : ''">
+              </app-input>
+            </div>
+          </div>
+        </app-card>
+      </div>
+
+      <div class="col-md-12 d-flex justify-content-end gap-3 mb-5">
+        <app-btn type="button" variant="outline" (click)="onBack()" label="Cancel"></app-btn>
+        <app-btn type="submit" variant="primary" [isLoading]="isLoading()" [label]="isEditMode() ? 'Update Project' : 'Save Project'">
+        </app-btn>
+      </div>
+    </div>
+  </form>
+</div>

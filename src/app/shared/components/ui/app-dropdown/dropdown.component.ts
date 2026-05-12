@@ -58,7 +58,12 @@ export class AppDropdownComponent {
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: Event): void {
-    if (!this.elementRef.nativeElement.contains(event.target)) {
+    const target = event.target as HTMLElement;
+    const toggleButton = this.elementRef.nativeElement.querySelector('.app-dropdown-toggle');
+    if (toggleButton && toggleButton.contains(target)) {
+      return;
+    }
+    if (!this.elementRef.nativeElement.contains(target)) {
       this.closeDropdown();
     }
   }

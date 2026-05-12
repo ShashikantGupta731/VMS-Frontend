@@ -4,34 +4,31 @@
   overflow-x: auto;
 }
 
-.app-data-table {
-  width: 100%;
+/* Global Table Overrides (via ViewEncapsulation.None) */
+.app-table {
+  width: 100% !important;
   border-collapse: separate;
   border-spacing: 0;
   background: $bg-white;
-  border-radius: $radius-md;
-  overflow: hidden;
 
   thead {
-    background: $bg-gray;
-    border-bottom: 2px solid $border-color;
-
     th {
-      background: $bg-gray;
-      color: $text-dark;
-      font-size: $font-size-sm;
-      font-weight: $font-weight-bold;
-      padding: $spacing-lg;
+      background: $bg-white !important;
+      color: $text-dark !important;
+      font-size: $font-size-base !important; // Controlled from here: 12px
+      font-weight: 600 !important;
+      padding: $spacing-md $spacing-lg !important; // Controlled from here: 12px
       text-align: left;
-      border-bottom: 1px solid $border-color;
+      border-bottom: 1px solid $border-color !important;
       white-space: nowrap;
+      border-top: 1px solid $border-color !important;
 
       &.sortable {
         cursor: pointer;
         user-select: none;
 
         &:hover {
-          background: #e9ecef;
+          background: #f8f9fa !important;
         }
       }
 
@@ -44,43 +41,38 @@
         text-align: center;
       }
 
-      .sort-icon {
+      .p-sortable-column-icon {
         margin-left: 4px;
-        font-size: 10px;
-        opacity: 0.6;
+        font-size: 10px !important;
+        color: $text-light;
       }
     }
   }
 
   tbody {
     tr {
-      border-bottom: 1px solid $border-color-light;
       transition: background $transition-base;
 
       &:hover td {
-        background: $bg-gray;
-      }
-
-      &:last-child {
-        border-bottom: none;
+        background: $bg-gray-light !important;
       }
 
       &.selected-row td {
-        background: $primary-light;
+        background: $primary-light !important;
       }
 
       &.disabled-row td {
         opacity: 0.5;
-        background: $bg-gray-light;
+        background: $bg-gray-light !important;
       }
 
       td {
-        background: $bg-white;
-        color: $text-muted;
-        font-size: $font-size-base;
-        padding: $spacing-lg;
+        background: $bg-white !important;
+        color: $text-dark !important;
+        font-size: $font-size-sm !important; // Controlled from here: 14px
+        padding: $spacing-md $spacing-lg !important; // Controlled from here: 12px
         vertical-align: middle;
-        border-bottom: 1px solid $border-color;
+        border-bottom: 1px solid $border-color-light !important;
 
         &.checkbox-column {
           text-align: center;
@@ -94,16 +86,10 @@
     }
   }
 
-  .app-data-table-checkbox {
+  /* PrimeNG Checkbox Alignment */
+  .p-checkbox {
     width: 18px;
     height: 18px;
-    cursor: pointer;
-    accent-color: $primary-color;
-
-    &:disabled {
-      cursor: not-allowed;
-      opacity: 0.5;
-    }
   }
 
   .app-data-table-action-btn {
@@ -113,23 +99,15 @@
     border-radius: $radius-sm;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.06), -2px -2px 4px rgba(255, 255, 255, 0.8);
     padding: 6px 12px;
-    font-size: $font-size-sm;
+    font-size: $font-size-base;
     font-weight: $font-weight-medium;
     cursor: pointer;
     transition: all $transition-base;
-    margin-right: 4px;
-
-    &:last-child {
-      margin-right: 0;
-    }
+    margin: 0 2px;
 
     &:hover:not(:disabled) {
       box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.08), -3px -3px 6px rgba(255, 255, 255, 0.9);
       border-color: $primary-color;
-    }
-
-    &:active:not(:disabled) {
-      box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.08), inset -1px -1px 3px rgba(255, 255, 255, 0.9);
     }
 
     &:disabled {
@@ -137,66 +115,30 @@
       cursor: not-allowed;
     }
   }
+}
 
-  .app-data-table-spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid $border-color;
-    border-top-color: $primary-color;
-    border-radius: $radius-full;
-    animation: spin 1s linear infinite;
-    margin: 0 auto;
+.app-empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: $text-light;
+
+  p {
+    margin-top: 15px;
+    font-size: 1.1rem;
   }
+}
 
-  .app-data-table-empty {
-    svg {
-      display: block;
-      margin: 0 auto;
-    }
-
-    p {
-      color: $text-light;
-      font-size: $font-size-base;
-      margin-top: 15px;
-    }
-  }
+.app-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid $border-color;
+  border-top-color: $primary-color;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
   to {
     transform: rotate(360deg);
-  }
-}
-
-@media (max-width: 768px) {
-  .app-data-table {
-    thead th {
-      font-size: $font-size-sm;
-      padding: 10px 12px;
-    }
-
-    tbody td {
-      font-size: $font-size-sm;
-      padding: 10px 12px;
-    }
-
-    .app-data-table-action-btn {
-      padding: 5px 8px;
-      font-size: $font-size-xs;
-    }
-  }
-}
-
-@media (max-width: 576px) {
-  .app-data-table {
-    thead th {
-      font-size: $font-size-xs;
-      padding: 8px 10px;
-    }
-
-    tbody td {
-      font-size: $font-size-xs;
-      padding: 8px 10px;
-    }
   }
 }

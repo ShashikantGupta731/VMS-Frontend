@@ -1,0 +1,38 @@
+<div class="container-fluid p-4 bg-white">
+  <!-- Breadcrumb and Title -->
+  <div class="row mb-4">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+      <h3 class="fw-bold text-dark m-0">Hired Vehicle Vouchers</h3>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb m-0 bg-transparent p-0">
+          <li class="breadcrumb-item text-primary"><a routerLink="/dashboard">Vehicle</a></li>
+          <li class="breadcrumb-item active">Hired Vehicle Vouchers</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-end mb-4">
+    <app-btn label="+ Create New Voucher" variant="primary" (click)="createNewVoucher()"></app-btn>
+  </div>
+
+  <div class="card border-0">
+    <div class="card-header bg-transparent border-bottom-primary px-0 mb-3">
+      <h6 class="text-primary fw-bold mb-1">Drafted Hired Vehicle Vouchers</h6>
+    </div>
+    <div class="card-body p-0">
+      <app-data-table
+        [columns]="tableColumns"
+        [data]="vouchersResource.value() || []"
+        [actions]="tableActions"
+        [isLoading]="vouchersResource.isLoading() || isLoading()"
+      ></app-data-table>
+    </div>
+  </div>
+</div>
+
+<style>
+  .border-bottom-primary {
+    border-bottom: 2px solid #6f42c1 !important;
+  }
+</style>

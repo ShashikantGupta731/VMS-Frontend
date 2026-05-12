@@ -17,8 +17,12 @@ export class VehicleService {
     );
   }
 
-  getVehicles(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl).pipe(
+  getVehicles(status?: number): Observable<any[]> {
+    let url = this.apiUrl;
+    if (status !== undefined) {
+      url += `?status=${status}`;
+    }
+    return this.http.get<any[]>(url).pipe(
       catchError(this.handleError)
     );
   }
@@ -37,6 +41,18 @@ export class VehicleService {
 
   deleteVehicle(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  transferVehicle(formData: FormData): Observable<any> {
+    return this.http.post(`${this.apiUrl}/transfer`, formData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  condemnVehicle(formData: FormData): Observable<any> {
+    return this.http.post(`${this.apiUrl}/condemn`, formData).pipe(
       catchError(this.handleError)
     );
   }

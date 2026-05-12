@@ -18,7 +18,10 @@ export class ApiService {
 
   // Generic POST request
   post<T>(endpoint: string, body: any): Observable<T> {
-    return this.http.post<T>(`${this.apiUrl}${endpoint}`, body);
+    const fullUrl = `${this.apiUrl}${endpoint}`;
+    console.log(`6. ApiService.post: Request initiated to ${fullUrl}`);
+    console.log('7. ApiService.post: Body payload:', JSON.stringify({ ...body, Password: '***' }));
+    return this.http.post<T>(fullUrl, body);
   }
 
   // Generic PUT request

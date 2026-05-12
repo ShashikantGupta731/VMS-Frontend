@@ -1,0 +1,70 @@
+<div class="reports-container p-4">
+  <div class="header mb-5">
+    <h2 class="h3 fw-bold mb-1">MIS Reports & Analytics</h2>
+    <p class="text-muted">High-level overview of fleet performance and compliance.</p>
+  </div>
+
+  <!-- Key Metrics Row -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-4">
+      <div class="card neumorphic-card border-0 p-4 text-center">
+        <div class="icon-circle mx-auto bg-primary-subtle text-primary mb-3">
+          <i class="fas fa-car fa-2x"></i>
+        </div>
+        <h3 class="h2 fw-bold mb-1">{{ stats().totalVehicles }}</h3>
+        <p class="text-muted mb-0">Total Enrolled Vehicles</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card neumorphic-card border-0 p-4 text-center">
+        <div class="icon-circle mx-auto bg-warning-subtle text-warning mb-3">
+          <i class="fas fa-user-check fa-2x"></i>
+        </div>
+        <h3 class="h2 fw-bold mb-1 text-warning">{{ stats().unverified }}</h3>
+        <p class="text-muted mb-0">Pending Verifications</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card neumorphic-card border-0 p-4 text-center">
+        <div class="icon-circle mx-auto bg-danger-subtle text-danger mb-3">
+          <i class="fas fa-exclamation-triangle fa-2x"></i>
+        </div>
+        <h3 class="h2 fw-bold mb-1 text-danger">{{ stats().odometerIssues }}</h3>
+        <p class="text-muted mb-0">Odometer Discrepancies</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detailed Reports Grid -->
+  <h4 class="fw-bold mb-4">Detailed Reports</h4>
+  <div class="row g-4">
+    <div class="col-md-6 col-lg-3">
+      <div class="card report-card neumorphic-card border-0 h-100 p-4 clickable" [routerLink]="'/reports/allocation'">
+        <i class="fas fa-chart-pie mb-3 text-info fa-lg"></i>
+        <h5 class="fw-bold mb-2">Allocation Analysis</h5>
+        <p class="small text-muted mb-0">Vehicle distribution by type and department.</p>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="card report-card neumorphic-card border-0 h-100 p-4 clickable" [routerLink]="'/reports/expenditure'">
+        <i class="fas fa-file-invoice-dollar mb-3 text-success fa-lg"></i>
+        <h5 class="fw-bold mb-2">Expenditure Report</h5>
+        <p class="small text-muted mb-0">Financial trends across voucher categories.</p>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="card report-card neumorphic-card border-0 h-100 p-4 clickable" [routerLink]="'/reports/odometer'">
+        <i class="fas fa-tachometer-alt mb-3 text-danger fa-lg"></i>
+        <h5 class="fw-bold mb-2">Odometer Issues</h5>
+        <p class="small text-muted mb-0">List of vehicles with incorrect readings.</p>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="card report-card neumorphic-card border-0 h-100 p-4 clickable" [routerLink]="'/reports/unverified'">
+        <i class="fas fa-user-shield mb-3 text-warning fa-lg"></i>
+        <h5 class="fw-bold mb-2">Verification Audit</h5>
+        <p class="small text-muted mb-0">Tracking verification status across districts.</p>
+      </div>
+    </div>
+  </div>
+</div>

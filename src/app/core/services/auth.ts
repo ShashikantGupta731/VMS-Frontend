@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, timer, Subscription } from 'rxjs';
+import { Injectable, signal } from '@angular/core';
+import { Observable, timer, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { ApiService } from './api';
 import { ToastrService } from 'ngx-toastr';
@@ -20,12 +20,11 @@ export interface User {
   providedIn: 'root',
 })
 export class AuthService {
-  private currentUserSubject = new BehaviorSubject<User | null>(null);
-  public currentUser$ = this.currentUserSubject.asObservable();
-  
+  public currentUser = signal<User | null>(null);
+
   private idleTimer: Subscription | null = null;
-  private readonly IDLE_TIMEOUT = 30 * 60 * 1000; // 30 minutes in milliseconds
-  private readonly TOKEN_REFRESH_THRESHOLD = 5 * 60 * 1000; // 5 minutes in milliseconds
+  private readonly IDLE_TIMEOUT = 120 * 60 * 1000; // 30 minutes in milliseconds
+  private readonly TOKEN_REFRESH_THRESHOLD = 10 * 60 * 1000; // 5 minutes in milliseconds
 
   constructor(
     private apiService: ApiService,
@@ -40,14 +39,14 @@ export class AuthService {
 
   // Get current user value
   get currentUserValue(): User | null {
-    return this.currentUserSubject.value;
+    return this.currentUser();
   }
 
   // Check if user is authenticated
   isAuthenticated(): boolean {
     const user = this.currentUserValue;
     if (!user) return false;
-    
+
     // Check if token is expired
     const tokenExpiry = localStorage.getItem('token_expiry');
     if (tokenExpiry) {
@@ -57,7 +56,7 @@ export class AuthService {
         return false;
       }
     }
-    
+
     return true;
   }
 
@@ -77,7 +76,13 @@ export class AuthService {
 
   // Login with username and password
   login(username: string, password: string, captchaId?: string, captchaInput?: string): Observable<any> {
-    return this.apiService.post<any>('/auth/login', { Username: username, Password: password, CaptchaId: captchaId, CaptchaInput: captchaInput });
+    console.log('5. AuthService.login: Preparing payload', { username, captchaId, captchaInput });
+    return this.apiService.post<any>('/auth/login', {
+      Username: username,
+      Password: password,
+      CaptchaId: captchaId,
+      CaptchaInput: captchaInput
+    });
   }
 
   // Request OTP for guest login
@@ -101,7 +106,7 @@ export class AuthService {
     localStorage.setItem('auth_token', token);
     localStorage.setItem('user_info', JSON.stringify(user));
     localStorage.setItem('token_expiry', tokenExpiry.toString());
-    this.currentUserSubject.next(user);
+    this.currentUser.set(user);
     this.resetIdleTimer();
   }
 
@@ -133,7 +138,7 @@ export class AuthService {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('user_info');
     localStorage.removeItem('token_expiry');
-    this.currentUserSubject.next(null);
+    this.currentUser.set(null);
     this.router.navigate(['/login']);
   }
 
@@ -143,7 +148,7 @@ export class AuthService {
     if (userInfo) {
       try {
         const user: User = JSON.parse(userInfo);
-        this.currentUserSubject.next(user);
+        this.currentUser.set(user);
       } catch (e) {
         console.error('Error parsing user info:', e);
         this.clearSession();
@@ -154,7 +159,7 @@ export class AuthService {
   // Idle timeout tracking
   private startIdleTracking(): void {
     this.resetIdleTimer();
-    
+
     // Track user activity
     window.addEventListener('mousemove', () => this.resetIdleTimer());
     window.addEventListener('keydown', () => this.resetIdleTimer());
@@ -166,7 +171,7 @@ export class AuthService {
     if (this.idleTimer) {
       this.idleTimer.unsubscribe();
     }
-    
+
     this.idleTimer = timer(this.IDLE_TIMEOUT).subscribe(() => {
       if (this.isAuthenticated()) {
         this.toastr.warning('You have been logged out due to inactivity.', 'Session Timeout');
@@ -179,10 +184,10 @@ export class AuthService {
   shouldRefreshToken(): boolean {
     const tokenExpiry = localStorage.getItem('token_expiry');
     if (!tokenExpiry) return false;
-    
+
     const expiryTime = parseInt(tokenExpiry);
     const timeUntilExpiry = expiryTime - Date.now();
-    
+
     return timeUntilExpiry < this.TOKEN_REFRESH_THRESHOLD;
   }
 

@@ -1,106 +1,149 @@
 <aside class="sidebar" [class.collapsed]="isCollapsed" [class.expanded]="isSidebarExpanded" [class.sidebar-right]="config.position === 'right'" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
   <!-- Header Section -->
-  <div class="sidebar-header" *ngIf="config.showHeader">
-    <h3 class="sidebar-title" *ngIf="config.headerTitle">{{ config.headerTitle }}</h3>
-    <button class="toggle-btn" (click)="toggleSidebar()" title="Toggle Sidebar">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="15 18 9 12 15 6"></polyline>
-      </svg>
-    </button>
-  </div>
+  @if (config.showHeader) {
+    <div class="sidebar-header">
+      @if (config.headerTitle) {
+        <h3 class="sidebar-title">{{ config.headerTitle }}</h3>
+      }
+      <button class="toggle-btn" (click)="toggleSidebar()" title="Toggle Sidebar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+    </div>
+  }
 
   <!-- User Section -->
-  <div class="sidebar-user" *ngIf="config.showUserSection && currentUser">
-    <div class="user-avatar">
-      <img *ngIf="currentUser.avatar" [src]="currentUser.avatar" [alt]="currentUser.name" />
-      <div *ngIf="!currentUser.avatar" class="avatar-placeholder">
-        {{ currentUser.name.charAt(0).toUpperCase() }}
+  @if (config.showUserSection && currentUser) {
+    <div class="sidebar-user">
+      <div class="user-avatar">
+        @if (currentUser.avatar) {
+          <img [src]="currentUser.avatar" [alt]="currentUser.name" />
+        } @else {
+          <div class="avatar-placeholder">
+            {{ currentUser.name.charAt(0).toUpperCase() }}
+          </div>
+        }
+      </div>
+      <div class="user-info">
+        <span class="user-name">
+          @if (isSidebarExpanded) {
+            {{ currentUser.name }}
+          } @else {
+            {{ getFirstName(currentUser.name) }}
+          }
+        </span>
       </div>
     </div>
-    <div class="user-info">
-      <span class="user-name">{{ currentUser.name }}</span>
-    </div>
-  </div>
+  }
 
   <!-- Menu Items -->
   <nav class="sidebar-menu">
     <ul class="menu-list">
-      <li *ngFor="let item of menuItems" class="menu-item">
-        <!-- Menu Item with Route (no children) -->
-        <a
-          *ngIf="item.route && !hasChildren(item)"
-          [routerLink]="item.route"
-          class="menu-link"
-          [class.disabled]="item.disabled"
-          [class.active]="activeItem === item"
-          [attr.title]="!isSidebarExpanded ? item.label : null"
-          (click)="handleItemClick(item, $event)"
-        >
-          <span class="menu-icon" *ngIf="item.icon">
-            <i [class]="item.icon"></i>
-          </span>
-          <span class="menu-label" *ngIf="isSidebarExpanded">{{ item.label }}</span>
-          <span class="menu-badge" *ngIf="item.badge && isSidebarExpanded">{{ item.badge }}</span>
-        </a>
-
-        <!-- Menu Item with Children (button to prevent navigation) -->
-        <button
-          *ngIf="hasChildren(item)"
-          class="menu-link menu-button"
-          [class.disabled]="item.disabled"
-          [class.active]="isExpanded(item)"
-          [attr.title]="!isSidebarExpanded ? item.label : null"
-          (click)="handleItemClick(item, $event)"
-        >
-          <span class="menu-icon" *ngIf="item.icon">
-            <i [class]="item.icon"></i>
-          </span>
-          <span class="menu-label" *ngIf="isSidebarExpanded">{{ item.label }}</span>
-          <span class="menu-badge" *ngIf="item.badge && isSidebarExpanded">{{ item.badge }}</span>
-          <span class="expand-icon" *ngIf="isSidebarExpanded">
-            <i class="fas" [class.fa-chevron-down]="isExpanded(item)" [class.fa-chevron-right]="!isExpanded(item)"></i>
-          </span>
-        </button>
-
-        <!-- Menu Item with Action (no route, no children) -->
-        <button
-          *ngIf="!item.route && !hasChildren(item)"
-          class="menu-link menu-button"
-          [class.disabled]="item.disabled"
-          [attr.title]="!isSidebarExpanded ? item.label : null"
-          (click)="handleItemClick(item, $event)"
-        >
-          <span class="menu-icon" *ngIf="item.icon">
-            <i [class]="item.icon"></i>
-          </span>
-          <span class="menu-label" *ngIf="isSidebarExpanded">{{ item.label }}</span>
-          <span class="menu-badge" *ngIf="item.badge && isSidebarExpanded">{{ item.badge }}</span>
-        </button>
-
-        <!-- Submenu Items -->
-        <ul *ngIf="hasChildren(item) && isExpanded(item) && isSidebarExpanded" class="submenu">
-          <li *ngFor="let child of item.children" class="submenu-item">
+      @for (item of menuItems; track item.label) {
+        <li class="menu-item">
+          <!-- Menu Item with Route (no children) -->
+          @if (item.route && !hasChildren(item)) {
             <a
-              *ngIf="child.route"
-              [routerLink]="child.route"
-              [routerLinkActive]="['active']"
-              class="submenu-link"
-              [class.disabled]="child.disabled"
-              (click)="handleItemClick(child)"
+              [routerLink]="item.route"
+              class="menu-link"
+              [class.disabled]="item.disabled"
+              [class.active]="activeItem === item"
+              [attr.title]="!isSidebarExpanded ? item.label : null"
+              (click)="handleItemClick(item, $event)"
             >
-              <span class="menu-label">{{ child.label }}</span>
+              @if (item.icon) {
+                <span class="menu-icon">
+                  <i [class]="item.icon"></i>
+                </span>
+              }
+              @if (isSidebarExpanded) {
+                <span class="menu-label">{{ item.label }}</span>
+                @if (item.badge) {
+                  <span class="menu-badge">{{ item.badge }}</span>
+                }
+              }
             </a>
+          }
+
+          <!-- Menu Item with Children (button to prevent navigation) -->
+          @if (hasChildren(item)) {
             <button
-              *ngIf="!child.route"
-              class="submenu-link submenu-button"
-              [class.disabled]="child.disabled"
-              (click)="handleItemClick(child)"
+              class="menu-link menu-button"
+              [class.disabled]="item.disabled"
+              [class.active]="isExpanded(item)"
+              [attr.title]="!isSidebarExpanded ? item.label : null"
+              (click)="handleItemClick(item, $event)"
             >
-              <span class="menu-label">{{ child.label }}</span>
+              @if (item.icon) {
+                <span class="menu-icon">
+                  <i [class]="item.icon"></i>
+                </span>
+              }
+              @if (isSidebarExpanded) {
+                <span class="menu-label">{{ item.label }}</span>
+                @if (item.badge) {
+                  <span class="menu-badge">{{ item.badge }}</span>
+                }
+                <span class="expand-icon">
+                  <i class="fas" [class.fa-chevron-down]="isExpanded(item)" [class.fa-chevron-right]="!isExpanded(item)"></i>
+                </span>
+              }
             </button>
-          </li>
-        </ul>
-      </li>
+          }
+
+          <!-- Menu Item with Action (no route, no children) -->
+          @if (!item.route && !hasChildren(item)) {
+            <button
+              class="menu-link menu-button"
+              [class.disabled]="item.disabled"
+              [attr.title]="!isSidebarExpanded ? item.label : null"
+              (click)="handleItemClick(item, $event)"
+            >
+              @if (item.icon) {
+                <span class="menu-icon">
+                  <i [class]="item.icon"></i>
+                </span>
+              }
+              @if (isSidebarExpanded) {
+                <span class="menu-label">{{ item.label }}</span>
+                @if (item.badge) {
+                  <span class="menu-badge">{{ item.badge }}</span>
+                }
+              }
+            </button>
+          }
+
+          <!-- Submenu Items -->
+          @if (hasChildren(item) && isExpanded(item) && isSidebarExpanded) {
+            <ul class="submenu">
+              @for (child of item.children; track child.label) {
+                <li class="submenu-item">
+                  @if (child.route) {
+                    <a
+                      [routerLink]="child.route"
+                      [routerLinkActive]="['active']"
+                      class="submenu-link"
+                      [class.disabled]="child.disabled"
+                      (click)="handleItemClick(child)"
+                    >
+                      <span class="menu-label">{{ child.label }}</span>
+                    </a>
+                  } @else {
+                    <button
+                      class="submenu-link submenu-button"
+                      [class.disabled]="child.disabled"
+                      (click)="handleItemClick(child)"
+                    >
+                      <span class="menu-label">{{ child.label }}</span>
+                    </button>
+                  }
+                </li>
+              }
+            </ul>
+          }
+        </li>
+      }
     </ul>
   </nav>
 

@@ -1,13 +1,15 @@
-import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, forwardRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
+import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select';
 
-type InputType = 'text' | 'number' | 'date' | 'select' | 'file';
+type InputType = 'text' | 'number' | 'date' | 'select' | 'file' | 'password' | 'textarea';
 
 @Component({
   selector: 'app-input',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule, InputTextModule, SelectModule],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -18,7 +20,7 @@ type InputType = 'text' | 'number' | 'date' | 'select' | 'file';
   templateUrl: './input.component.html',
   styleUrl: './input.component.scss',
 })
-export class AppInputComponent implements ControlValueAccessor {
+export class AppInputComponent implements ControlValueAccessor, OnInit {
   @Input() type: InputType = 'text';
   @Input() label?: string;
   @Input() placeholder?: string;
@@ -26,10 +28,12 @@ export class AppInputComponent implements ControlValueAccessor {
   @Input() disabled: boolean = false;
   @Input() maxLength?: number;
   @Input() accept?: string;
-  @Input() width?: string = '300px';
+  @Input() width?: string = '100%';
   @Input() options?: { label: string; value: any }[] = [];
   @Input() customClass?: string;
   @Input() icon?: string;
+  @Input() error?: string;
+  @Input() isLoading: boolean = false;
 
   @Output() change = new EventEmitter<any>();
 
@@ -38,6 +42,10 @@ export class AppInputComponent implements ControlValueAccessor {
 
   ngOnInit(): void {
     this.isSelect = this.type === 'select';
+  }
+
+  get isTextarea(): boolean {
+    return this.type === 'textarea';
   }
 
   writeValue(value: any): void {
@@ -66,7 +74,8 @@ export class AppInputComponent implements ControlValueAccessor {
   }
 
   onSelectChange(event: any): void {
-    this.value = event.target.value;
+    // PrimeNG Select passes the value directly in event.value
+    this.value = event.value !== undefined ? event.value : event.target?.value;
     this.onChange(this.value);
     this.change.emit(this.value);
   }
@@ -79,7 +88,7 @@ export class AppInputComponent implements ControlValueAccessor {
   }
 
   get inputClass(): string {
-    const classes = ['app-input'];
+    const classes = ['app-input', 'w-100'];
 
     if (this.isSelect) {
       classes.push('app-select');

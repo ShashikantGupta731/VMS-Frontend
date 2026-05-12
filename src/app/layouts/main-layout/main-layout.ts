@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Header } from '../../shared/components/header/header';
-import { Sidebar, SidebarMenuItem } from '../../shared/components/sidebar/sidebar';
+import { Header } from '@shared/components/header/header';
+import { Sidebar, SidebarMenuItem } from '@shared/components/sidebar/sidebar';
 import { RouterModule } from '@angular/router';
-import { AuthService, User } from '../../core/services/auth';
+import { AuthService, User } from '@core/services/auth';
 
 @Component({
   selector: 'app-main-layout',
@@ -11,39 +11,147 @@ import { AuthService, User } from '../../core/services/auth';
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.scss',
 })
-export class MainLayout implements OnInit {
+export class MainLayout {
+  private authService = inject(AuthService);
   isSidebarCollapsed: boolean = true;
   isSidebarHidden: boolean = false;
-  currentUser: User | null = null;
-  menuItems: SidebarMenuItem[] = [
-    {
-      label: 'Masters',
-      icon: 'fas fa-database',
-      children: [
-        { label: 'Offices', route: '/master/office', icon: 'fas fa-building' },
-        { label: 'Models', route: '/models', icon: 'fas fa-car' },
-        { label: 'Designations', route: '/designations', icon: 'fas fa-user-tie' }
-      ]
-    },
-    { label: 'Vehicles', route: '/vehicle', icon: 'fas fa-truck' },
-    { label: 'Bills ready for IFMS', route: '/bill-integration', icon: 'fas fa-file-invoice' },
-    { label: 'Bills to be Discarded', route: '/pending-bill-integration', icon: 'fas fa-trash-alt' },
-    { label: 'Treasury (IFMS) Claims', route: '/ifms-claims', icon: 'fas fa-coins' },
-    { label: 'Non-Treasury Claims', route: '/non-ifms-claims', icon: 'fas fa-money-bill' },
-    { label: 'Vehicle purchased against Condemned Vehicle', route: '/vehicle/new-vehicle-details', icon: 'fas fa-exchange-alt' },
-    { label: 'Amount deposited against Condemned Vehicle', route: '/vehicle/condemned-vehicle-details', icon: 'fas fa-piggy-bank' },
+  currentUser = this.authService.currentUser;
+  menuItems = computed(() => {
+    const role = this.currentUser()?.roles?.[0] || 'GUEST';
+    return this.buildMenuForRole(role);
+  });
 
-  ];
+  private buildMenuForRole(role: string): SidebarMenuItem[] {
+    const commonItems = [
+      { label: 'Vehicles', route: '/vehicle', icon: 'fas fa-truck' }
+    ];
 
-  constructor(private authService: AuthService) {
-    this.authService.currentUser$.subscribe(user => {
-      this.currentUser = user;
-    });
+    switch (role) {
+      case 'DDO': // IFMS Bill Clerk / Data Entry User
+        return [
+          { label: 'Vehicles', route: '/vehicle', icon: 'fas fa-car' },
+          {
+            label: 'Masters',
+            icon: 'fas fa-database',
+            children: [
+              { label: 'Offices', route: '/master/office', icon: 'fas fa-building' },
+              { label: 'Models', route: '/models', icon: 'fas fa-car' },
+              { label: 'Designations', route: '/designations', icon: 'fas fa-user-tie' }
+            ]
+          },
+          {
+            label: 'Bills',
+            icon: 'fas fa-file-invoice-dollar',
+            children: [
+              { label: 'Fuel Bills', route: '/bill-voucher', icon: 'fas fa-gas-pump' },
+              { label: 'Maintenance Bills', route: '/maintenance-voucher', icon: 'fas fa-tools' },
+              { label: 'Hired Vehicle Bills', route: '/hired-vehicle-voucher', icon: 'fas fa-taxi' },
+              { label: 'Contractual Bills', route: '/contractual-requisite-vehicle-voucher', icon: 'fas fa-file-contract' }
+            ]
+          },
+          {
+            label: 'IFMS Integration',
+            icon: 'fas fa-network-wired',
+            children: [
+              { label: 'Bills ready for IFMS', route: '/bill-integration', icon: 'fas fa-file-export' },
+              { label: 'Bills to be Discarded', route: '/pending-bill-integration', icon: 'fas fa-trash-alt' }
+            ]
+          },
+          {
+            label: 'Claims',
+            icon: 'fas fa-coins',
+            children: [
+              { label: 'Treasury (IFMS) Claims', route: '/ifms-claims', icon: 'fas fa-university' },
+              { label: 'Non-Treasury Claims', route: '/non-ifms-claims', icon: 'fas fa-money-bill-wave' }
+            ]
+          },
+          {
+            label: 'Condemned Vehicles',
+            icon: 'fas fa-car-crash',
+            children: [
+              { label: 'Register Replacement', route: '/vehicle/new-vehicle-details', icon: 'fas fa-plus' },
+              { label: 'Amount Deposited', route: '/vehicle/condemned-vehicle-details', icon: 'fas fa-receipt' }
+            ]
+          }
+        ];
+      case 'ADMN': // System Administrator
+        return [
+          {
+            label: 'Masters',
+            icon: 'fas fa-database',
+            children: [
+              { label: 'Officers', route: '/master/officer', icon: 'fas fa-user-tie' },
+              { label: 'Models', route: '/models', icon: 'fas fa-car' },
+              { label: 'Designations', route: '/designations', icon: 'fas fa-user-tie' }
+            ]
+          },
+          { label: 'Vehicle Verification', route: '/verify-vehicles', icon: 'fas fa-check-double' },
+          { label: 'Odometer Correction', route: '/odometer-correction', icon: 'fas fa-tachometer-alt' },
+          { label: 'Update Vehicle Details', route: '/vehicle/update-vehicle-details', icon: 'fas fa-edit' },
+          { label: 'User Management', route: '/user-management', icon: 'fas fa-users-cog' },
+          {
+            label: 'Logs',
+            icon: 'fas fa-clipboard-list',
+            children: [
+              { label: 'Activity Logs', route: '/activity-logs', icon: 'fas fa-history' },
+              { label: 'Error Logs', route: '/error-logs', icon: 'fas fa-exclamation-triangle' }
+            ]
+          },
+          { label: 'Reports', route: '/reports', icon: 'fas fa-chart-bar' },
+          ...commonItems,
+        ];
+      case 'HOD':
+      case 'DCL':
+        return [
+          {
+            label: 'Masters',
+            icon: 'fas fa-database',
+            children: [
+              { label: 'Offices', route: '/master/office', icon: 'fas fa-building' },
+              { label: 'Models', route: '/models', icon: 'fas fa-car' }
+            ]
+          },
+          { label: 'User Management', route: '/user-management', icon: 'fas fa-users' },
+          { label: 'Reports', route: '/reports', icon: 'fas fa-chart-line' },
+          ...commonItems,
+        ];
+      case 'SEC':
+        return [
+          { label: 'Vehicle Status Update', route: '/vehicle/status-update', icon: 'fas fa-sync' },
+          { label: 'User Management', route: '/user-management', icon: 'fas fa-users' },
+          { label: 'Reports', route: '/reports', icon: 'fas fa-chart-line' },
+          ...commonItems,
+        ];
+      case 'FD':
+        return [
+          { label: 'Reports', route: '/reports', icon: 'fas fa-chart-bar' },
+          { label: 'Vehicle Status Update', route: '/vehicle/status-update', icon: 'fas fa-sync' },
+          ...commonItems,
+        ];
+      case 'NDOF':
+        return [
+          { label: 'Claim Verification', route: '/claim-verification', icon: 'fas fa-clipboard-check' },
+          { label: 'Reports', route: '/reports', icon: 'fas fa-chart-bar' },
+          ...commonItems,
+        ];
+      case 'PPOF':
+        return [
+          { label: 'Filled Fuel Details', route: '/ppo', icon: 'fas fa-gas-pump' },
+          { label: 'Record Filling', route: '/ppo/filling', icon: 'fas fa-plus-circle' },
+          ...commonItems,
+        ];
+      case 'GUEST':
+        return [
+          { label: 'Fuel Consumption Detail', route: '/guest-report', icon: 'fas fa-search' },
+          ...commonItems,
+        ];
+      default:
+        return commonItems;
+    }
   }
 
-  ngOnInit(): void {
-    // Component initialization
-  }
+  constructor() {}
+
 
   onSidebarToggle(): void {
     this.isSidebarHidden = !this.isSidebarHidden;

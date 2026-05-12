@@ -1,77 +1,125 @@
 <div class="app-input-wrapper">
-  <label *ngIf="label" class="app-input-label">
-    {{ label }}
-    <span *ngIf="required" class="required">*</span>
-  </label>
+  @if (label) {
+    <label class="app-input-label">
+      {{ label }}
+      @if (required) {
+        <span class="required">*</span>
+      }
+    </label>
+  }
 
-  <div class="input-wrapper" *ngIf="icon">
-    <i [class]="icon" class="input-icon"></i>
-    <input
-      *ngIf="!isSelect && type !== 'file'"
-      [type]="type"
-      [class]="inputClass"
-      [placeholder]="placeholder"
-      [value]="value"
-      [disabled]="disabled"
-      [attr.maxlength]="maxLength"
-      [style.width]="width"
-      (input)="onInputChange($event)"
-    />
+  @if (icon) {
+    <div class="input-wrapper">
+      <i [class]="icon" class="input-icon" style="z-index: 10;"></i>
+      
+      @if (!isSelect && type !== 'file') {
+        <input
+          pInputText
+          [type]="type"
+          [class]="inputClass"
+          [placeholder]="placeholder || ''"
+          [(ngModel)]="value"
+          [disabled]="disabled"
+          [attr.maxlength]="maxLength"
+          [style.width]="width"
+          (input)="onInputChange($event)"
+        />
+      }
 
-    <select
-      *ngIf="isSelect"
-      [class]="inputClass"
-      [disabled]="disabled"
-      [style.width]="width"
-      (change)="onSelectChange($event)"
-    >
-      <option value="">{{ placeholder || 'Select' }}</option>
-      <option *ngFor="let option of options" [value]="option.value">{{ option.label }}</option>
-    </select>
+      @if (isSelect) {
+        <div class="position-relative">
+          <p-select
+            [options]="options || []"
+            optionLabel="label"
+            optionValue="value"
+            [placeholder]="placeholder || 'Select'"
+            [(ngModel)]="value"
+            [disabled]="disabled || isLoading"
+            [style]="{'width': width}"
+            [styleClass]="inputClass"
+            (onChange)="onSelectChange($event)"
+            appendTo="body">
+          </p-select>
+          @if (isLoading) {
+            <div class="select-loading-spinner" style="position: absolute; right: 30px; top: 50%; transform: translateY(-50%); z-index: 10;">
+              <i class="pi pi-spin pi-spinner text-primary"></i>
+            </div>
+          }
+        </div>
+      }
 
-    <input
-      *ngIf="type === 'file'"
-      type="file"
-      [class]="inputClass"
-      [disabled]="disabled"
-      [accept]="accept"
-      [style.width]="width"
-      (change)="onFileChange($event)"
-    />
-  </div>
+      @if (type === 'file') {
+        <input
+          type="file"
+          [class]="inputClass"
+          [disabled]="disabled"
+          [accept]="accept || ''"
+          [style.width]="width"
+          (change)="onFileChange($event)"
+        />
+      }
+    </div>
+  }
 
-  <ng-container *ngIf="!icon">
-    <input
-      *ngIf="!isSelect && type !== 'file'"
-      [type]="type"
-      [class]="inputClass"
-      [placeholder]="placeholder"
-      [value]="value"
-      [disabled]="disabled"
-      [attr.maxlength]="maxLength"
-      [style.width]="width"
-      (input)="onInputChange($event)"
-    />
+  @if (!icon) {
+    <ng-container>
+      @if (!isSelect && type !== 'file' && !isTextarea) {
+        <input
+          pInputText
+          [type]="type"
+          [class]="inputClass"
+          [placeholder]="placeholder || ''"
+          [(ngModel)]="value"
+          [disabled]="disabled"
+          [attr.maxlength]="maxLength"
+          [style.width]="width"
+          (input)="onInputChange($event)"
+        />
+      }
 
-    <select
-      *ngIf="isSelect"
-      [class]="inputClass"
-      [disabled]="disabled"
-      [style.width]="width"
-      (change)="onSelectChange($event)"
-    >
-      <option value="">{{ placeholder || 'Select' }}</option>
-      <option *ngFor="let option of options" [value]="option.value">{{ option.label }}</option>
-    </select>
+      @if (isTextarea) {
+        <textarea
+          pInputText
+          [class]="inputClass"
+          [placeholder]="placeholder || ''"
+          [(ngModel)]="value"
+          [disabled]="disabled"
+          [attr.maxlength]="maxLength"
+          [style.width]="width"
+          rows="3"
+          (input)="onInputChange($event)"
+        ></textarea>
+      }
 
-    <input
-      *ngIf="type === 'file'"
-      type="file"
-      [class]="inputClass"
-      [disabled]="disabled"
-      [accept]="accept"
-      [style.width]="width"
-      (change)="onFileChange($event)"
-    />
-  </ng-container>
+      @if (isSelect) {
+        <p-select
+          [options]="options || []"
+          optionLabel="label"
+          optionValue="value"
+          [placeholder]="placeholder || 'Select'"
+          [(ngModel)]="value"
+          [disabled]="disabled"
+          [style]="{'width': width}"
+          [styleClass]="inputClass"
+          (onChange)="onSelectChange($event)"
+          appendTo="body">
+        </p-select>
+      }
+
+      @if (type === 'file') {
+        <input
+          type="file"
+          [class]="inputClass"
+          [disabled]="disabled"
+          [accept]="accept || ''"
+          [style.width]="width"
+          (change)="onFileChange($event)"
+        />
+      }
+    </ng-container>
+  }
+
+  @if (error) {
+    <small class="error-text text-danger mt-1 d-block">{{ error }}</small>
+  }
 </div>

@@ -1,0 +1,11 @@
+<app-card>
+  <app-data-table
+    [columns]="columns"
+    [data]="maintenanceBills()"
+    [isLoading]="isLoading()"
+    emptyMessage="No Record Found"
+  ></app-data-table>
+  @if (error()) {
+    <div class="error-message">{{ error() }}</div>
+  }
+</app-card>

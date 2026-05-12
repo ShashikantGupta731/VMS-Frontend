@@ -1,9 +1,4 @@
-<button
-  [class]="buttonClass"
-  [disabled]="disabled || loading"
-  (click)="handleClick($event)"
->
-  <span *ngIf="loading" class="app-spinner sm me-2"></span>
-  <span *ngIf="icon" class="icon">{{ icon }}</span>
-  <span class="label">{{ label }}</span>
-</button>
+<p-button [type]="type" [label]="label" [icon]="icon || ''" [severity]="primeSeverity" [size]="primeSize"
+  [variant]="isOutlined ? 'outlined' : undefined"
+  [disabled]="disabled || loading || isLoading" [loading]="loading || isLoading" [styleClass]="customClass" (onClick)="handleClick($event)">
+</p-button>

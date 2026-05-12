@@ -111,4 +111,10 @@ export class Sidebar {
   get isSidebarExpanded(): boolean {
     return !this.isCollapsed || this.isSidebarHovered;
   }
+
+  getFirstName(fullName: string): string {
+    if (!fullName) return '';
+    const names = fullName.trim().split(' ');
+    return names[0] || '';
+  }
 }

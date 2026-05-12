@@ -1,0 +1,46 @@
+<div class="designations-container">
+  <app-card>
+  <!-- Page Header -->
+  <div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h1 class="page-title h4 fw-bold mb-0">Designations</h1>
+      </div>
+      <app-btn label="← Back" variant="dark-blue" (click)="onGoBackToHome()"></app-btn>
+    </div>
+  </div>
+
+  
+    <!-- Add/Search Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div class="d-flex gap-2">
+        <!-- Add Search input if needed later -->
+      </div>
+      <div class="search-box">
+        <i class="pi pi-search"></i>
+        <input type="text" placeholder="Search by Designation / Department" class="form-control d-inline-block w-auto ms-2">
+      </div>
+    </div>
+
+    <!-- Table Section -->
+    <div class="table-responsive">
+      <app-data-table
+        [columns]="tableColumns"
+        [data]="paginatedDesignations()"
+        [isLoading]="isLoading()"
+        [emptyMessage]="'No designations found'"
+      ></app-data-table>
+    </div>
+
+    <!-- Pagination -->
+    @if (allDesignations().length > 0) {
+      <app-pagination
+        [currentPage]="currentPage()"
+        [totalPages]="totalPages()"
+        [totalItems]="totalItems()"
+        [itemsPerPage]="itemsPerPage()"
+        (pageChange)="onPageChange($event)"
+      ></app-pagination>
+    }
+  </app-card>
+</div>

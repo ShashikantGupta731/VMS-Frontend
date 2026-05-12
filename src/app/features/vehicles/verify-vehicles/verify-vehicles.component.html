@@ -1,0 +1,47 @@
+<div class="verify-vehicles-container">
+  <!-- Single Card with all sections -->
+  <app-card>
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="header-left">
+        <h1 class="page-title">Verify Vehicles</h1>
+      </div>
+      <div class="header-right">
+        <app-btn label="Go back to Home" routerLink="/vehicle" variant="secondary"></app-btn>
+      </div>
+    </div>
+
+    <!-- Status Filter Section -->
+    <div class="status-filter-section">
+      <div class="filter-label">Filter by Status:</div>
+      <div class="status-buttons">
+        @for (option of statusOptions; track option.value) {
+          <app-btn
+            [label]="option.label"
+            [variant]="selectedStatus() === option.value ? 'primary' : 'secondary'"
+            [customClass]="selectedStatus() === option.value ? 'active-status' : ''"
+            (click)="onStatusChange(option.value)"
+          ></app-btn>
+        }
+      </div>
+    </div>
+
+    <!-- Table Section -->
+    <div class="table-section">
+      <app-data-table
+        [columns]="tableColumns"
+        [data]="getFormattedVehicles()"
+        [actions]="getActionsForStatus(selectedStatus())"
+        [isLoading]="isLoading()"
+        [emptyMessage]="'No Record Found'"
+      ></app-data-table>
+    </div>
+  </app-card>
+
+  <!-- Vehicle Details Modal -->
+  <app-vehicle-details-modal
+    [isVisible]="isDetailsModalVisible"
+    [vehicleNumber]="selectedVehicleNumber"
+    (close)="closeDetailsModal()"
+  ></app-vehicle-details-modal>
+</div>

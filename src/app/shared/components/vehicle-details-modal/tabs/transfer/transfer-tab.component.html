@@ -1,0 +1,37 @@
+<app-card>
+  @if (isLoading()) {
+    <div>Loading...</div>
+  }
+  @if (error()) {
+    <div class="error-message">{{ error() }}</div>
+  }
+  @if (transferHistory().length > 0 && !isLoading()) {
+    <div>
+      @for (transfer of transferHistory(); track $index) {
+        <div class="transfer-item">
+          <div class="transfer-header">Transfer #{{ $index + 1 }}</div>
+          <app-key-value-list
+            [items]="[
+              { label: 'Vehicle Transferred On', value: transfer.vehicleTransferredOn },
+              { label: 'Verified On', value: transfer.verifiedOn },
+              { label: 'Previous Office', value: transfer.previousOffice },
+              { label: 'Previous Department', value: transfer.previousDepartment },
+              { label: 'Allocation Type', value: transfer.allocationType },
+              { label: 'Officer Name', value: transfer.officerName },
+              { label: 'Officer Designation', value: transfer.officerDesignation },
+              { label: 'Remarks', value: transfer.remarks, isMultiline: true },
+              { label: 'Previous DDO', value: transfer.previousDdo },
+              { label: 'New DDO', value: transfer.newDdo }
+            ]"
+            [columns]="2"
+          ></app-key-value-list>
+        </div>
+      }
+    </div>
+  }
+  @if (transferHistory().length === 0 && !isLoading() && !error()) {
+    <div class="empty-state">
+      No Record Found
+    </div>
+  }
+</app-card>

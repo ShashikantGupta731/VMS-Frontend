@@ -19,3 +19,27 @@ html, body, app-root {
   background-attachment: fixed !important;
   min-height: 100vh !important;
 }
+
+.p-button.btn-dark-blue-hover,
+.btn-dark-blue-hover {
+  background: #1a237e !important;
+  color: #fff !important;
+  border: 1px solid #1a237e !important;
+}
+
+.p-button.btn-dark-blue-hover:hover:not(:disabled),
+.btn-dark-blue-hover:hover:not(:disabled) {
+  background: #fff !important;
+  color: #1a237e !important;
+  border: 1px solid #1a237e !important;
+}
+
+.p-button.btn-dark-blue-hover .p-button-label {
+  color: #fff !important;
+}
+
+.p-button.btn-dark-blue-hover:hover:not(:disabled) .p-button-label {
+  color: #1a237e !important;
+}
+
+
