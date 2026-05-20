@@ -5,7 +5,7 @@
       <h3 class="fw-bold text-dark m-0">Add Maintenance Voucher</h3>
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb m-0 bg-transparent p-0">
-          <li class="breadcrumb-item text-primary"><a routerLink="/dashboard">Vehicle</a></li>
+          <li class="breadcrumb-item text-primary"><a routerLink="/vehicle">Vehicle</a></li>
           <li class="breadcrumb-item text-primary"><a routerLink="/maintenance-voucher">Maintenance Vouchers</a></li>
           <li class="breadcrumb-item active">Add Maintenance Vouchers</li>
         </ol>
@@ -14,10 +14,14 @@
   </div>
 
   <!-- Warning Banner -->
-  <div class="row mb-4">
-    <div class="col-12 text-center">
-      <h5 class="text-danger fw-bold mb-2">Unverified Vehicle's Number will not be shown in Vehicle Number List.</h5>
-      <p class="small text-muted m-0">
+  <div class="row">
+    <div class="col-12">
+      <div class="marquee-container">
+        <div class="marquee-text">
+          <h5 class="text-danger fw-bold m-0">Unverified Vehicle's Number will not be shown in Vehicle Number List.</h5>
+        </div>
+      </div>
+      <p class="small text-muted text-center mb-4">
         <span class="text-danger fw-bold">In case, entered Maintenance is above the allowed limit, please ensure it follows the format given in the following document. </span>
         <a href="#" class="text-primary text-decoration-none">Click here to open document.</a>
       </p>
@@ -27,8 +31,8 @@
   <form [formGroup]="voucherForm" (ngSubmit)="addBillAndSaveAsDraft()">
     <!-- Section 1: Voucher and Sanction Details -->
     <div class="card border-0 mb-4">
-      <div class="card-header bg-transparent border-bottom-primary px-0 mb-3">
-        <h6 class="text-primary fw-bold mb-1">Add Voucher and Sanction Details DDO</h6>
+      <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+        <h6 class="text-dark-blue fw-bold mb-1">Add Voucher and Sanction Details DDO</h6>
       </div>
       <div class="card-body p-0">
         <div class="row mb-3">
@@ -82,8 +86,8 @@
 
     <!-- Section 2: Add Vehicle Bills -->
     <div class="card border-0 mb-4">
-      <div class="card-header bg-transparent border-bottom-primary px-0 mb-3">
-        <h6 class="text-primary fw-bold mb-1">Add Vehicle Bills</h6>
+      <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+        <h6 class="text-dark-blue fw-bold mb-1">Add Vehicle Bills</h6>
       </div>
       <div class="card-body p-0">
         <div class="row mb-3">
@@ -121,7 +125,7 @@
 
         <div class="row mb-3">
           <div class="col-12">
-            <app-input label="Details of Repair" formControlName="repairDetails" placeholder="Provide Detailed Information about the Repair"></app-input>
+            <app-input label="Details of Repair" formControlName="details" placeholder="Provide Detailed Information about the Repair"></app-input>
           </div>
         </div>
 
@@ -132,8 +136,11 @@
           <app-input type="file" formControlName="sanctionPermissionFile" accept=".pdf"></app-input>
         </div>
 
-        <div class="text-end mb-4">
-          <app-btn type="submit" label="Add Bill & Save as Draft" variant="primary" [disabled]="voucherForm.invalid || isLoading()"></app-btn>
+        <div class="text-center mb-4 d-flex justify-content-center gap-2">
+            @if (editId()) {
+              <app-btn type="button" label="Cancel" variant="outline-secondary" size="sm" (click)="resetBillFields()"></app-btn>
+            }
+            <app-btn type="submit" label="{{ editId() ? 'Update Bill' : 'Add Bill & Save as Draft' }}" variant="dark-blue" size="sm" icon="pi pi-save" [disabled]="voucherForm.invalid || isLoading()"></app-btn>
         </div>
       </div>
     </div>
@@ -154,19 +161,17 @@
   <div class="row mt-4 mb-5">
     <div class="col-md-4 offset-md-4 text-center">
       <label class="fw-bold small text-muted d-block mb-1">Total Bill Amount</label>
-      <div class="bg-light p-2 rounded mb-3">
-        <h5 class="m-0 fw-bold">₹ {{totalBillAmount | number:'1.2-2'}}</h5>
+      <div class="bg-light p-4 rounded mb-4 shadow-sm border border-dark-blue-subtle">
+        <h3 class="m-0 fw-bold text-dark-blue">₹ {{totalBillAmount | number:'1.2-2'}}</h3>
       </div>
-      <app-btn label="Lock Bills" variant="primary" size="lg" [disabled]="(draftedBillsResource.value() || []).length === 0 || isLoading()" (click)="lockBills()"></app-btn>
+      <app-btn 
+            label="Lock Bill" 
+            variant="dark-blue" 
+            size="sm" 
+            icon="pi pi-lock"
+            [disabled]="(draftedBillsResource.value() || []).length === 0 || voucherForm.invalid || isLoading()" 
+            (click)="lockBills()">
+      </app-btn>
     </div>
   </div>
 </div>
-
-<style>
-  .border-bottom-primary {
-    border-bottom: 2px solid #6f42c1 !important;
-  }
-  .breadcrumb-item + .breadcrumb-item::before {
-    content: "/";
-  }
-</style>

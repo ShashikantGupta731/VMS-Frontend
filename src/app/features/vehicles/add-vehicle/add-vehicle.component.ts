@@ -138,7 +138,7 @@ export interface VehicleFormData {
 
   standalone: true,
 
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, AppCardComponent, AppButtonComponent, AppInputComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, AppButtonComponent, AppInputComponent],
 
   templateUrl: './add-vehicle.component.html',
 

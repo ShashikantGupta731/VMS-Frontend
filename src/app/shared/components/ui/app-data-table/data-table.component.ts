@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewEncapsulation, DoCheck } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
+import { TooltipModule } from 'primeng/tooltip';
 
 export interface TableColumn {
   key: string;
@@ -13,22 +14,22 @@ export interface TableColumn {
 }
 
 export interface TableAction {
-  label: string;
-  icon?: string;
+  label: string | ((row: any) => string);
+  icon?: string | ((row: any) => string);
   action: (row: any) => void;
   disabled?: (row: any) => boolean;
-  variant?: 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info';
+  variant?: 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | ((row: any) => string);
 }
 
 @Component({
   selector: 'app-data-table',
   standalone: true,
-  imports: [CommonModule, TableModule],
+  imports: [CommonModule, TableModule, TooltipModule],
   templateUrl: './data-table.component.html',
   styleUrl: './data-table.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
-export class AppDataTableComponent {
+export class AppDataTableComponent implements DoCheck {
   @Input() columns: TableColumn[] = [];
   @Input() data: any[] = [];
   @Input() sortable: boolean = false;
@@ -48,6 +49,17 @@ export class AppDataTableComponent {
 
   // For PrimeNG selection
   selectedRows: any[] = [];
+
+  ngDoCheck(): void {
+    if (this.selectable && this.rowSelected) {
+      const parentSelectedRows = this.data.filter(row => this.rowSelected!(row));
+      // Only update if lengths differ or items differ to avoid infinite loop
+      if (this.selectedRows.length !== parentSelectedRows.length || 
+          !this.selectedRows.every(r => parentSelectedRows.includes(r))) {
+        this.selectedRows = [...parentSelectedRows];
+      }
+    }
+  }
 
   onSort(event: any): void {
     if (!this.sortable) return;
@@ -92,5 +104,17 @@ export class AppDataTableComponent {
 
   isActionDisabled(action: TableAction, row: any): boolean {
     return action.disabled ? action.disabled(row) : false;
+  }
+
+  getActionLabel(action: TableAction, row: any): string {
+    return typeof action.label === 'function' ? action.label(row) : action.label;
+  }
+
+  getActionIcon(action: TableAction, row: any): string | undefined {
+    return typeof action.icon === 'function' ? action.icon(row) : action.icon;
+  }
+
+  getActionVariant(action: TableAction, row: any): string {
+    return typeof action.variant === 'function' ? action.variant(row) : (action.variant || 'default');
   }
 }

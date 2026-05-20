@@ -36,12 +36,14 @@
   border: 1px solid #e0e0e0;
   color: $text-dark;
   font-size: $font-size-base;
-  padding: 0 20px; /* Removed top/bottom padding */
+  padding: 0 20px;
+  /* Removed top/bottom padding */
   border-radius: 50px;
   outline: none;
   transition: all 0.3s ease;
   height: 35px;
-  line-height: 33px; /* Vertically centers text in 35px height */
+  line-height: 33px;
+  /* Vertically centers text in 35px height */
 
   &:focus {
     background: #fff;
@@ -83,18 +85,23 @@
   background-position: right 16px center;
   padding-right: 40px;
 }
+
 /* File Input Styling */
 input[type="file"] {
   background: #f8f9fa;
   border: 1px solid #e0e0e0;
   color: $text-dark;
-  font-size: $font-size-base;
-  padding: 8px 20px;
+  font-size: 13px;
+  /* Slightly smaller for file inputs */
+  padding: 0 10px 0 0;
+  /* No left padding, use button margin instead */
   border-radius: 50px;
   outline: none;
   transition: all 0.3s ease;
-  height: auto;
-  line-height: normal;
+  height: 35px;
+  /* Match standard input height */
+  display: flex;
+  align-items: center;
   cursor: pointer;
 
   &:focus {
@@ -113,11 +120,14 @@ input[type="file"] {
     background: #1a237e;
     color: #fff;
     border: 1px solid #1a237e;
-    padding: 6px 16px;
+    padding: 1px 5px;
     border-radius: 20px;
-    margin-right: 10px;
+    margin-right: 15px;
+    margin-left: 10px;
+    /* Space from the left rounded border */
     cursor: pointer;
-    font-size: 12px;
+    font-size: 11px;
+    /* Smaller font */
     font-weight: 500;
     transition: all 0.3s ease;
     box-sizing: border-box;
@@ -147,4 +157,3 @@ input[type="file"] {
   display: flex;
   align-items: center;
 }
-

@@ -43,10 +43,12 @@ export class MainLayout {
             label: 'Bills',
             icon: 'fas fa-file-invoice-dollar',
             children: [
-              { label: 'Fuel Bills', route: '/bill-voucher', icon: 'fas fa-gas-pump' },
+              { label: 'All Vouchers', route: '/bill-voucher', icon: 'fas fa-th-list' },
+              { label: 'Fuel Bills', route: '/fuel-claims', icon: 'fas fa-gas-pump' },
               { label: 'Maintenance Bills', route: '/maintenance-voucher', icon: 'fas fa-tools' },
               { label: 'Hired Vehicle Bills', route: '/hired-vehicle-voucher', icon: 'fas fa-taxi' },
-              { label: 'Contractual Bills', route: '/contractual-requisite-vehicle-voucher', icon: 'fas fa-file-contract' }
+              { label: 'Contractual Bills', route: '/contractual-requisite-vehicle-voucher', icon: 'fas fa-file-contract' },
+              { label: 'Miscellaneous Bills', route: '/miscellaneous-store-voucher', icon: 'fas fa-box-open' }
             ]
           },
           {
@@ -86,6 +88,7 @@ export class MainLayout {
             ]
           },
           { label: 'Vehicle Verification', route: '/verify-vehicles', icon: 'fas fa-check-double' },
+          { label: 'Claim Verification', route: '/claim-verification', icon: 'fas fa-clipboard-check' },
           { label: 'Odometer Correction', route: '/odometer-correction', icon: 'fas fa-tachometer-alt' },
           { label: 'Update Vehicle Details', route: '/vehicle/update-vehicle-details', icon: 'fas fa-edit' },
           { label: 'User Management', route: '/user-management', icon: 'fas fa-users-cog' },

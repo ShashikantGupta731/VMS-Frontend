@@ -1,13 +1,18 @@
 <div class="vehicle-details-container">
   <app-card>
-    <!-- Header Section -->
-    <div class="header-section">
-      <div class="header-left">
-        <h1 class="page-title">Vehicle Management System</h1>
-        <div class="vehicle-count">No. Of Vehicle: {{ totalVehicleCount() }}</div>
-      </div>
-      <div class="header-right">
-        <app-btn label="Go back to Home" routerLink="/vehicle" variant="secondary"></app-btn>
+    <!-- Page Header -->
+    <div class="page-header mb-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="page-title h4 fw-bold mb-0">Vehicle Management System</h1>
+          <div class="text-muted small mt-1">No. Of Vehicle: {{ totalVehicleCount() }}</div>
+        </div>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a [routerLink]="['/vehicle']">Vehicle</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Vehicle Details</li>
+          </ol>
+        </nav>
       </div>
     </div>
 
@@ -20,11 +25,11 @@
           [(ngModel)]="searchTerm"
           width="300px"
         ></app-input>
-        <app-btn label="Search" (click)="onSearch()"></app-btn>
+        <app-btn label="Search" (click)="onSearch()" variant="dark-blue" size="sm"></app-btn>
       </div>
       <div class="action-buttons">
-        <app-btn label="Export to PDF" (click)="onExportPdf()"></app-btn>
-        <app-btn label="Print" (click)="onPrint()"></app-btn>
+        <app-btn label="Export to PDF" (click)="onExportPdf()" variant="dark-blue" size="sm" icon="pi pi-file-pdf"></app-btn>
+        <app-btn label="Print" (click)="onPrint()" variant="dark-blue" size="sm" icon="pi pi-print"></app-btn>
       </div>
     </div>
 
@@ -41,99 +46,195 @@
     </div>
 
     <!-- Details Section -->
-    @if (vehicleDetails() || isLoading()) {
-      <div class="details-section">
-        <!-- Loading State -->
-        @if (isLoading()) {
-          <div class="loading-state">
-            <div class="spinner"></div>
-            <p>Loading...</p>
-          </div>
-        }
+    <div class="details-section">
+      <!-- Loading State -->
+      @if (isLoading()) {
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Loading...</p>
+        </div>
+      }
 
-        <!-- Empty State -->
-        @if (!vehicleDetails() && !isLoading()) {
-          <div class="empty-state">
-            <p>No vehicle details found</p>
-          </div>
-        }
+      <!-- Empty State -->
+      @else if (totalVehicleCount() === 0) {
+        <div class="empty-state">
+          <p>No vehicle details found</p>
+        </div>
+      }
 
-        <!-- Vehicle Details -->
-        @if (vehicleDetails() && !isLoading()) {
-          <div class="vehicle-details-content">
-            <div class="details-grid">
-              <!-- Office Details -->
+      <!-- Vehicle Details -->
+      @else if (vehicleDetails()) {
+        <div class="vehicle-details-content">
+          <div class="details-grid">
+            <!-- Office Details -->
+            <div>
+              <h5 class="section-title mb-3">Office Details</h5>
               <div class="detail-section">
-                <app-key-value-list
-                  [items]="officeDetails()"
-                  [columns]="2"
-                  sectionTitle="Office Details"
-                ></app-key-value-list>
+                <table class="details-table">
+                  <thead>
+                    <tr>
+                      <th>FIELD NAME</th>
+                      <th>DETAILS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (item of officeDetails(); track item.label) {
+                      <tr>
+                        <td class="field-label">{{ item.label }}</td>
+                        <td class="field-value">{{ formatValue(item) }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
               </div>
+            </div>
 
-              <!-- Allocation Details -->
+            <!-- Allocation Details -->
+            <div>
+              <h5 class="section-title mb-3">Allocation Details</h5>
               <div class="detail-section">
-                <app-key-value-list
-                  [items]="allocationDetails()"
-                  [columns]="2"
-                  sectionTitle="Allocation Details"
-                ></app-key-value-list>
+                <table class="details-table">
+                  <thead>
+                    <tr>
+                      <th>FIELD NAME</th>
+                      <th>DETAILS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (item of allocationDetails(); track item.label) {
+                      <tr>
+                        <td class="field-label">{{ item.label }}</td>
+                        <td class="field-value">{{ formatValue(item) }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
               </div>
+            </div>
 
-              <!-- Driver Details -->
+            <!-- Driver Details -->
+            <div>
+              <h5 class="section-title mb-3">Driver Details</h5>
               <div class="detail-section">
-                <app-key-value-list
-                  [items]="driverDetails()"
-                  [columns]="2"
-                  sectionTitle="Driver Details"
-                ></app-key-value-list>
+                <table class="details-table">
+                  <thead>
+                    <tr>
+                      <th>FIELD NAME</th>
+                      <th>DETAILS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (item of driverDetails(); track item.label) {
+                      <tr>
+                        <td class="field-label">{{ item.label }}</td>
+                        <td class="field-value">{{ formatValue(item) }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
               </div>
+            </div>
 
-              <!-- Vehicle Details -->
+            <!-- Vehicle Details -->
+            <div>
+              <h5 class="section-title mb-3">Vehicle Details</h5>
               <div class="detail-section">
-                <app-key-value-list
-                  [items]="vehicleDetailsKvItems()"
-                  [columns]="2"
-                  sectionTitle="Vehicle Details"
-                ></app-key-value-list>
+                <table class="details-table">
+                  <thead>
+                    <tr>
+                      <th>FIELD NAME</th>
+                      <th>DETAILS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (item of vehicleDetailsKvItems(); track item.label) {
+                      <tr>
+                        <td class="field-label">{{ item.label }}</td>
+                        <td class="field-value">{{ formatValue(item) }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
               </div>
+            </div>
 
-              <!-- Usage & Status -->
+            <!-- Usage & Status -->
+            <div>
+              <h5 class="section-title mb-3">Usage & Status</h5>
               <div class="detail-section">
-                <app-key-value-list
-                  [items]="usageStatusDetails()"
-                  [columns]="2"
-                  sectionTitle="Usage & Status"
-                ></app-key-value-list>
+                <table class="details-table">
+                  <thead>
+                    <tr>
+                      <th>FIELD NAME</th>
+                      <th>DETAILS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (item of usageStatusDetails(); track item.label) {
+                      <tr>
+                        <td class="field-label">{{ item.label }}</td>
+                        <td class="field-value">{{ formatValue(item) }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
               </div>
+            </div>
 
-              <!-- Financial Details -->
+            <!-- Financial Details -->
+            <div>
+              <h5 class="section-title mb-3">Financial Details</h5>
               <div class="detail-section">
-                <app-key-value-list
-                  [items]="financialDetails()"
-                  [columns]="2"
-                  sectionTitle="Financial Details"
-                ></app-key-value-list>
+                <table class="details-table">
+                  <thead>
+                    <tr>
+                      <th>FIELD NAME</th>
+                      <th>DETAILS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (item of financialDetails(); track item.label) {
+                      <tr>
+                        <td class="field-label">{{ item.label }}</td>
+                        <td class="field-value">{{ formatValue(item) }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
               </div>
+            </div>
 
-              <!-- Purchase Details -->
+            <!-- Purchase Details -->
+            <div>
+              <h5 class="section-title mb-3">Purchase Details</h5>
               <div class="detail-section">
-                <app-key-value-list
-                  [items]="purchaseDetails()"
-                  [columns]="2"
-                  sectionTitle="Purchase Details"
-                ></app-key-value-list>
+                <table class="details-table">
+                  <thead>
+                    <tr>
+                      <th>FIELD NAME</th>
+                      <th>DETAILS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (item of purchaseDetails(); track item.label) {
+                      <tr>
+                        <td class="field-label">{{ item.label }}</td>
+                        <td class="field-value">{{ formatValue(item) }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
-        }
-      </div>
-    }
+        </div>
+      }
+    </div>
 
     <!-- Navigation Section -->
     <div class="navigation-section">
-      <app-btn label="Previous" (click)="onPrevious()"></app-btn>
-      <app-btn label="Next" (click)="onNext()"></app-btn>
+      <app-btn label="Previous" (click)="onPrevious()" [disabled]="!hasPrevious()" variant="dark-blue" size="sm"></app-btn>
+      <app-btn label="Next" (click)="onNext()" [disabled]="!hasNext()" variant="dark-blue" size="sm"></app-btn>
     </div>
   </app-card>
 </div>

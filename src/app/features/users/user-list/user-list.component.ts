@@ -32,13 +32,13 @@ export class UserListComponent {
   tableActions: TableAction[] = [
     {
       label: 'Edit',
-      icon: 'pi pi-pencil',
+      icon: '<i class="pi pi-pencil"></i>',
       variant: 'primary',
       action: (row: any) => this.router.navigate(['/user-management/edit', row.id])
     },
     {
       label: 'Reset Password',
-      icon: 'pi pi-key',
+      icon: '<i class="pi pi-key"></i>',
       variant: 'secondary',
       action: (row: any) => this.resetPassword(row)
     }

@@ -1,150 +1,99 @@
 <div class="ifms-claims-container">
-  <!-- Page Header -->
-  <div class="page-header mb-4">
-    <div class="d-flex justify-content-between align-items-center">
-      <div>
-        <h1 class="page-title h4 fw-bold mb-0">Treasury (IFMS) Claims</h1>
+  <app-card>
+    <!-- Page Header -->
+    <div class="page-header mb-4 ">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h1 class="page-title h4 fw-bold mb-0">Treasury (IFMS) Claims</h1>
+        </div>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a [routerLink]="['/vehicle']">Vehicle</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Treasury (IFMS) Claims</li>
+          </ol>
+        </nav>
       </div>
-      <app-btn label="← Go back to Home" routerLink="/vehicle" variant="secondary"></app-btn>
-    </div>
-  </div>
 
-  <!-- Single Card for Filters and Table -->
-  <app-card customClass="no-padding">
-      <h5 class="card-title mb-4">Treasury (IFMS) Claims</h5>
-      
-      <form [formGroup]="claimsForm" (ngSubmit)="onFilterChange()">
-        <div class="row">
+      <!-- Filter form -->
+      <form [formGroup]="claimsForm" (ngSubmit)="onFilterChange('')" class="mb-4">
+        <div class="row g-3">
           <div class="col-md-6 col-lg-3">
-            <div class="mb-3">
-              <app-input
-                label="Financial Year"
-                type="select"
-                [options]="financialYearOptions"
-                formControlName="financialYear"
-                placeholder="Select Year"
-                (change)="onFilterChange()"
-              ></app-input>
-            </div>
+            <app-input label="Financial Year" type="select" [options]="financialYearOptions"
+              formControlName="financialYear" placeholder="Select Year"
+              (change)="onFilterChange('financialYear')"></app-input>
           </div>
 
           <div class="col-md-6 col-lg-3">
-            <div class="mb-3">
-              <app-input
-                label="Claim Type"
-                type="select"
-                [options]="claimTypeOptions"
-                formControlName="claimType"
-                placeholder="Select Type"
-                (change)="onFilterChange()"
-              ></app-input>
-            </div>
+            <app-input label="Claim Type" type="select" [options]="claimTypeOptions" formControlName="claimType"
+              placeholder="Select Type" (change)="onFilterChange('claimType')"></app-input>
           </div>
 
           <div class="col-md-6 col-lg-3">
-            <div class="mb-3">
-              <app-input
-                label="From Date"
-                type="date"
-                formControlName="fromDate"
-                (change)="onFilterChange()"
-              ></app-input>
-            </div>
+            <app-input label="From Date" type="date" formControlName="fromDate"
+              (change)="onFilterChange('fromDate')"></app-input>
           </div>
 
           <div class="col-md-6 col-lg-3">
-            <div class="mb-3">
-              <app-input
-                label="To Date"
-                type="date"
-                formControlName="toDate"
-                (change)="onFilterChange()"
-              ></app-input>
-            </div>
+            <app-input label="To Date" type="date" formControlName="toDate"
+              (change)="onFilterChange('toDate')"></app-input>
           </div>
 
-          <div class="col-md-6 col-lg-4">
-            <div class="mb-3">
-              <app-input
-                label="Search"
-                type="text"
-                formControlName="searchText"
-                placeholder="Search by claim no, bill no, etc."
-                (change)="onSearchChange($event)"
-              ></app-input>
-            </div>
+          <div class="col-md-8 col-lg-10">
+            <app-input label="Search" type="text" formControlName="searchText"
+              placeholder="Search by claim no, bill no, etc." (change)="onSearchChange($event)"></app-input>
           </div>
 
-          <div class="col-md-6 col-lg-2 d-flex align-items-end">
-            <div class="mb-3">
-              <app-btn label="Clear Filters" variant="secondary" (click)="clearFilters()"></app-btn>
-            </div>
+          <div class="col-md-4 col-lg-2 d-flex align-items-end">
+            <app-btn label="Clear Filters" variant="secondary" size="sm" icon="pi pi-filter-slash" class="w-100 mb-3"
+              (click)="clearFilters()"></app-btn>
           </div>
         </div>
       </form>
 
       <!-- Filter Summary -->
-      <div class="filter-summary mt-4 pt-3 border-top" *ngIf="filterSummary">
-        <div class="row">
-          <div class="col-md-3">
-            <span class="summary-label">Claim Type:</span>
-            <span class="summary-value">{{filterSummary.claimType}}</span>
+      <div class="filter-summary mb-4 p-3 bg-light rounded border border-light-subtle" *ngIf="filterSummary">
+        <div class="row align-items-center">
+          <div class="col-md-3 mb-2 mb-md-0">
+            <span class="text-muted small d-block">Claim Type</span>
+            <span class="fw-semibold text-dark">{{filterSummary.claimType}}</span>
+          </div>
+          <div class="col-md-3 mb-2 mb-md-0">
+            <span class="text-muted small d-block">From Date</span>
+            <span class="fw-semibold text-dark">{{filterSummary.fromDate}}</span>
+          </div>
+          <div class="col-md-3 mb-2 mb-md-0">
+            <span class="text-muted small d-block">To Date</span>
+            <span class="fw-semibold text-dark">{{filterSummary.toDate}}</span>
           </div>
           <div class="col-md-3">
-            <span class="summary-label">From Date:</span>
-            <span class="summary-value">{{filterSummary.fromDate}}</span>
-          </div>
-          <div class="col-md-3">
-            <span class="summary-label">To Date:</span>
-            <span class="summary-value">{{filterSummary.toDate}}</span>
-          </div>
-          <div class="col-md-3">
-            <span class="summary-label">Total Amount:</span>
-            <span class="summary-value fw-bold">₹{{filterSummary.totalAmount.toLocaleString()}}</span>
+            <span class="text-muted small d-block">Total Amount</span>
+            <span class="fw-bold text-dark-blue h5 mb-0">₹{{filterSummary.totalAmount.toLocaleString('en-IN')}}</span>
           </div>
         </div>
-        <div class="row mt-2">
+        <div class="row mt-2 pt-2 border-top border-light-subtle">
           <div class="col-12">
-            <span class="summary-label">Total Rows:</span>
-            <span class="summary-value">{{filterSummary.totalRows}}</span>
+            <span class="text-muted small me-2">Total Rows:</span>
+            <span class="fw-semibold text-dark">{{filterSummary.totalRows}}</span>
           </div>
         </div>
       </div>
 
-      <!-- Action Button -->
-      <div class="action-section mt-4">
-        <app-btn
-          label="Click here to update status from IFMS"
-          variant="primary"
-          [disabled]="isLoading"
-          [loading]="isLoading"
-          (click)="updateStatusFromIFMS()"
-        ></app-btn>
+      <!-- Sync Action Section -->
+      <div class="d-flex justify-content-start mb-4">
+        <app-btn label="Update Status from IFMS" variant="dark-blue" size="sm" icon="pi pi-sync" [disabled]="isLoading"
+          [loading]="isLoading" (click)="updateStatusFromIFMS()"></app-btn>
       </div>
-
-      <hr class="my-4">
 
       <!-- Table Section -->
       <div class="table-responsive">
-        <app-data-table
-          [columns]="tableColumns"
-          [data]="getPaginatedClaims()"
-          [sortable]="true"
-          [actions]="tableActions"
-          [isLoading]="isLoading && filteredClaims.length === 0"
-          [emptyMessage]="'No claims found'"
-          (sort)="onSortFromTable($event)"
-        ></app-data-table>
+        <app-data-table [columns]="tableColumns" [data]="getPaginatedClaims()" [sortable]="true"
+          [actions]="tableActions" [isLoading]="isLoading && filteredClaims.length === 0"
+          [emptyMessage]="'No claims found'" (sort)="onSortFromTable($event)"></app-data-table>
       </div>
 
       <!-- Pagination -->
-      <app-pagination
-        *ngIf="filteredClaims.length > 0"
-        [currentPage]="currentPage"
-        [totalPages]="getTotalPages()"
-        [totalItems]="totalItems"
-        [itemsPerPage]="itemsPerPage"
-        (pageChange)="onPageChange($event)"
-      ></app-pagination>
+      <app-pagination *ngIf="filteredClaims.length > 0" [currentPage]="currentPage" [totalPages]="getTotalPages()"
+        [totalItems]="totalItems" [itemsPerPage]="itemsPerPage" (pageChange)="onPageChange($event)"></app-pagination>
+    </div>
   </app-card>
 </div>

@@ -1,82 +1,80 @@
-@if (isVisible) {
-  <app-card class="modal-overlay">
-    <div class="modal-container">
-      <div class="modal-header">
-        <h2 class="modal-title">Vehicle Number : {{ vehicleNumber }}</h2>
-        <app-btn (click)="onClose()" variant="default" class="close-button">✕</app-btn>
+<div class="modal-overlay">
+  <app-card class="modal-container" padding="0" borderRadius="12px">
+    <div class="modal-header">
+      <h2 class="modal-title">Vehicle Number : {{ registrationNumber }}</h2>
+      <app-btn (click)="onClose()" variant="default" class="close-button" icon="pi pi-times" label=""></app-btn>
+    </div>
+
+    <div class="modal-body">
+      <div class="tabs-navigation">
+        @for (tab of tabs; track tab.id) {
+          <div
+            class="tab-item"
+            [class.active]="isTabActive(tab.id)"
+            (click)="onTabChange(tab.id)"
+          >
+            {{ tab.label }}
+          </div>
+        }
       </div>
 
-      <div class="modal-body">
-        <div class="tabs-navigation">
-          @for (tab of tabs; track tab.id) {
-            <app-btn
-              (click)="onTabChange(tab.id)"
-              [variant]="isTabActive(tab.id) ? 'primary' : 'default'"
-              [class.active]="isTabActive(tab.id)"
-            >
-              {{ tab.label }}
-            </app-btn>
-          }
-        </div>
+      <div class="tab-content">
+        @if (isTabLoaded('vehicle-detail')) {
+          <app-vehicle-detail-tab
+            [vehicleId]="vehicleId"
+            [class.hidden]="!isTabActive('vehicle-detail')"
+          ></app-vehicle-detail-tab>
+        }
 
-        <div class="tab-content">
-          @if (isTabLoaded('vehicle-detail')) {
-            <app-vehicle-detail-tab
-              [vehicleNumber]="vehicleNumber"
-              [class.hidden]="!isTabActive('vehicle-detail')"
-            ></app-vehicle-detail-tab>
-          }
+        @if (isTabLoaded('fitness')) {
+          <app-fitness-tab
+            [vehicleId]="vehicleId"
+            [class.hidden]="!isTabActive('fitness')"
+          ></app-fitness-tab>
+        }
 
-          @if (isTabLoaded('fitness')) {
-            <app-fitness-tab
-              [vehicleNumber]="vehicleNumber"
-              [class.hidden]="!isTabActive('fitness')"
-            ></app-fitness-tab>
-          }
+        @if (isTabLoaded('fuel')) {
+          <app-fuel-tab
+            [vehicleId]="vehicleId"
+            [class.hidden]="!isTabActive('fuel')"
+          ></app-fuel-tab>
+        }
 
-          @if (isTabLoaded('fuel')) {
-            <app-fuel-tab
-              [vehicleNumber]="vehicleNumber"
-              [class.hidden]="!isTabActive('fuel')"
-            ></app-fuel-tab>
-          }
+        @if (isTabLoaded('maintenance')) {
+          <app-maintenance-tab
+            [vehicleId]="vehicleId"
+            [class.hidden]="!isTabActive('maintenance')"
+          ></app-maintenance-tab>
+        }
 
-          @if (isTabLoaded('maintenance')) {
-            <app-maintenance-tab
-              [vehicleNumber]="vehicleNumber"
-              [class.hidden]="!isTabActive('maintenance')"
-            ></app-maintenance-tab>
-          }
+        @if (isTabLoaded('service')) {
+          <app-service-tab
+            [vehicleId]="vehicleId"
+            [class.hidden]="!isTabActive('service')"
+          ></app-service-tab>
+        }
 
-          @if (isTabLoaded('service')) {
-            <app-service-tab
-              [vehicleNumber]="vehicleNumber"
-              [class.hidden]="!isTabActive('service')"
-            ></app-service-tab>
-          }
+        @if (isTabLoaded('battery')) {
+          <app-battery-tab
+            [vehicleId]="vehicleId"
+            [class.hidden]="!isTabActive('battery')"
+          ></app-battery-tab>
+        }
 
-          @if (isTabLoaded('battery')) {
-            <app-battery-tab
-              [vehicleNumber]="vehicleNumber"
-              [class.hidden]="!isTabActive('battery')"
-            ></app-battery-tab>
-          }
+        @if (isTabLoaded('tyres')) {
+          <app-tyres-tab
+            [vehicleId]="vehicleId"
+            [class.hidden]="!isTabActive('tyres')"
+          ></app-tyres-tab>
+        }
 
-          @if (isTabLoaded('tyres')) {
-            <app-tyres-tab
-              [vehicleNumber]="vehicleNumber"
-              [class.hidden]="!isTabActive('tyres')"
-            ></app-tyres-tab>
-          }
-
-          @if (isTabLoaded('transfer')) {
-            <app-transfer-tab
-              [vehicleNumber]="vehicleNumber"
-              [class.hidden]="!isTabActive('transfer')"
-            ></app-transfer-tab>
-          }
-        </div>
+        @if (isTabLoaded('transfer')) {
+          <app-transfer-tab
+            [vehicleId]="vehicleId"
+            [class.hidden]="!isTabActive('transfer')"
+          ></app-transfer-tab>
+        }
       </div>
     </div>
   </app-card>
-}
+</div>

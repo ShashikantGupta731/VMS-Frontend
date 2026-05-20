@@ -5,35 +5,40 @@
   background: transparent;
 }
 
-.header-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 20px;
-  border-bottom: 1px solid $border-color;
-  margin-bottom: 20px;
+  .page-header {
+    border-bottom: 1px solid $border-color;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
 
-  .header-left {
     .page-title {
       color: $text-dark;
-      font-size: $font-size-3xl;
-      font-weight: $font-weight-bold;
-      margin: 0 0 8px 0;
     }
 
-    .vehicle-count {
-      color: $text-muted;
-      font-size: $font-size-base;
-      font-weight: $font-weight-medium;
+    .breadcrumb {
+      background: transparent;
+      padding: 0;
+
+      .breadcrumb-item {
+        a {
+          color: $primary-color;
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+
+        &.active {
+          color: $text-muted;
+        }
+      }
     }
   }
 
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+  .section-title {
+    color: $text-dark;
+    font-weight: $font-weight-semibold;
   }
-}
 
 .top-action-section {
   display: flex;
@@ -66,31 +71,31 @@
 
   .registration-number {
     .label {
-      color: $text-muted;
-      font-size: $font-size-sm;
-      font-weight: $font-weight-medium;
+      color: $primary-color;
+      font-size: $font-size-base;
+      font-weight: $font-weight-semibold;
       margin-right: 8px;
     }
 
     .value {
       color: $primary-color;
-      font-size: $font-size-lg;
+      font-size: $font-size-base;
       font-weight: $font-weight-bold;
     }
   }
 
   .ddo-code {
     .label {
-      color: $text-muted;
-      font-size: $font-size-sm;
-      font-weight: $font-weight-medium;
+      color: $text-dark;
+      font-size: $font-size-base;
+      font-weight: $font-weight-semibold;
       margin-right: 8px;
     }
 
     .value {
       color: $text-dark;
       font-size: $font-size-base;
-      font-weight: $font-weight-semibold;
+      font-weight: $font-weight-bold;
     }
   }
 }
@@ -138,10 +143,77 @@
   }
 
   .detail-section {
-    padding: 20px;
     background: $bg-white;
     border-radius: $radius-md;
     border: 1px solid $border-color;
+    overflow: hidden;
+    margin-bottom: 5px;
+  }
+}
+
+.details-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  border: none;
+
+  thead {
+    tr {
+      background-color: #f8f9fa;
+      border-bottom: 2px solid #dee2e6;
+    }
+
+    th {
+      padding: 12px 15px;
+      font-weight: 700;
+      font-size: 13px;
+      color: #495057;
+      text-transform: uppercase;
+      text-align: center;
+      border-bottom: 2px solid #dee2e6;
+      border-right: 1px solid #dee2e6;
+
+      &:last-child {
+        border-right: none;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid #dee2e6;
+
+      &:nth-child(even) {
+        background-color: #fafafa;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    td {
+      padding: 12px 15px;
+      font-size: 14px;
+      color: #333333;
+      text-align: center;
+      border-right: 1px solid #dee2e6;
+
+      &:last-child {
+        border-right: none;
+      }
+
+      &.field-label {
+        font-weight: 500;
+        color: #495057;
+        width: 35%;
+      }
+
+      &.field-value {
+        font-weight: 400;
+        color: #212529;
+      }
+    }
   }
 }
 
@@ -151,6 +223,16 @@
   gap: 15px;
   padding-top: 25px;
   border-top: 1px solid $border-color;
+
+  app-btn {
+    min-width: 120px;
+    display: inline-block;
+
+    ::ng-deep .p-button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
 }
 
 // Responsive Design

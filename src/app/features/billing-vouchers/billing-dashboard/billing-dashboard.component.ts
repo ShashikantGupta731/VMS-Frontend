@@ -3,14 +3,13 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { BillingService, BillClaim, BillStatus, BillType } from '@shared/services/billing.service';
 import { AppCardComponent } from '@shared/components/ui/app-card/card.component';
-import { AppButtonComponent } from '@shared/components/ui/app-button/button.component';
 import { AppDataTableComponent, TableColumn, TableAction } from '@shared/components/ui/app-data-table/data-table.component';
 import { rxResource } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-billing-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, AppCardComponent, AppButtonComponent, AppDataTableComponent],
+  imports: [CommonModule, RouterModule, AppCardComponent, AppDataTableComponent],
   templateUrl: './billing-dashboard.component.html',
   styleUrl: './billing-dashboard.component.scss'
 })
@@ -36,7 +35,7 @@ export class BillingDashboardComponent {
   ];
 
   tableActions: TableAction[] = [
-    { label: 'View Details', action: (row: BillClaim) => this.viewClaim(row) },
+    { label: 'View Details', icon: '<i class="pi pi-eye"></i>', action: (row: BillClaim) => this.viewClaim(row) },
   ];
 
   viewClaim(claim: BillClaim): void {

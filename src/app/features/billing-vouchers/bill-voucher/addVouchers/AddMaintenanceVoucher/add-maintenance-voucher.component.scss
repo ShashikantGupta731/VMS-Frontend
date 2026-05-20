@@ -71,6 +71,44 @@
   margin-bottom: 6px;
 }
 
+// Standardize headings and text to match field font size
+h5, h6, p, label, .breadcrumb-item {
+  font-size: $font-size-base !important;
+}
+
+.text-dark-blue {
+  color: #1a237e !important;
+}
+
+.border-bottom-dark-blue {
+  border-bottom: 2px solid #1a237e !important;
+}
+
+.border-dark-blue-subtle {
+  border-color: rgba(26, 35, 126, 0.2) !important;
+}
+
+.marquee-container {
+  width: 100%;
+  overflow: hidden;
+  background: $danger-light;
+  padding: 10px 0;
+  border-radius: $radius-md;
+  margin-bottom: 15px;
+}
+
+.marquee-text {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 25s linear infinite;
+  padding-left: 100%;
+}
+
+@keyframes marquee {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(-100%, 0); }
+}
+
 .radio-group {
   display: flex;
   gap: 20px;

@@ -5,8 +5,8 @@
       <h3 class="fw-bold text-dark m-0">Add Fuel Voucher</h3>
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb m-0 bg-transparent p-0">
-          <li class="breadcrumb-item text-primary"><a routerLink="/dashboard">Vehicle</a></li>
-          <li class="breadcrumb-item text-primary"><a routerLink="/bill-voucher">Fuel Vouchers</a></li>
+          <li class="breadcrumb-item text-primary"><a routerLink="/vehicle">Vehicle</a></li>
+          <li class="breadcrumb-item text-primary"><a routerLink="/fuel-claims">Fuel Vouchers</a></li>
           <li class="breadcrumb-item active">Add Fuel Vouchers</li>
         </ol>
       </nav>
@@ -14,10 +14,14 @@
   </div>
 
   <!-- Warning Banner -->
-  <div class="row mb-4">
-    <div class="col-12 text-center">
-      <h5 class="text-danger fw-bold mb-2">Unverified Vehicle's Number will not be shown in Vehicle Number List.</h5>
-      <p class="small text-muted m-0">
+  <div class="row">
+    <div class="col-12">
+      <div class="marquee-container">
+        <div class="marquee-text">
+          <h5 class="text-danger fw-bold m-0">Unverified Vehicle's Number will not be shown in Vehicle Number List.</h5>
+        </div>
+      </div>
+      <p class="small text-muted text-center mb-4">
         <span class="text-danger fw-bold">In case, entered Fuel is above the allowed limit, please ensure it follows the format given in the following document. </span>
         <a href="#" class="text-primary text-decoration-none">Click here to open document.</a>
       </p>
@@ -27,18 +31,18 @@
   <form [formGroup]="voucherForm" (ngSubmit)="addBillAndSaveAsDraft()">
     <!-- Section 1: Voucher and Sanction Details -->
     <div class="card border-0 mb-4">
-      <div class="card-header bg-transparent border-bottom-primary px-0 mb-3">
-        <h6 class="text-primary fw-bold mb-1">Add Voucher and Sanction Details DDO</h6>
+      <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+        <h6 class="text-dark-blue fw-bold mb-1">Add Voucher and Sanction Details DDO</h6>
       </div>
       <div class="card-body p-0">
         <div class="row mb-3">
-          <div class="col-12">
-            <label class="fw-bold me-3">Forwarded to Treasury?</label>
-            <div class="form-check form-check-inline">
+          <div class="col-12 d-flex align-items-center">
+            <label class="fw-bold me-3 mb-0">Forwarded to Treasury?</label>
+            <div class="form-check form-check-inline mb-0">
               <input class="form-check-input" type="radio" name="forwardedToTreasury" id="treasuryYes" value="yes" formControlName="forwardedToTreasury">
               <label class="form-check-label" for="treasuryYes">Yes</label>
             </div>
-            <div class="form-check form-check-inline">
+            <div class="form-check form-check-inline mb-0">
               <input class="form-check-input" type="radio" name="forwardedToTreasury" id="treasuryNo" value="no" formControlName="forwardedToTreasury">
               <label class="form-check-label" for="treasuryNo">No</label>
             </div>
@@ -82,8 +86,8 @@
 
     <!-- Section 2: Add Vehicle Bills -->
     <div class="card border-0 mb-4">
-      <div class="card-header bg-transparent border-bottom-primary px-0 mb-3">
-        <h6 class="text-primary fw-bold mb-1">Add Vehicle Bills</h6>
+      <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+        <h6 class="text-dark-blue fw-bold mb-1">Add Vehicle Bills</h6>
       </div>
       <div class="card-body p-0">
         <div class="row mb-3">
@@ -91,7 +95,7 @@
             <app-input label="Receipt No." formControlName="billNumber" placeholder="Receipt no."></app-input>
           </div>
           <div class="col-md-4">
-            <app-input label="Vehicle No." type="select" [options]="vehicleOptions()" formControlName="vehicleId" placeholder="Vehicle No. (Without Spaces)" (change)="onVehicleChange($event)"></app-input>
+            <app-input label="Vehicle No." type="select" [options]="vehicleOptions()" formControlName="vehicleId" placeholder="Vehicle No. (Without Spaces)" (change)="onVehicleChange($event)" [searchable]="true"></app-input>
           </div>
           <div class="col-md-4">
             <app-input label="Fuel Date" type="date" formControlName="billDate" placeholder="Fuel Date (DD/MM/YYYY)"></app-input>
@@ -119,21 +123,24 @@
           </div>
         </div>
 
-        <!-- Conditional Alerts/Uploads (Modern logic kept!) -->
-        <div class="alert alert-warning p-3 mb-3 border-0 shadow-sm" *ngIf="fitnessRequired() || permissionRequired()">
-          <h6 class="fw-bold mb-2 small"><i class="pi pi-exclamation-triangle me-2"></i> Additional Requirements</h6>
-          <div class="mb-2" *ngIf="fitnessRequired()">
-            <p class="small mb-1">Fitness Certificate required for vehicle age/mileage.</p>
-            <app-input type="file" formControlName="nocFile" accept=".pdf"></app-input>
-          </div>
-          <div *ngIf="permissionRequired()">
-            <p class="small mb-1">Permission NOC required for exceeding sanctioned limit.</p>
-            <app-input type="file" formControlName="sanctionPermissionFile" accept=".pdf"></app-input>
+        <!-- Conditional Requirements (Clean UI) -->
+        <div class="row mb-3" *ngIf="fitnessRequired()">
+          <div class="col-md-6">
+            <app-input label="Fitness Certificate (PDF)" type="file" formControlName="nocFile" accept=".pdf"></app-input>
           </div>
         </div>
 
-        <div class="text-end mb-4">
-          <app-btn type="submit" label="Add Bill & Save as Draft" variant="primary" [disabled]="voucherForm.invalid || isLoading()"></app-btn>
+        <div class="row mb-3" *ngIf="permissionRequired()">
+          <div class="col-md-6">
+            <app-input label="Permission NOC (PDF)" type="file" formControlName="sanctionPermissionFile" accept=".pdf"></app-input>
+          </div>
+          <div class="col-md-6">
+            <app-input label="Sanction Authority Mobile No." formControlName="sanctionAuthorityMobileNo" placeholder="Ten digit mobile no."></app-input>
+          </div>
+        </div>
+
+        <div class="text-center mb-4">
+          <app-btn type="submit" label="Add Bill & Save as Draft" variant="dark-blue" size="sm" icon="pi pi-save" [disabled]="voucherForm.invalid || isLoading()"></app-btn>
         </div>
       </div>
     </div>
@@ -154,19 +161,64 @@
   <div class="row mt-4 mb-5">
     <div class="col-md-4 offset-md-4 text-center">
       <label class="fw-bold small text-muted d-block mb-1">Total Bill Amount</label>
-      <div class="bg-light p-2 rounded mb-3">
-        <h5 class="m-0 fw-bold">₹ {{totalBillAmount | number:'1.2-2'}}</h5>
+      <div class="bg-light p-4 rounded mb-4 shadow-sm border border-dark-blue-subtle">
+        <h3 class="m-0 fw-bold text-dark-blue">₹ {{totalBillAmount | number:'1.2-2'}}</h3>
       </div>
-      <app-btn label="Lock Bills" variant="primary" size="lg" [disabled]="(draftedVouchersResource.value() || []).length === 0 || isLoading()" (click)="lockBills()"></app-btn>
+      <app-btn label="Lock Bills" variant="dark-blue" size="sm" icon="pi pi-lock" [disabled]="(draftedVouchersResource.value() || []).length === 0 || isLoading()" (click)="lockBills()"></app-btn>
     </div>
   </div>
+
+  <!-- Personal Usage Button for Testing -->
+  <div class="row mb-5">
+    <div class="col-12 text-center">
+      <app-btn label="Manage Personal Usage Plan" variant="outline-primary" size="sm" icon="pi pi-user" (click)="showPersonalUsageModal.set(true)"></app-btn>
+    </div>
+  </div>
+
+  <!-- Personal Usage Modal -->
+  @if (showPersonalUsageModal()) {
+    <div class="modal-overlay">
+      <div class="modal-container p-4 bg-white rounded shadow-lg" style="width: 500px; max-width: 90vw;">
+        <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+          <h5 class="fw-bold m-0 text-dark-blue">Personal Usage Plan</h5>
+          <button class="btn btn-sm btn-light" (click)="showPersonalUsageModal.set(false)"><i class="pi pi-times"></i></button>
+        </div>
+        
+        <div class="mb-3">
+          <label class="fw-bold mb-2 small text-muted">Select Plan</label>
+          <div class="d-flex gap-3">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="planId" id="planBasic" [value]="1" [checked]="personalUsagePlanId() === 1" (change)="personalUsagePlanId.set(1)">
+              <label class="form-check-label" for="planBasic">Basic (₹800/mo)</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="planId" id="planPremium" [value]="2" [checked]="personalUsagePlanId() === 2" (change)="personalUsagePlanId.set(2)">
+              <label class="form-check-label" for="planPremium">Premium (₹1600/mo)</label>
+            </div>
+          </div>
+        </div>
+
+        <div [formGroup]="personalUseForm">
+          <div class="row mb-2">
+            <div class="col-12">
+              <app-input label="Date of Use" type="date" formControlName="dateOfUse"></app-input>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-6">
+              <app-input label="Odometer From" type="number" formControlName="omFrom"></app-input>
+            </div>
+            <div class="col-6">
+              <app-input label="Odometer To" type="number" formControlName="omTo"></app-input>
+            </div>
+          </div>
+          <div class="text-end">
+            <app-btn label="Cancel" variant="default" size="sm" class="me-2" (click)="showPersonalUsageModal.set(false)"></app-btn>
+            <app-btn label="Save Plan Details" variant="primary" size="sm" [disabled]="personalUseForm.invalid || isSavingUsage()" (click)="savePersonalUsage()"></app-btn>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
 </div>
 
-<style>
-  .border-bottom-primary {
-    border-bottom: 2px solid #6f42c1 !important;
-  }
-  .breadcrumb-item + .breadcrumb-item::before {
-    content: "/";
-  }
-</style>

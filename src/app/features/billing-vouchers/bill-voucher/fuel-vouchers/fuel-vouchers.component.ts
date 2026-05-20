@@ -9,6 +9,7 @@ import { AppDataTableComponent, TableColumn, TableAction } from '@shared/compone
 import { AppPaginationComponent } from '@shared/components/ui/app-pagination/pagination.component';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { firstValueFrom } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-fuel-vouchers',
@@ -45,32 +46,54 @@ export class FuelVouchersComponent {
     {
       label: 'View',
       action: (row: FuelVoucher) => this.viewVoucher(row),
+      icon: '<i class="pi pi-eye"></i>'
     },
     {
       label: 'Edit',
       action: (row: FuelVoucher) => this.editVoucher(row),
+      icon: '<i class="pi pi-pencil"></i>'
     },
     {
       label: 'Delete',
       action: (row: FuelVoucher) => this.deleteVoucher(row),
-      variant: 'danger'
+      variant: 'danger',
+      icon: '<i class="pi pi-trash"></i>'
     },
   ];
 
   viewVoucher(voucher: FuelVoucher): void {
-    this.toastr.info(`Viewing Bill #${voucher.billNumber}`, 'Details');
+    console.log('Viewing voucher:', voucher);
+    this.toastr.info(`Opening Bill #${voucher.billNumber} in view mode`, 'Redirecting');
+    this.router.navigate(['/bill-voucher/edit', voucher.fuelBillId], { queryParams: { view: 'true' } });
   }
 
   editVoucher(voucher: FuelVoucher): void {
-    this.router.navigate(['/bill-voucher/edit', voucher.id]);
+    console.log('Editing voucher:', voucher);
+    this.toastr.info(`Opening Bill #${voucher.billNumber} for editing`, 'Redirecting');
+    this.router.navigate(['/bill-voucher/edit', voucher.fuelBillId]);
   }
 
   async deleteVoucher(voucher: FuelVoucher): Promise<void> {
-    if (confirm(`Are you sure you want to delete Bill #${voucher.billNumber}?`)) {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: `Do you really want to delete Bill #${voucher.billNumber}? This action cannot be undone.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel'
+    });
+
+    if ((result as any).isConfirmed) {
       try {
-        const success = await firstValueFrom(this.fuelVouchersService.deleteVoucher(voucher.id));
+        const success = await firstValueFrom(this.fuelVouchersService.deleteVoucher(voucher.fuelBillId));
         if (success) {
-          this.toastr.success('Voucher deleted successfully', 'Success');
+          Swal.fire(
+            'Deleted!',
+            'The fuel bill has been deleted.',
+            'success'
+          );
           this.vouchersResource.reload();
         }
       } catch (error) {

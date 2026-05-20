@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 export interface HiredVehicleBill {
-  id: number;
+  hiredVehicleBillId: number;
   billNumber: string;
   billDate: string;
   vehicleNumber: string;

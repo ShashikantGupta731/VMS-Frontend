@@ -6,20 +6,33 @@ import { VerifyVehiclesService, VerifyVehicle } from './verify-vehicles.service'
 import { AppCardComponent } from '@shared/components/ui/app-card/card.component';
 import { AppButtonComponent } from '@shared/components/ui/app-button/button.component';
 import { AppDataTableComponent, TableColumn, TableAction } from '@shared/components/ui/app-data-table/data-table.component';
+import { AppPaginationComponent } from '@shared/components/ui/app-pagination/pagination.component';
 import { ToastrService } from 'ngx-toastr';
 import { VehicleDetailsModalComponent } from '@shared/components/vehicle-details-modal/vehicle-details-modal.component';
+import { AuthService } from '@core/services/auth';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-verify-vehicles',
   standalone: true,
-  imports: [CommonModule, RouterModule, AppCardComponent, AppButtonComponent, AppDataTableComponent, VehicleDetailsModalComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    AppCardComponent,
+    AppButtonComponent,
+    AppDataTableComponent,
+    VehicleDetailsModalComponent,
+    AppPaginationComponent
+  ],
   templateUrl: './verify-vehicles.component.html',
   styleUrl: './verify-vehicles.component.scss'
 })
 export class VerifyVehiclesComponent {
   selectedStatus = signal<'pending' | 'objection' | 'verified'>('pending');
   isDetailsModalVisible = false;
-  selectedVehicleNumber = '';
+  selectedVehicleId: number | null = null;
+  selectedVehicleRegNo = '';
 
   statusOptions = [
     { value: 'pending' as const, label: 'Pending' },
@@ -27,24 +40,82 @@ export class VerifyVehiclesComponent {
     { value: 'verified' as const, label: 'Verified' }
   ];
 
-  // Table columns
+  admnStatusArray: any[] = []; // Stores { vehicleinfoid, response, comment } for ADMN
+
+  // ADMN search & pagination state
+  admnSearchText = signal('');
+  admnCurrentPage = signal(1);
+  admnItemsPerPage = 10;
+
+  // ADMN Search & Pagination computed signals
+  admnFilteredVehicles = computed(() => {
+    const list = this.vehicles();
+    const search = this.admnSearchText().trim().toLowerCase();
+    if (!search) return list;
+    return list.filter(v => 
+      v.vehicleNumber?.toLowerCase().includes(search) ||
+      v.vmsManufacturer?.toLowerCase().includes(search) ||
+      v.vmsModel?.toLowerCase().includes(search)
+    );
+  });
+
+  admnPaginatedVehicles = computed(() => {
+    const list = this.admnFilteredVehicles();
+    const startIndex = (this.admnCurrentPage() - 1) * this.admnItemsPerPage;
+    const endIndex = startIndex + this.admnItemsPerPage;
+    return list.slice(startIndex, endIndex);
+  });
+
+  admnTotalItems = computed(() => this.admnFilteredVehicles().length);
+  admnTotalPages = computed(() => Math.max(1, Math.ceil(this.admnTotalItems() / this.admnItemsPerPage)));
+
+  onAdmnSearchChange(text: string) {
+    this.admnSearchText.set(text);
+    this.admnCurrentPage.set(1);
+  }
+
+  onAdmnPageChange(page: number) {
+    this.admnCurrentPage.set(page);
+  }
+
+  getSelectedStatusValue(vehicleId: number): string {
+    const item = this.admnStatusArray.find(x => x.vehicleinfoid === vehicleId);
+    if (!item) return '';
+    if (item.response === 1) return 'Approved';
+    if (item.response === 2) return 'Objection';
+    return '';
+  }
+
+  getCommentValue(vehicleId: number): string {
+    const item = this.admnStatusArray.find(x => x.vehicleinfoid === vehicleId);
+    return item?.comment || '';
+  }
+
+  // Table columns for DDO
   tableColumns: TableColumn[] = [
     { key: 'id', label: '#', width: '60px', textAlign: 'center' },
-    { key: 'location', label: 'Department / District / State / Tehsil', width: '200px', allowHtml: true },
-    { key: 'officeDetails', label: 'Office Details', width: '250px', allowHtml: true },
-    { key: 'vehicleDetails', label: 'Vehicle Details', width: '250px', allowHtml: true },
-    { key: 'fuelStatus', label: 'Fuel & Status', width: '200px', allowHtml: true },
-    { key: 'verification', label: 'Verification Status / Date', width: '180px', allowHtml: true }
+    { key: 'location', label: 'DEPARTMENT / DISTRICT OR STATE & TEHSIL', width: '200px', allowHtml: true },
+    { key: 'officeDetails', label: 'OFFICE NAME / OFFICE ADDRESS / VEHICLE ALLOTED TO OFFICER NAME / VEHICLE ALLOTED TO OFFICER DESIGNATION', width: '250px', allowHtml: true },
+    { key: 'vehicleDetails', label: 'MANUFACTURER / MAKE OR MODEL / MANUFACTURE YEAR / VEHICLE TYPE / VEHICLE NO. / SEATING CAPACITY', width: '250px', allowHtml: true },
+    { key: 'fuelStatus', label: 'FUEL USED / FITNESS UPTO / ENGINE NO. OR CHASIS NO. / CURRENT STATUS', width: '200px', allowHtml: true },
+    { key: 'verification', label: 'VERIFICATION STATUS DATE', width: '180px', allowHtml: true }
   ];
 
   constructor(
     private verifyVehiclesService: VerifyVehiclesService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private authService: AuthService
   ) {}
 
-  private vehiclesResource = rxResource<VerifyVehicle[], { status: 'pending' | 'objection' | 'verified' }>({
-    params: () => ({ status: this.selectedStatus() }),
-    stream: ({ params }) => this.verifyVehiclesService.getVehiclesByStatus(params.status)
+  get userRole(): string {
+    if (this.authService.hasRole('ADMN')) return 'ADMN';
+    if (this.authService.hasRole('DDO')) return 'DDO';
+    return 'DDO'; // default fallback for testing
+  }
+
+  private vehiclesResource = rxResource<VerifyVehicle[], { status: 'pending' | 'objection' | 'verified', role: string }>({
+    params: () => ({ status: this.selectedStatus(), role: this.userRole }),
+    stream: ({ params }) => this.verifyVehiclesService.getVehicles(params.role, params.status)
   });
 
   vehicles = computed(() => this.vehiclesResource.value() ?? []);
@@ -54,62 +125,16 @@ export class VerifyVehiclesComponent {
     this.selectedStatus.set(status);
   }
 
-  verifyVehicle(vehicle: VerifyVehicle): void {
-    if (confirm(`Are you sure you want to verify vehicle ${vehicle.vehicleNumber}?`)) {
-      this.verifyVehiclesService.verifyVehicle(vehicle.id).subscribe({
-        next: () => {
-          this.toastr.success(`Vehicle ${vehicle.vehicleNumber} verified successfully`);
-          this.vehiclesResource.reload();
-        },
-        error: (error) => {
-          console.error('Error verifying vehicle:', error);
-          this.toastr.error('Failed to verify vehicle');
-        }
-      });
-    }
-  }
-
-  raiseObjection(vehicle: VerifyVehicle): void {
-    const comment = prompt(`Please enter the reason for objection for vehicle ${vehicle.vehicleNumber}:`);
-    if (comment !== null && comment.trim() !== '') {
-      this.verifyVehiclesService.raiseObjection(vehicle.id, comment.trim()).subscribe({
-        next: () => {
-          this.toastr.success(`Objection raised for vehicle ${vehicle.vehicleNumber}`);
-          this.vehiclesResource.reload();
-        },
-        error: (error) => {
-          console.error('Error raising objection:', error);
-          this.toastr.error('Failed to raise objection');
-        }
-      });
-    } else if (comment !== null) {
-      this.toastr.warning('Objection comment is required');
-    }
-  }
-
-  resolveObjection(vehicle: VerifyVehicle): void {
-    if (confirm(`Are you sure you want to resolve the objection and verify vehicle ${vehicle.vehicleNumber}?`)) {
-      this.verifyVehiclesService.resolveObjection(vehicle.id).subscribe({
-        next: () => {
-          this.toastr.success(`Objection resolved for vehicle ${vehicle.vehicleNumber}`);
-          this.vehiclesResource.reload();
-        },
-        error: (error) => {
-          console.error('Error resolving objection:', error);
-          this.toastr.error('Failed to resolve objection');
-        }
-      });
-    }
-  }
-
   viewDetails(vehicle: VerifyVehicle): void {
-    this.selectedVehicleNumber = vehicle.vehicleNumber;
+    this.selectedVehicleId = vehicle.id;
+    this.selectedVehicleRegNo = vehicle.vehicleNumber;
     this.isDetailsModalVisible = true;
   }
 
   closeDetailsModal(): void {
     this.isDetailsModalVisible = false;
-    this.selectedVehicleNumber = '';
+    this.selectedVehicleId = null;
+    this.selectedVehicleRegNo = '';
   }
 
   viewObjection(vehicle: VerifyVehicle): void {
@@ -118,43 +143,72 @@ export class VerifyVehiclesComponent {
   }
 
   getActionsForStatus(status: 'pending' | 'objection' | 'verified'): TableAction[] {
-    switch (status) {
-      case 'pending':
-        return [
-          {
-            label: 'Verify',
-            action: (row: VerifyVehicle) => this.verifyVehicle(row),
-            variant: 'primary'
-          },
-          {
-            label: 'Raise Objection',
-            action: (row: VerifyVehicle) => this.raiseObjection(row),
-            variant: 'secondary'
-          }
-        ];
-      case 'objection':
-        return [
-          {
-            label: 'View Objection',
-            action: (row: VerifyVehicle) => this.viewObjection(row),
-            variant: 'default'
-          },
-          {
-            label: 'Resolve',
-            action: (row: VerifyVehicle) => this.resolveObjection(row),
-            variant: 'primary'
-          }
-        ];
-      case 'verified':
+    // DDO Actions
+    if (this.userRole === 'DDO') {
+      if (status === 'pending' || status === 'objection') {
         return [
           {
             label: 'View Details',
             action: (row: VerifyVehicle) => this.viewDetails(row),
-            variant: 'default'
+            variant: 'primary'
           }
         ];
-      default:
-        return [];
+      }
+      return [];
+    }
+
+    // ADMN actions could go here, but we will use native HTML table for ADMN
+    return [];
+  }
+
+  // --- ADMN Logic Methods ---
+  setStatus(vehicleId: number, statusValue: string) {
+    const existingIdx = this.admnStatusArray.findIndex(item => item.vehicleinfoid === vehicleId);
+    if (existingIdx > -1) {
+      if (statusValue === 'Approved') {
+        this.admnStatusArray[existingIdx].response = 1;
+      } else if (statusValue === 'Objection') {
+        this.admnStatusArray[existingIdx].response = 2;
+      } else {
+        this.admnStatusArray.splice(existingIdx, 1);
+      }
+    } else {
+      if (statusValue === 'Approved') {
+        this.admnStatusArray.push({ vehicleinfoid: vehicleId, response: 1, comment: null });
+      } else if (statusValue === 'Objection') {
+        this.admnStatusArray.push({ vehicleinfoid: vehicleId, response: 2, comment: null });
+      }
+    }
+  }
+
+  addComments(vehicleId: number, commentValue: string) {
+    const existing = this.admnStatusArray.find(item => item.vehicleinfoid === vehicleId);
+    if (existing) {
+      existing.comment = commentValue;
+    } else {
+      this.admnStatusArray.push({ vehicleinfoid: vehicleId, response: null, comment: commentValue });
+    }
+  }
+
+  submitAdmnResponse() {
+    if (this.admnStatusArray.length > 0) {
+      this.verifyVehiclesService.submitAdmnResponse(this.admnStatusArray).subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.toastr.success('Successfully Updated Record!!');
+            this.admnStatusArray = [];
+            this.vehiclesResource.reload();
+          } else {
+            this.toastr.error(res.message || 'Failed to update record');
+          }
+        },
+        error: (error: any) => {
+          console.error('Error submitting response:', error);
+          this.toastr.error('Failed to submit verification');
+        }
+      });
+    } else {
+      this.toastr.warning('Please select the status for at least one vehicle');
     }
   }
 
@@ -170,53 +224,34 @@ export class VerifyVehiclesComponent {
   }
 
   private formatLocation(vehicle: VerifyVehicle): string {
-    return `<div class="multi-line-cell">
-      <div><strong>Department:</strong> ${vehicle.department}</div>
-      <div><strong>District:</strong> ${vehicle.district}</div>
-      <div><strong>State:</strong> ${vehicle.state}</div>
-      <div><strong>Tehsil:</strong> ${vehicle.tehsil}</div>
-    </div>`;
+    return `${vehicle.department || '-'} / <br> ${vehicle.district || '-'}`;
   }
 
   private formatOfficeDetails(vehicle: VerifyVehicle): string {
-    return `<div class="multi-line-cell">
-      <div><strong>Office:</strong> ${vehicle.officeName}</div>
-      <div><strong>Address:</strong> ${vehicle.officeAddress}</div>
-      <div><strong>Officer:</strong> ${vehicle.officerName}</div>
-      <div><strong>Designation:</strong> ${vehicle.designation}</div>
-    </div>`;
+    return `${vehicle.officeName || '-'} / <br> ${vehicle.officeAddress || '-'} / <br> ${vehicle.officerName || '-'} / <br> ${vehicle.designation || '-'}`;
   }
 
   private formatVehicleDetails(vehicle: VerifyVehicle): string {
-    return `<div class="multi-line-cell">
-      <div><strong>Manufacturer:</strong> ${vehicle.manufacturer}</div>
-      <div><strong>Model:</strong> ${vehicle.model}</div>
-      <div><strong>Year:</strong> ${vehicle.manufactureYear}</div>
-      <div><strong>Type:</strong> ${vehicle.vehicleType}</div>
-      <div><strong>Vehicle No:</strong> ${vehicle.vehicleNumber}</div>
-      <div><strong>Seating:</strong> ${vehicle.seatingCapacity}</div>
-    </div>`;
+    return `${vehicle.manufacturer || '-'} / <br> ${vehicle.model || '-'} / <br> ${vehicle.manufactureYear || '-'} / <br> ${vehicle.vehicleType || '-'} / <br> <strong>${vehicle.vehicleNumber || '-'}</strong> / <br> ${vehicle.seatingCapacity || '-'}`;
   }
 
   private formatFuelStatus(vehicle: VerifyVehicle): string {
-    return `<div class="multi-line-cell">
-      <div><strong>Fuel:</strong> ${vehicle.fuelUsed}</div>
-      <div><strong>Fitness Upto:</strong> ${vehicle.fitnessUpto}</div>
-      <div><strong>Engine/Chassis:</strong> ${vehicle.engineOrChassisNo}</div>
-      <div><strong>Status:</strong> ${vehicle.currentStatus}</div>
-    </div>`;
+    return `${vehicle.fuelUsed || '-'} / <br> ${vehicle.fitnessUpto || '-'} / <br> ${vehicle.engineOrChassisNo || '-'} / <br> ${vehicle.currentStatus || '-'}`;
   }
 
   private formatVerification(vehicle: VerifyVehicle): string {
-    return `<div class="multi-line-cell">
-      <div><strong>Status:</strong> ${this.getStatusBadge(vehicle.verificationStatus)}</div>
-      <div><strong>Date:</strong> ${vehicle.verificationDate || 'N/A'}</div>
-    </div>`;
+    const statusFormatted = this.getStatusBadge(vehicle.verificationStatus);
+    const dateFormatted = vehicle.verificationDate || 'N/A';
+    return `<span>${statusFormatted} <br> ${dateFormatted}</span>`;
   }
 
   private getStatusBadge(status: string): string {
-    const badgeClass = `badge-${status.toLowerCase()}`;
-    return `<span class="status-badge ${badgeClass}">${status.charAt(0).toUpperCase() + status.slice(1)}</span>`;
+    let color = 'black';
+    if (status === 'pending') color = 'gray';
+    if (status === 'verified') color = 'green';
+    if (status === 'objection') color = 'red';
+    
+    return `<span style="color: ${color}; font-weight: 500">${status === 'pending' ? 'Verification Pending' : status.charAt(0).toUpperCase() + status.slice(1)}</span>`;
   }
 
   getFormattedVehicles(): any[] {

@@ -9,10 +9,9 @@ import { AppInputComponent } from '@shared/components/ui/app-input/input.compone
 import { AppPaginationComponent } from '@shared/components/ui/app-pagination/pagination.component';
 import { AppDropdownComponent, DropdownItem } from '@shared/components/ui/app-dropdown/dropdown.component';
 import { VehicleDetailsModalComponent } from '@shared/components/vehicle-details-modal';
-import { VehicleTransferModalComponent } from '@shared/components/vehicle-transfer-modal/vehicle-transfer-modal.component';
-import { VehicleCondemnationModalComponent } from '@shared/components/vehicle-condemnation-modal/vehicle-condemnation-modal.component';
-import { AppDataTableComponent } from '@shared/components/ui/app-data-table/data-table.component';
+import { AppDataTableComponent, TableAction, TableColumn } from '@shared/components/ui/app-data-table/data-table.component';
 import { VehicleService } from '@shared/services/vehicle.service';
+import Swal from 'sweetalert2';
 
 export interface VehicleResponse {
   id: number;
@@ -37,7 +36,7 @@ export interface VehicleResponse {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, AppCardComponent, AppButtonComponent, AppInputComponent, AppPaginationComponent, AppDropdownComponent, VehicleDetailsModalComponent, VehicleTransferModalComponent, VehicleCondemnationModalComponent, AppDataTableComponent],
+  imports: [CommonModule, RouterModule, AppCardComponent, AppButtonComponent, AppInputComponent, AppPaginationComponent, AppDropdownComponent, VehicleDetailsModalComponent, AppDataTableComponent],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
@@ -47,11 +46,8 @@ export class Dashboard {
 
   // Modal state
   showVehicleDetailsModal = false;
-  selectedVehicleNumber = '';
-  selectedVehicleForTransfer: any = null;
-  showTransferModal = false;
-  selectedVehicleForCondemnation: any = null;
-  showCondemnationModal = false;
+  selectedVehicleId: number | null = null;
+  selectedVehicleRegNo: string = '';
 
   // Data fetching
   private vehiclesResource = rxResource<VehicleResponse[], unknown>({
@@ -92,7 +88,7 @@ export class Dashboard {
     { label: 'Unverified Vehicles', value: 'Unverified Vehicles' },
   ];
 
-  tableColumns = [
+  tableColumns: TableColumn[] = [
     { key: 'vehicleNumber', label: 'Vehicle Number' },
     { key: 'departmentLocation', label: 'Department / Location', allowHtml: true },
     { key: 'officeInfo', label: 'Office Info', allowHtml: true },
@@ -100,15 +96,11 @@ export class Dashboard {
     { key: 'fuelFitness', label: 'Fuel / Fitness / Status', allowHtml: true },
   ];
 
-  tableActions = [
-    { label: 'Details', action: (row: any) => this.onAction('Details', row) },
-    { label: 'Edit', action: (row: any) => this.onAction('Edit', row) },
-    { label: 'Transfer', action: (row: any) => this.onAction('Transfer', row) },
-    { 
-      label: 'Condemn', 
-      action: (row: any) => this.onAction('Condemn', row),
-      disabled: (row: any) => row.original.currentStatus === 'CONDEMNED'
-    },
+  tableActions: TableAction[] = [
+    { label: 'Details', icon: '<i class="pi pi-eye"></i>', action: (row: any) => this.onAction('Details', row) },
+    { label: 'Edit', icon: '<i class="pi pi-pencil"></i>', action: (row: any) => this.onAction('Edit', row) },
+    { label: 'Transfer', icon: '<i class="pi pi-sync"></i>', action: (row: any) => this.onAction('Transfer', row) },
+    { label: 'Delete', icon: '<i class="pi pi-trash"></i>', variant: 'danger', action: (row: any) => this.onAction('Delete', row) },
   ];
 
   // Table data
@@ -134,7 +126,7 @@ export class Dashboard {
     console.log('Selected:', item.value);
     // Handle dropdown item selection
     if (item.value === 'fuel') {
-      this.router.navigate(['/bill-voucher']);
+      this.router.navigate(['/fuel-claims']);
     } else if (item.value === 'maintenance') {
       this.router.navigate(['/maintenance-voucher']);
     } else if (item.value === 'hired') {
@@ -166,40 +158,46 @@ export class Dashboard {
     console.log(`${action} clicked for:`, row);
     // Handle action based on type
     if (action === 'Details') {
-      this.selectedVehicleNumber = row.vehicleNumber;
+      this.selectedVehicleId = row.original.id;
+      this.selectedVehicleRegNo = row.vehicleNumber;
       this.showVehicleDetailsModal = true;
     } else if (action === 'Edit') {
       this.router.navigate(['/vehicles/edit', row.original.id]);
     } else if (action === 'Transfer') {
-      this.selectedVehicleForTransfer = row.original;
-      this.showTransferModal = true;
-    } else if (action === 'Condemn') {
-      this.selectedVehicleForCondemnation = row.original;
-      this.showCondemnationModal = true;
+      this.router.navigate(['/vehicles/transfer', row.original.id]);
+    } else if (action === 'Delete') {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: `You want to delete vehicle ${row.vehicleNumber}?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#666',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.vehicleService.deleteVehicle(row.original.id).subscribe({
+            next: () => {
+              Swal.fire('Deleted!', 'Vehicle has been deleted.', 'success');
+              this.vehiclesResource.reload();
+            },
+            error: (err) => {
+              console.error('Delete error:', err);
+              Swal.fire('Error!', 'Failed to delete vehicle.', 'error');
+            }
+          });
+        }
+      });
     }
   }
 
-  onCondemnSuccess(): void {
-    this.vehiclesResource.reload();
-  }
 
-  closeCondemnationModal(): void {
-    this.showCondemnationModal = false;
-    this.selectedVehicleForCondemnation = null;
-  }
 
-  onTransferSuccess(): void {
-    // Refresh vehicle list
-    this.vehiclesResource.reload();
-  }
 
-  closeTransferModal(): void {
-    this.showTransferModal = false;
-    this.selectedVehicleForTransfer = null;
-  }
 
   closeVehicleDetailsModal(): void {
     this.showVehicleDetailsModal = false;
-    this.selectedVehicleNumber = '';
+    this.selectedVehicleId = null;
+    this.selectedVehicleRegNo = '';
   }
 }

@@ -1,47 +1,122 @@
 <div class="verify-vehicles-container">
-  <!-- Single Card with all sections -->
   <app-card>
     <!-- Page Header -->
-    <div class="page-header">
-      <div class="header-left">
-        <h1 class="page-title">Verify Vehicles</h1>
-      </div>
-      <div class="header-right">
-        <app-btn label="Go back to Home" routerLink="/vehicle" variant="secondary"></app-btn>
-      </div>
-    </div>
-
-    <!-- Status Filter Section -->
-    <div class="status-filter-section">
-      <div class="filter-label">Filter by Status:</div>
-      <div class="status-buttons">
-        @for (option of statusOptions; track option.value) {
-          <app-btn
-            [label]="option.label"
-            [variant]="selectedStatus() === option.value ? 'primary' : 'secondary'"
-            [customClass]="selectedStatus() === option.value ? 'active-status' : ''"
-            (click)="onStatusChange(option.value)"
-          ></app-btn>
-        }
+    <div class="page-header mb-4">
+      <div class="d-flex w-100 justify-content-between align-items-center">
+        <div>
+          <h1 class="page-title h4 fw-bold mb-0">Verify Vehicles</h1>
+        </div>
+        <nav aria-label="breadcrumb" class="ms-auto">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a [routerLink]="['/vehicle']" class="text-decoration-none">Vehicle</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Verify Vehicles</li>
+          </ol>
+        </nav>
       </div>
     </div>
 
-    <!-- Table Section -->
-    <div class="table-section">
-      <app-data-table
-        [columns]="tableColumns"
-        [data]="getFormattedVehicles()"
-        [actions]="getActionsForStatus(selectedStatus())"
-        [isLoading]="isLoading()"
-        [emptyMessage]="'No Record Found'"
-      ></app-data-table>
+    <!-- DDO VIEW -->
+    @if (userRole === 'DDO') {
+    <div class="tabs-navigation">
+      @for (option of statusOptions; track option.value) {
+      <button class="tab-item" [class.active]="selectedStatus() === option.value"
+        (click)="onStatusChange(option.value)">
+        {{option.label}}
+      </button>
+      }
     </div>
+
+
+    <div class="table-responsive">
+      <app-data-table [columns]="tableColumns" [data]="getFormattedVehicles()"
+        [actions]="getActionsForStatus(selectedStatus())" [isLoading]="isLoading()"
+        [emptyMessage]="'No Record Found'"></app-data-table>
+    </div>
+    }
+
+    <!-- ADMN VIEW -->
+    @if (userRole === 'ADMN') {
+    <div class="table-section admn-table-container">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="section-title mb-0">Pending Verifications ({{ admnTotalItems() }})</h5>
+        <div class="col-md-3">
+          <input type="text" class="form-control form-control-sm search-input" placeholder="Search by Vehicle No. or Model"
+            [value]="admnSearchText()" (input)="onAdmnSearchChange($any($event.target).value)">
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover custom-admn-table align-middle text-sm"
+          style="font-size: 0.875rem;">
+          <thead class="table-light">
+            <tr>
+              <th scope="col" rowspan="2" class="align-middle fw-semibold text-center">Vehicle Number</th>
+              <th scope="col" colspan="2" class="align-middle text-center fw-semibold">Manufacturer / Make or Model / Vehicle Type</th>
+              <th scope="col" rowspan="2" class="align-middle fw-semibold text-center">Vehicle Proofs</th>
+              <th scope="col" rowspan="2" class="align-middle fw-semibold text-center">Action/Status</th>
+              <th scope="col" rowspan="2" class="align-middle fw-semibold text-center">Response (Comments)</th>
+              <th scope="col" rowspan="2" class="align-middle fw-semibold text-center">Transferred / New</th>
+            </tr>
+            <tr>
+              <th scope="col" class="align-middle text-center fw-semibold">In VMS</th>
+              <th scope="col" class="align-middle text-center fw-semibold">In VAHAN</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of admnPaginatedVehicles(); track item.id) {
+            <tr>
+              <td class="text-center fw-bold">
+                <a class="text-decoration-underline text-primary" style="cursor: pointer" (click)="viewDetails(item)">
+                  {{item.vehicleNumber}}
+                </a>
+              </td>
+              <td>{{item.vmsManufacturer || '-'}} <br> {{item.vmsModel || '-'}} <br> {{item.vmsVehicleType || '-'}}</td>
+              <td>{{item.vahanManufacturer || '-'}} <br> {{item.vahanModel || '-'}} <br> {{item.vahanVehicleClass || '-'}} / {{item.vahanBodyType || '-'}}</td>
+              <td class="text-center">
+                <a class="text-primary d-block mb-1" style="cursor: pointer; text-decoration: underline;"
+                  (click)="viewDetails(item)">View Registration Proof</a>
+                <a class="text-primary d-block" style="cursor: pointer; text-decoration: underline;"
+                  (click)="viewDetails(item)">View Vehicle Photo</a>
+              </td>
+              <td>
+                <select class="form-select form-select-sm" #status [value]="getSelectedStatusValue(item.id)" (change)="setStatus(item.id, status.value)">
+                  <option value="">Do Nothing</option>
+                  <option value="Approved">Approve</option>
+                  <option value="Objection">Object</option>
+                </select>
+              </td>
+              <td>
+                <input class="form-control form-control-sm" placeholder="Comments" type="text" #comment [value]="getCommentValue(item.id)"
+                  (blur)="addComments(item.id, comment.value)">
+              </td>
+              <td class="text-center">{{ 'New Vehicle' }}</td>
+            </tr>
+            }
+            @if (admnTotalItems() === 0) {
+            <tr class="text-center">
+              <td colspan="7" class="py-4 text-muted">No Record Found</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-3">
+        <app-pagination 
+          [currentPage]="admnCurrentPage()" 
+          [totalPages]="admnTotalPages()" 
+          [totalItems]="admnTotalItems()" 
+          [itemsPerPage]="admnItemsPerPage" 
+          [showInfo]="true"
+          (pageChange)="onAdmnPageChange($event)">
+        </app-pagination>
+        <app-btn label="Submit Verification" variant="dark-blue" size="sm" icon="pi pi-check"
+          (click)="submitAdmnResponse()"></app-btn>
+      </div>
+    </div>
+    }
   </app-card>
 
-  <!-- Vehicle Details Modal -->
-  <app-vehicle-details-modal
-    [isVisible]="isDetailsModalVisible"
-    [vehicleNumber]="selectedVehicleNumber"
-    (close)="closeDetailsModal()"
-  ></app-vehicle-details-modal>
+  <app-vehicle-details-modal *ngIf="isDetailsModalVisible && selectedVehicleId" [vehicleId]="selectedVehicleId"
+    [registrationNumber]="selectedVehicleRegNo" (close)="closeDetailsModal()"></app-vehicle-details-modal>
 </div>

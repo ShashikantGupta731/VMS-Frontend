@@ -57,17 +57,17 @@ export class MaintenanceVouchersComponent {
   ];
 
   viewVoucher(voucher: MaintenanceBill): void {
-    this.toastr.info(`Viewing Maintenance Bill #${voucher.billNumber}`, 'Details');
+    this.router.navigate(['/maintenance-voucher/edit', voucher.maintenanceBillId], { queryParams: { view: 'true' } });
   }
 
   editVoucher(voucher: MaintenanceBill): void {
-    this.router.navigate(['/bill-voucher/maintenance/edit', voucher.id]);
+    this.router.navigate(['/maintenance-voucher/edit', voucher.maintenanceBillId]);
   }
 
   async deleteVoucher(voucher: MaintenanceBill): Promise<void> {
     if (confirm(`Are you sure you want to delete Maintenance Bill #${voucher.billNumber}?`)) {
       try {
-        const success = await firstValueFrom(this.maintenanceVouchersService.deleteVoucher(voucher.id));
+        const success = await firstValueFrom(this.maintenanceVouchersService.deleteVoucher(voucher.maintenanceBillId));
         if (success) {
           this.toastr.success('Voucher deleted successfully', 'Success');
           this.vouchersResource.reload();

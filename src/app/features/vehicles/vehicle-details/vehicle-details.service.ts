@@ -1,7 +1,11 @@
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { ApiService } from '@core/services/api';
+import { AuthService } from '@core/services/auth';
 
 export interface VehicleDetails {
+  id?: number;
   registrationNumber: string;
   ddoCode: string;
   officeName: string;
@@ -37,110 +41,68 @@ export interface VehicleDetails {
   providedIn: 'root'
 })
 export class VehicleDetailsService {
-  private mockVehicles: VehicleDetails[] = [
-    {
-      registrationNumber: 'PB-10-AB-1234',
-      ddoCode: 'DDO-001',
-      officeName: 'Regional Transport Office',
-      officeAddress: 'Ferozepur Road, Ludhiana, Punjab',
-      district: 'Ludhiana',
-      tehsil: 'Ludhiana',
-      department: 'Transport',
-      allocationType: 'Pool Vehicle',
-      officerName: 'John Smith',
-      designation: 'Regional Officer',
-      driverType: 'Permanent',
-      driverName: 'Raj Kumar',
-      driverContact: '+91-98765-43210',
-      vehicleType: 'SUV',
-      manufacturer: 'Toyota',
-      model: 'Innova',
-      manufactureYear: 2022,
-      seatingCapacity: 7,
-      fuelUsed: 'Diesel',
-      kmCovered: 45000,
-      kmDate: '2024-01-15',
-      currentStatus: 'Active',
-      isTyreOriginal: true,
-      fuelCost: 45000,
-      fuelLitres: 1200,
-      maintenanceCost: 15000,
-      purchaseDate: '2022-03-15',
-      vehicleCost: 1850000,
-      chassisNumber: 'MHK12345678901234'
-    },
-    {
-      registrationNumber: 'PB-10-CD-5678',
-      ddoCode: 'DDO-002',
-      officeName: 'Civil Hospital',
-      officeAddress: 'Mall Road, Amritsar, Punjab',
-      district: 'Amritsar',
-      tehsil: 'Amritsar',
-      department: 'Health',
-      allocationType: 'Assigned Vehicle',
-      officerName: 'Jane Doe',
-      designation: 'Medical Officer',
-      driverType: 'Contract',
-      driverName: 'Singh Singh',
-      driverContact: '+91-87654-32109',
-      vehicleType: 'Hatchback',
-      manufacturer: 'Maruti Suzuki',
-      model: 'Swift',
-      manufactureYear: 2021,
-      seatingCapacity: 5,
-      fuelUsed: 'Petrol',
-      kmCovered: 32000,
-      kmDate: '2024-01-10',
-      currentStatus: 'Active',
-      isTyreOriginal: false,
-      fuelCost: 32000,
-      fuelLitres: 800,
-      maintenanceCost: 12000,
-      purchaseDate: '2021-06-20',
-      vehicleCost: 650000,
-      chassisNumber: 'MAK98765432109876'
-    }
-  ];
+  private apiService = inject(ApiService);
+  private authService = inject(AuthService);
 
-  private currentIndex = 0;
+  /**
+   * Loads the list of vehicles from backend API.
+   * Uses DDO-filtered endpoint if the user has DDO role,
+   * otherwise gets all vehicles for administrative roles.
+   */
+  loadVehicles(): Observable<VehicleDetails[]> {
+    const isDdo = this.authService.hasRole('DDO') && !this.authService.hasRole('ADMN');
+    const endpoint = isDdo ? 'Billing/vehicles' : 'Vehicles';
 
-  getVehicleDetails(registrationNumber?: string): Observable<VehicleDetails | null> {
-    // Simulate API delay
-    if (registrationNumber) {
-      const vehicle = this.mockVehicles.find(v => v.registrationNumber === registrationNumber);
-      return of(vehicle || null);
-    }
-    return of(this.mockVehicles[this.currentIndex]);
-  }
+    console.log(`[VehicleDetailsService] Loading vehicles from endpoint: ${endpoint}`);
 
-  searchByRegistrationNumber(searchTerm: string): Observable<VehicleDetails[]> {
-    const filtered = this.mockVehicles.filter(v =>
-      v.registrationNumber.toLowerCase().includes(searchTerm.toLowerCase())
+    return this.apiService.get<any>(endpoint).pipe(
+      map(response => {
+        // Handle both raw array response and wrapped result response
+        const rawList = response?.result || response || [];
+        if (!Array.isArray(rawList)) {
+          console.warn('[VehicleDetailsService] API did not return an array list:', response);
+          return [];
+        }
+        return rawList.map(v => this.mapResponseToDetails(v));
+      })
     );
-    return of(filtered);
   }
 
-  getTotalVehicleCount(): Observable<number> {
-    return of(this.mockVehicles.length);
-  }
-
-  getNextVehicle(): Observable<VehicleDetails | null> {
-    if (this.currentIndex < this.mockVehicles.length - 1) {
-      this.currentIndex++;
-      return of(this.mockVehicles[this.currentIndex]);
-    }
-    return of(null);
-  }
-
-  getPreviousVehicle(): Observable<VehicleDetails | null> {
-    if (this.currentIndex > 0) {
-      this.currentIndex--;
-      return of(this.mockVehicles[this.currentIndex]);
-    }
-    return of(null);
-  }
-
-  setCurrentIndex(index: number): void {
-    this.currentIndex = index;
+  /**
+   * Maps backend VehicleResponseDto to frontend VehicleDetails structure
+   */
+  private mapResponseToDetails(v: any): VehicleDetails {
+    return {
+      id: v.id,
+      registrationNumber: v.registrationNumber || 'N/A',
+      ddoCode: v.ddoCode || 'N/A',
+      officeName: v.officeName || 'N/A',
+      officeAddress: v.officeAddress || 'N/A',
+      district: v.district || 'N/A',
+      tehsil: v.tehsil || 'N/A',
+      department: v.department || 'N/A',
+      allocationType: v.vehicleAllocationType || 'N/A',
+      officerName: v.officerName || 'N/A',
+      designation: v.designation || 'N/A',
+      driverType: v.driverType || 'N/A',
+      driverName: v.driverName || 'N/A',
+      driverContact: v.driverContactNumber || 'N/A',
+      vehicleType: v.vehicleType || 'N/A',
+      manufacturer: v.manufacturer || 'N/A',
+      model: v.model || 'N/A',
+      manufactureYear: parseInt(v.manufactureYear) || 0,
+      seatingCapacity: v.seatingCapacity || 0,
+      fuelUsed: v.fuelUsed || 'N/A',
+      kmCovered: v.kmsCovered || 0,
+      kmDate: v.createdAt || 'N/A',
+      currentStatus: v.currentStatus || 'N/A',
+      isTyreOriginal: v.isTyreOriginal === 'Yes',
+      fuelCost: v.fuelCostLast3Months || 0,
+      fuelLitres: v.fuelLitresLast3Months || 0,
+      maintenanceCost: v.maintenanceCostLast3Months || 0,
+      purchaseDate: v.purchaseDate || '',
+      vehicleCost: v.vehicleCost || 0,
+      chassisNumber: v.chassisNumber || 'N/A'
+    };
   }
 }

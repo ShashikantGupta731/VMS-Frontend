@@ -8,6 +8,8 @@ import { AppDataTableComponent, TableColumn, TableAction } from '@shared/compone
 import { rxResource } from '@angular/core/rxjs-interop';
 import { firstValueFrom } from 'rxjs';
 
+import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-contractual-requisite-vehicles-vouchers',
   standalone: true,
@@ -30,15 +32,24 @@ export class ContractualRequisiteVehiclesVouchersComponent implements OnInit {
 
   // Table columns
   tableColumns: TableColumn[] = [
-    { key: 'id', label: 'ID' },
     { key: 'billNumber', label: 'Bill No.' },
     { key: 'vehicleNumber', label: 'Vehicle No.' },
+    { key: 'billDate', label: 'Date' },
     { key: 'amount', label: 'Amount (₹)' },
-    { key: 'status', label: 'Status' },
   ];
 
   // Table actions
   tableActions: TableAction[] = [
+    {
+      label: 'View',
+      action: (row: ContractualBill) => this.viewVoucher(row),
+      variant: 'info'
+    },
+    {
+      label: 'Edit',
+      action: (row: ContractualBill) => this.editVoucher(row),
+      variant: 'primary'
+    },
     {
       label: 'Delete',
       action: (row: ContractualBill) => this.deleteVoucher(row),
@@ -48,11 +59,33 @@ export class ContractualRequisiteVehiclesVouchersComponent implements OnInit {
 
   ngOnInit(): void {}
 
+  viewVoucher(voucher: ContractualBill): void {
+    this.router.navigate(['/contractual-requisite-vehicle-voucher/create'], {
+      queryParams: { id: voucher.contractualBillId, mode: 'view' }
+    });
+  }
+
+  editVoucher(voucher: ContractualBill): void {
+    this.router.navigate(['/contractual-requisite-vehicle-voucher/create'], {
+      queryParams: { id: voucher.contractualBillId, mode: 'edit' }
+    });
+  }
+
   async deleteVoucher(voucher: ContractualBill): Promise<void> {
-    if (confirm('Are you sure you want to delete this drafted voucher?')) {
+    const result = await Swal.fire({
+      title: 'Delete Draft?',
+      text: `Are you sure you want to delete Bill #${voucher.billNumber}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (result.isConfirmed) {
       this.isLoading.set(true);
       try {
-        await firstValueFrom(this.contractualService.deleteVoucher(voucher.id));
+        await firstValueFrom(this.contractualService.deleteVoucher(voucher.contractualBillId));
         this.toastr.success('Voucher deleted successfully', 'Success');
         this.vouchersResource.reload();
       } catch (error) {

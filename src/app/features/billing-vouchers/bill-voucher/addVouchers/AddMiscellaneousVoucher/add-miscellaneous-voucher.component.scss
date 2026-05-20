@@ -8,7 +8,49 @@
 .breadcrumb-item + .breadcrumb-item::before { content: '>'; color: $text-light; }
 .form-section { margin-bottom: 30px; padding-bottom: 25px; border-bottom: 1px solid $border-color; &:last-of-type { border-bottom: none; margin-bottom: 0; padding-bottom: 0; } }
 .section-title { color: $text-dark; font-weight: $font-weight-semibold; border-left: 4px solid $primary-color; padding-left: 12px; margin-bottom: 20px; }
-.form-label { font-size: $font-size-base; color: $text-dark; margin-bottom: 6px; }
+.form-label {
+  font-size: $font-size-base;
+  color: $text-dark;
+  margin-bottom: 6px;
+}
+
+// Standardize headings and text to match field font size
+h5, h6, p, label, .breadcrumb-item {
+  font-size: $font-size-base !important;
+}
+
+.text-dark-blue {
+  color: #1a237e !important;
+}
+
+.border-bottom-dark-blue {
+  border-bottom: 2px solid #1a237e !important;
+}
+
+.border-dark-blue-subtle {
+  border-color: rgba(26, 35, 126, 0.2) !important;
+}
+
+.marquee-container {
+  width: 100%;
+  overflow: hidden;
+  background: $danger-light;
+  padding: 10px 0;
+  border-radius: $radius-md;
+  margin-bottom: 15px;
+}
+
+.marquee-text {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 25s linear infinite;
+  padding-left: 100%;
+}
+
+@keyframes marquee {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(-100%, 0); }
+}
 .radio-group { display: flex; gap: 20px; padding: 8px 0; }
 .form-check-inline { display: flex; align-items: center; gap: 6px; }
 .form-check-input { background: $bg-white; border: 1px solid $border-color; box-shadow: $shadow-inset; cursor: pointer; width: 18px; height: 18px; &:checked { background: $primary-color; border-color: $primary-color; box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.1), inset -2px -2px 4px rgba(255, 255, 255, 0.9); } &:focus { box-shadow: $shadow-inset-focus; border-color: $primary-color; } }

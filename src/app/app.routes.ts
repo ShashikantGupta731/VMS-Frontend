@@ -3,11 +3,14 @@ import { Login } from '@features/auth/login/login';
 import { Signup } from '@features/auth/signup/signup';
 import { Dashboard } from '@features/vehicles/dashboard/dashboard';
 import { AddVehicleComponent } from '@features/vehicles/add-vehicle/add-vehicle.component';
+import { TransferVehicleComponent } from '@features/vehicles/transfer-vehicle/transfer-vehicle.component';
 import { IfmsClaimsComponent } from '@features/ifms-integration/ifms-claims/ifms-claims.component';
 import { NonTreasuryClaimsComponent } from '@features/ifms-integration/non-treasury-claims/non-treasury-claims.component';
 import { SendBillsToIfmsComponent } from '@features/ifms-integration/send-bills-ifms/send-bills-to-ifms.component';
+import { ClaimVerificationComponent } from '@features/ifms-integration/claim-verification/claim-verification.component';
 import { VerifyVehiclesComponent } from '@features/vehicles/verify-vehicles/verify-vehicles.component';
 import { VehicleDetailsComponent } from '@features/vehicles/vehicle-details/vehicle-details.component';
+import { UnverifiedVehiclesComponent } from '@features/vehicles/unverified-vehicles/unverified-vehicles.component';
 import { FuelVouchersComponent } from '@features/billing-vouchers/bill-voucher/fuel-vouchers/fuel-vouchers.component';
 import { BillingDashboardComponent } from '@features/billing-vouchers/billing-dashboard/billing-dashboard.component';
 import { ClaimDetailsComponent } from '@features/billing-vouchers/claim-details/claim-details.component';
@@ -51,11 +54,13 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       // Dashboard & Vehicles
-      { path: 'vehicle', component: Dashboard, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator, AppRole.HOD, AppRole.DeputyCommissioner])] },
+       { path: 'vehicle', component: Dashboard, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator, AppRole.HOD, AppRole.DeputyCommissioner])] },
       { path: 'vehicles/add', component: AddVehicleComponent, canActivate: [roleGuard([AppRole.DDO])] },
       { path: 'vehicles/edit/:id', component: AddVehicleComponent, canActivate: [roleGuard([AppRole.DDO])] },
+      { path: 'vehicles/transfer/:id', component: TransferVehicleComponent, canActivate: [roleGuard([AppRole.DDO])] },
       { path: 'verify-vehicles', component: VerifyVehiclesComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator])] },
       { path: 'vehicle-details', component: VehicleDetailsComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator, AppRole.HOD, AppRole.DeputyCommissioner])] },
+      { path: 'unverified-vehicles', component: UnverifiedVehiclesComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator, AppRole.HOD, AppRole.DeputyCommissioner])] },
       
       // Inventory Management
       { path: 'inventory', component: InventoryDashboardComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator])] },
@@ -71,7 +76,7 @@ export const routes: Routes = [
 
       // Billing & Vouchers
       { path: 'bill-voucher', component: BillingDashboardComponent, canActivate: [roleGuard([AppRole.DDO])] },
-      { path: 'bill-voucher/claim/:id', component: ClaimDetailsComponent, canActivate: [roleGuard([AppRole.DDO])] },
+      { path: 'bill-voucher/claim/:id', component: ClaimDetailsComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator])] },
       { path: 'fuel-claims', component: FuelVouchersComponent, canActivate: [roleGuard([AppRole.DDO])] },
       { path: 'maintenance-voucher', component: MaintenanceVouchersComponent, canActivate: [roleGuard([AppRole.DDO])] },
       { path: 'hired-vehicle-voucher', component: HiredVehicleVouchersComponent, canActivate: [roleGuard([AppRole.DDO])] },
@@ -81,14 +86,17 @@ export const routes: Routes = [
       // Vouchers Creation
       { path: 'bill-voucher/hired-vehicle/create', component: AddHiredVehicleVoucherComponent, canActivate: [roleGuard([AppRole.DDO])] },
       { path: 'bill-voucher/create', component: AddFuelVoucherComponent, canActivate: [roleGuard([AppRole.DDO])] },
+      { path: 'bill-voucher/edit/:id', component: AddFuelVoucherComponent, canActivate: [roleGuard([AppRole.DDO])] },
       { path: 'maintenance-voucher/create', component: AddMaintenanceVoucherComponent, canActivate: [roleGuard([AppRole.DDO])] },
+      { path: 'maintenance-voucher/edit/:id', component: AddMaintenanceVoucherComponent, canActivate: [roleGuard([AppRole.DDO])] },
       { path: 'contractual-requisite-vehicle-voucher/create', component: AddContractualVoucherComponent, canActivate: [roleGuard([AppRole.DDO])] },
       { path: 'miscellaneous-store-voucher/create', component: AddMiscellaneousVoucherComponent, canActivate: [roleGuard([AppRole.DDO])] },
       
       // IFMS Integration
-      { path: 'ifms-claims', component: IfmsClaimsComponent, canActivate: [roleGuard([AppRole.DDO])] },
-      { path: 'non-ifms-claims', component: NonTreasuryClaimsComponent, canActivate: [roleGuard([AppRole.DDO])] },
-      { path: 'bill-integration', component: SendBillsToIfmsComponent, canActivate: [roleGuard([AppRole.DDO])] },
+      { path: 'ifms-claims', component: IfmsClaimsComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator])] },
+      { path: 'non-ifms-claims', component: NonTreasuryClaimsComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator])] },
+      { path: 'bill-integration', component: SendBillsToIfmsComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator])] },
+      { path: 'claim-verification', component: ClaimVerificationComponent, canActivate: [roleGuard([AppRole.NDOF, AppRole.Administrator])] },
       
       // Masters
             { path: 'master/office', component: OfficesComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator, AppRole.HOD, AppRole.DeputyCommissioner])] },

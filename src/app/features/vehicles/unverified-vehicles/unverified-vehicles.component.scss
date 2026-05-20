@@ -1,0 +1,64 @@
+@use 'variables' as *;
+
+.unverified-vehicles-container {
+  padding: 20px;
+
+  .page-header {
+    .page-title {
+      color: $text-dark;
+    }
+
+    .breadcrumb {
+      background: transparent;
+      padding: 0;
+
+      .breadcrumb-item {
+        a {
+          color: $primary-color;
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+
+        &.active {
+          color: $text-muted;
+        }
+      }
+    }
+  }
+
+  .section-title {
+    color: $text-dark;
+    font-weight: $font-weight-semibold;
+  }
+
+  .filter-section {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border-color: $border-color !important;
+  }
+
+  .table-responsive {
+    margin-bottom: 0;
+  }
+}
+
+// Print layout customizations
+@media print {
+  .unverified-vehicles-container {
+    padding: 0;
+  }
+
+  .filter-section,
+  .d-flex.justify-content-between.align-items-center.mb-3,
+  app-pagination,
+  nav[aria-label="breadcrumb"] {
+    display: none !important;
+  }
+
+  app-card {
+    border: none !important;
+    box-shadow: none !important;
+  }
+}

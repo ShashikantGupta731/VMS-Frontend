@@ -1,7 +1,6 @@
 import { Component, input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AppDataTableComponent, TableColumn } from '../../../ui/app-data-table/data-table.component';
-import { AppCardComponent } from '../../../ui/app-card/card.component';
 import { BillRecord } from '../../vehicle-details-modal.interfaces';
 import { VehicleDetailsModalService } from '../../vehicle-details-modal.service';
 import { rxResource } from '@angular/core/rxjs-interop';
@@ -9,16 +8,16 @@ import { rxResource } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'app-tyres-tab',
   standalone: true,
-  imports: [CommonModule, AppDataTableComponent, AppCardComponent],
+  imports: [CommonModule, AppDataTableComponent],
   templateUrl: './tyres-tab.component.html',
   styleUrl: './tyres-tab.component.scss',
 })
 export class TyresTabComponent {
-  vehicleNumber = input.required<string>();
+  vehicleId = input.required<number>();
   
   private resource = rxResource({
-    params: () => this.vehicleNumber(),
-    stream: ({ params }) => this.vehicleDetailsService.getTyreChanges(params)
+    params: () => this.vehicleId(),
+    stream: ({ params }) => this.vehicleDetailsService.getTyreChanges(params.toString())
   });
 
   tyreChanges = computed(() => this.resource.value() ?? []);
@@ -31,16 +30,28 @@ export class TyresTabComponent {
   columns: TableColumn[] = [
     { key: 'recordId', label: 'Record ID' },
     { key: 'claimNumber', label: 'Claim Number' },
-    { key: 'subVoucherNo', label: 'Sub Voucher No' },
-    { key: 'date', label: 'Date' },
-    { key: 'type', label: 'Type' },
-    { key: 'amount', label: 'Amount' },
-    { key: 'odometerReading', label: 'Odometer Reading' },
-    { key: 'sanctionOrderNo', label: 'Sanction Order No' },
+    { key: 'subVoucherNo', label: 'Sub Voucher No.' },
+    { key: 'date', label: 'Tyre Change Date' },
+    { key: 'amount', label: 'Tyre Cost (Rs.)' },
+    { key: 'odometerReading', label: 'Odometer Reading (KM)' },
+    { key: 'sanctionOrderNo', label: 'Sanction Order No.' },
     { key: 'sanctionOrderDate', label: 'Sanction Order Date' },
-    { key: 'sanctionAuthority', label: 'Sanction Authority' },
-    { key: 'permissionReceived', label: 'Permission Received' },
+    { key: 'sanctionAuthority', label: 'Sanction Authority' }
+  ];
+
+  actions = [
+    {
+      label: 'View Permission',
+      variant: 'primary' as const,
+      action: (row: BillRecord) => this.showPdfViewer(row.permissionNoc ?? ''),
+      disabled: (row: BillRecord) => !row.permissionNoc || row.permissionNoc === ''
+    }
   ];
 
   constructor(private vehicleDetailsService: VehicleDetailsModalService) {}
+
+  showPdfViewer(path: string) {
+    if (!path) return;
+    window.open(path, '_blank');
+  }
 }

@@ -1,0 +1,281 @@
+<div class="container-fluid p-4 bg-white">
+  <!-- Breadcrumb and Title -->
+  <div class="row mb-4">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+      <h3 class="fw-bold text-dark m-0 fs-3">Transfer Vehicle: {{ vehicle?.registrationNumber }}</h3>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb m-0 bg-transparent p-0">
+          <li class="breadcrumb-item text-primary"><a routerLink="/vehicle">Vehicles</a></li>
+          <li class="breadcrumb-item active">Transfer Vehicle</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <form [formGroup]="transferForm" (ngSubmit)="onSubmit()">
+    
+    <!-- Section 1: Transfer Vehicle From -->
+    <div class="card border-0 mb-4">
+      <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+        <h6 class="text-dark-blue fw-bold mb-1">Transfer Vehicle From</h6>
+      </div>
+      <div class="card-body p-0">
+        <!-- Read-Only Details Table -->
+        <div class="table-responsive mb-4">
+          <table class="table table-hover table-bordered align-middle m-0" style="font-size: 14px;">
+            <tbody>
+              <tr>
+                <th scope="row" class="bg-light fw-bold text-dark w-25 py-2 px-3">Office</th>
+                <td class="w-25 text-secondary py-2 px-3">{{ vehicle?.officeName || 'N/A' }}</td>
+                <th scope="row" class="bg-light fw-bold text-dark w-25 py-2 px-3">Office Address</th>
+                <td class="w-25 text-secondary py-2 px-3">{{ vehicle?.officeAddress || 'N/A' }}</td>
+              </tr>
+              <tr>
+                <th scope="row" class="bg-light fw-bold text-dark w-25 py-2 px-3">District</th>
+                <td class="w-25 text-secondary py-2 px-3">{{ vehicle?.district || 'N/A' }}</td>
+                <th scope="row" class="bg-light fw-bold text-dark w-25 py-2 px-3">Tehsil</th>
+                <td class="w-25 text-secondary py-2 px-3">{{ vehicle?.tehsil || 'N/A' }}</td>
+              </tr>
+              <tr>
+                <th scope="row" class="bg-light fw-bold text-dark w-25 py-2 px-3">Department</th>
+                <td class="w-25 text-secondary py-2 px-3">{{ vehicle?.department || 'N/A' }}</td>
+                <th scope="row" class="bg-light fw-bold text-dark w-25 py-2 px-3">Vehicle Allocation Type</th>
+                <td class="w-25 text-secondary py-2 px-3">{{ vehicle?.vehicleAllocationType || 'N/A' }}</td>
+              </tr>
+              <tr>
+                <th scope="row" class="bg-light fw-bold text-dark w-25 py-2 px-3">Allocated to (Officer Name)</th>
+                <td class="w-25 text-secondary py-2 px-3">{{ vehicle?.officerName || 'N/A' }}</td>
+                <th scope="row" class="bg-light fw-bold text-dark w-25 py-2 px-3">Allocated to (Designation)</th>
+                <td class="w-25 text-secondary py-2 px-3">{{ vehicle?.designation || 'N/A' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Transfer Vehicle To -->
+    <div class="card border-0 mb-4">
+      <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+        <h6 class="text-dark-blue fw-bold mb-1">Transfer Vehicle To</h6>
+      </div>
+      <div class="card-body p-0">
+        
+        <!-- Row 1: Transfer Date & Select Department -->
+        <div class="row mb-3">
+          <div class="col-md-6 mb-3">
+            <app-input
+              label="Transfer Date"
+              type="date"
+              formControlName="transferDate"
+              [required]="true"
+              width="100%"
+            ></app-input>
+          </div>
+          <div class="col-md-6 mb-3">
+            <app-input
+              label="Select Department"
+              type="select"
+              [options]="departmentOptions"
+              formControlName="toDeptId"
+              placeholder="Select Department"
+              [required]="true"
+              width="100%"
+            ></app-input>
+          </div>
+        </div>
+
+        <!-- Row 2: Office Name (with Search Button) & Select Allocation Type -->
+        <div class="row mb-3 align-items-end">
+          <div class="col-md-4 mb-3">
+            <app-input
+              label="Office Name"
+              type="select"
+              [options]="officeOptions"
+              formControlName="toOfficeId"
+              placeholder="Office Name"
+              [required]="true"
+              width="100%"
+              [searchable]="true"
+            ></app-input>
+          </div>
+          <div class="col-md-2 mb-3">
+            <app-btn
+              label="Search Office"
+              variant="dark-blue"
+              size="sm"
+              width="100%"
+              icon="pi pi-search"
+              (click)="openSearchModal()"
+              type="button"
+            ></app-btn>
+          </div>
+          <div class="col-md-6 mb-3">
+            <app-input
+              label="Select Allocation Type"
+              type="select"
+              [options]="allocationTypeOptions"
+              formControlName="toAllocationType"
+              placeholder="Select Allocation Type"
+              [required]="true"
+              width="100%"
+            ></app-input>
+          </div>
+        </div>
+
+        <!-- Row 3: Select Designation & Select Officer Name OR HRMS Code -->
+        <div class="row mb-3">
+          <div class="col-md-6 mb-3">
+            <app-input
+              label="Select Designation"
+              type="select"
+              [options]="designationOptions"
+              formControlName="toDesignationId"
+              placeholder="Select Designation"
+              [required]="isEarmarked()"
+              [disabled]="!isEarmarked()"
+              width="100%"
+            ></app-input>
+          </div>
+
+          <!-- Conditional Field: HRMS Code Verification -->
+          <div class="col-md-6 mb-3" *ngIf="isEarmarked() && isEmployeeDesignation()">
+            <div class="d-flex align-items-end gap-2">
+              <div class="flex-grow-1">
+                <app-input
+                  label="HRMS Code"
+                  type="text"
+                  formControlName="toHRMSCode"
+                  placeholder="Enter HRMS Code"
+                  [required]="true"
+                  width="100%"
+                ></app-input>
+              </div>
+              <app-btn
+                label="Verify"
+                variant="dark-blue"
+                size="sm"
+                icon="pi pi-check-circle"
+                [disabled]="isVerifyingHrms()"
+                (click)="verifyHrms()"
+                type="button"
+              ></app-btn>
+            </div>
+            <div class="text-success mt-2 fw-semibold small" *ngIf="verifiedOfficerName">
+              Verified: {{ verifiedOfficerName }}
+            </div>
+          </div>
+
+          <!-- Conditional Field: Standard Officer Selection -->
+          <div class="col-md-6 mb-3" *ngIf="isEarmarked() && !isEmployeeDesignation()">
+            <app-input
+              label="Select Officer Name"
+              type="select"
+              [options]="officerOptions"
+              formControlName="toOfficerId"
+              placeholder="Select Officer Name"
+              [required]="true"
+              width="100%"
+            ></app-input>
+          </div>
+        </div>
+
+
+        <!-- Row 5: Remarks -->
+        <div class="row mb-3">
+          <div class="col-12 mb-3">
+            <app-input
+              label="Remarks"
+              type="textarea"
+              formControlName="remarks"
+              placeholder="Enter remarks for the transfer..."
+              width="100%"
+            ></app-input>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Action Buttons centered / structured -->
+    <div class="d-flex justify-content-between align-items-center border-top pt-4 mt-4">
+      <app-btn
+        label="Back"
+        variant="outline-secondary"
+        size="sm"
+        routerLink="/vehicle"
+      ></app-btn>
+
+      <app-btn
+        label="Submit"
+        variant="dark-blue"
+        size="sm"
+        icon="pi pi-check"
+        [disabled]="isSubmitting()"
+        type="submit"
+      ></app-btn>
+    </div>
+
+  </form>
+</div>
+
+<!-- Search Office Dialog/Modal using clean premium styling -->
+<div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5); z-index: 1050;" *ngIf="showSearchModal">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4 shadow-lg">
+      <div class="modal-header border-bottom p-4">
+        <h5 class="modal-title fw-bold text-dark">Search Office</h5>
+        <button type="button" class="btn-close" (click)="closeSearchModal()"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="mb-4">
+          <input
+            type="text"
+            pInputText
+            class="form-control py-3 px-4 border rounded-3 fs-5 w-100"
+            placeholder="Search by Office Name or DDO Code..."
+            [(ngModel)]="searchQuery"
+            (input)="onSearchInput()"
+          />
+        </div>
+
+        <div class="office-list-container" style="max-height: 400px; overflow-y: auto;">
+          <table class="table table-hover align-middle">
+            <thead>
+              <tr class="table-light">
+                <th class="py-3 px-3">#</th>
+                <th class="py-3 px-3">Office Name</th>
+                <th class="py-3 px-3">DDO Code</th>
+                <th class="py-3 px-3 text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (office of filteredOffices; track office.id; let i = $index) {
+                <tr>
+                  <td class="py-3 px-3 fw-bold">{{ i + 1 }}</td>
+                  <td class="py-3 px-3">{{ office.officeName }}</td>
+                  <td class="py-3 px-3">{{ office.userId || 'N/A' }}</td>
+                  <td class="py-3 px-3 text-center">
+                    <app-btn
+                      label="Select"
+                      variant="dark-blue"
+                      size="sm"
+                      (click)="selectOffice(office.id)"
+                    ></app-btn>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="4" class="text-center text-muted py-5">
+                    <i class="pi pi-search d-block fs-1 mb-3 text-secondary"></i>
+                    No offices found matching your search.
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

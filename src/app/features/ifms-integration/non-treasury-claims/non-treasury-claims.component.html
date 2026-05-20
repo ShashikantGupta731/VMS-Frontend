@@ -1,77 +1,48 @@
 <div class="non-treasury-claims-container">
   <!-- Page Header -->
-  <div class="page-header mb-4">
-    <div class="d-flex justify-content-between align-items-center">
+  <app-card>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
       <div>
         <h1 class="page-title h4 fw-bold mb-0">Non-Treasury Claims</h1>
       </div>
       <app-btn label="← Go back to Home" routerLink="/vehicle" variant="secondary"></app-btn>
     </div>
-  </div>
 
-  <!-- Single Card for Filters and Table -->
-  <app-card customClass="no-padding">
-      <h5 class="card-title mb-4">Non-Treasury Claims</h5>
-      
-      <form [formGroup]="claimsForm" (ngSubmit)="onFilterChange()">
+
+    <!-- Single Card for Filters and Table -->
+    <div customClass="no-padding">
+      <form [formGroup]="claimsForm">
         <div class="row">
           <div class="col-md-6 col-lg-3">
             <div class="mb-3">
-              <app-input
-                label="Financial Year"
-                type="select"
-                [options]="financialYearOptions"
-                formControlName="financialYear"
-                placeholder="Select Year"
-                (change)="onFilterChange()"
-              ></app-input>
+              <app-input label="Financial Year" type="select" [options]="financialYearOptions"
+                formControlName="financialYear" placeholder="Select Year"></app-input>
             </div>
           </div>
 
           <div class="col-md-6 col-lg-3">
             <div class="mb-3">
-              <app-input
-                label="Claim Type"
-                type="select"
-                [options]="claimTypeOptions"
-                formControlName="claimType"
-                placeholder="Select Type"
-                (change)="onFilterChange()"
-              ></app-input>
+              <app-input label="Claim Type" type="select" [options]="claimTypeOptions" formControlName="claimType"
+                placeholder="Select Type"></app-input>
             </div>
           </div>
 
           <div class="col-md-6 col-lg-3">
             <div class="mb-3">
-              <app-input
-                label="From Date"
-                type="date"
-                formControlName="fromDate"
-                (change)="onFilterChange()"
-              ></app-input>
+              <app-input label="From Date" type="date" formControlName="fromDate"></app-input>
             </div>
           </div>
 
           <div class="col-md-6 col-lg-3">
             <div class="mb-3">
-              <app-input
-                label="To Date"
-                type="date"
-                formControlName="toDate"
-                (change)="onFilterChange()"
-              ></app-input>
+              <app-input label="To Date" type="date" formControlName="toDate"></app-input>
             </div>
           </div>
 
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Search"
-                type="text"
-                formControlName="searchText"
-                placeholder="Search by Claim no."
-                (change)="onSearchChange($event)"
-              ></app-input>
+              <app-input label="Search" type="text" formControlName="searchText" placeholder="Search by Claim no."></app-input>
             </div>
           </div>
 
@@ -115,25 +86,14 @@
 
       <!-- Table Section -->
       <div class="table-responsive">
-        <app-data-table
-          [columns]="tableColumns"
-          [data]="getPaginatedClaims()"
-          [sortable]="true"
-          [actions]="tableActions"
-          [isLoading]="isLoading && filteredClaims.length === 0"
-          [emptyMessage]="'No Record Found'"
-          (sort)="onSortFromTable($event)"
-        ></app-data-table>
+        <app-data-table [columns]="tableColumns" [data]="getPaginatedClaims()" [sortable]="true"
+          [actions]="tableActions" [isLoading]="isLoading && filteredClaims.length === 0"
+          [emptyMessage]="'No Record Found'" (sort)="onSortFromTable($event)"></app-data-table>
       </div>
 
       <!-- Pagination -->
-      <app-pagination
-        *ngIf="filteredClaims.length > 0"
-        [currentPage]="currentPage"
-        [totalPages]="getTotalPages()"
-        [totalItems]="totalItems"
-        [itemsPerPage]="itemsPerPage"
-        (pageChange)="onPageChange($event)"
-      ></app-pagination>
+      <app-pagination *ngIf="filteredClaims.length > 0" [currentPage]="currentPage" [totalPages]="getTotalPages()"
+        [totalItems]="totalItems" [itemsPerPage]="itemsPerPage" (pageChange)="onPageChange($event)"></app-pagination>
+    </div>
   </app-card>
 </div>

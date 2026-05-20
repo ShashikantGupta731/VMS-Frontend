@@ -63,7 +63,7 @@ export class AuthService {
   // Check if user has specific role
   hasRole(role: string): boolean {
     const user = this.currentUserValue;
-    if (!user) return false;
+    if (!user || !user.roles || !Array.isArray(user.roles)) return false;
     return user.roles.includes(role);
   }
 

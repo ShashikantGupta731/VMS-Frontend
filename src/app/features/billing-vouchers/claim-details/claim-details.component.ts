@@ -1,5 +1,5 @@
 import { Component, inject, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { BillingService, BillClaimDetail, BillStatus, BillType } from '@shared/services/billing.service';
 import { AppCardComponent } from '@shared/components/ui/app-card/card.component';
@@ -23,9 +23,14 @@ import { map } from 'rxjs/operators';
 export class ClaimDetailsComponent {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private location = inject(Location);
   private billingService = inject(BillingService);
   private toastr = inject(ToastrService);
   private authService = inject(AuthService);
+
+  goBack(): void {
+    this.location.back();
+  }
 
   claimId = toSignal(this.route.params.pipe(map(p => Number(p['id']))));
   comments = signal('');
@@ -60,6 +65,23 @@ export class ClaimDetailsComponent {
     { key: 'vehicleNumber', label: 'Vehicle' },
     { key: 'billDate', label: 'Date', render: (val: string) => new Date(val).toLocaleDateString() },
     { key: 'maintenanceType', label: 'Type' },
+    { key: 'amount', label: 'Amount', render: (val: number) => `₹${val.toLocaleString()}` }
+  ];
+
+  hiredColumns: TableColumn[] = [
+    { key: 'billNumber', label: 'Bill No.' },
+    { key: 'vehicleNumber', label: 'Vehicle No.' },
+    { key: 'billDate', label: 'Date', render: (val: string) => new Date(val).toLocaleDateString() },
+    { key: 'contractorName', label: 'Contractor' },
+    { key: 'kmCovered', label: 'KM Covered' },
+    { key: 'amount', label: 'Amount', render: (val: number) => `₹${val.toLocaleString()}` }
+  ];
+
+  contractualColumns: TableColumn[] = [
+    { key: 'billNumber', label: 'Bill No.' },
+    { key: 'vehicleNumber', label: 'Vehicle No.' },
+    { key: 'billDate', label: 'Date', render: (val: string) => new Date(val).toLocaleDateString() },
+    { key: 'vehicleType', label: 'Vehicle Type' },
     { key: 'amount', label: 'Amount', render: (val: number) => `₹${val.toLocaleString()}` }
   ];
 

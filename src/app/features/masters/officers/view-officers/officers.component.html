@@ -6,12 +6,8 @@
       <p class="text-muted mb-0">View and manage government officials and project heads.</p>
     </div>
     <div class="d-flex gap-2">
-      <app-btn variant="outline" (click)="onGoBackToHome()" label="Back to Dashboard">
-        <i class="bi bi-arrow-left me-2"></i>
-      </app-btn>
-      <app-btn variant="primary" (click)="onAddNewOfficer()" label="Add New Officer">
-        <i class="bi bi-plus-lg me-2"></i>
-      </app-btn>
+      <app-btn variant="dark-blue" size="sm" (click)="onGoBackToHome()" label="Back to Dashboard" icon="pi pi-arrow-left"></app-btn>
+      <app-btn variant="dark-blue" size="sm" icon="pi pi-plus-circle" (click)="onAddNewOfficer()" label="Add New Officer"></app-btn>
     </div>
   </div>
 

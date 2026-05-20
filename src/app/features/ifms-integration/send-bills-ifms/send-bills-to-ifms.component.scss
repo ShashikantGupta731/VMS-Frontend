@@ -1,60 +1,41 @@
 @use '../../shared/styles/variables' as *;
 
 .send-bills-container {
-  background: transparent;
-  padding: $spacing-3xl;
-  min-height: 100vh;
-}
+  padding: 20px;
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: $spacing-xl;
-  margin-bottom: $spacing-3xl;
-  padding-bottom: $spacing-xl;
-  border-bottom: 1px solid $border-color;
-}
+  .page-header {
+    .page-title {
+      color: $text-dark;
+    }
 
-.page-title-section {
-  .page-title {
+    .breadcrumb {
+      background: transparent;
+      padding: 0;
+
+      .breadcrumb-item {
+        a {
+          color: $primary-color;
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+
+        &.active {
+          color: $text-muted;
+        }
+      }
+    }
+  }
+
+  .section-title {
     color: $text-dark;
-    font-size: $font-size-3xl;
-    font-weight: $font-weight-bold;
-    margin: 0 0 8px 0;
-  }
-
-  .breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: $spacing-sm;
-    font-size: $font-size-base;
-    color: $text-muted;
-
-    .separator {
-      color: $text-light;
-    }
-
-    .current {
-      color: $primary-color;
-      font-weight: $font-weight-semibold;
-    }
-  }
-}
-
-.header-actions {
-  .help-link {
-    color: $primary-color;
-    font-size: $font-size-base;
     font-weight: $font-weight-semibold;
-    text-decoration: none;
-    transition: color $transition-base;
+  }
 
-    &:hover {
-      color: $primary-hover;
-      text-decoration: underline;
-    }
+  .table-responsive {
+    margin-bottom: 0;
   }
 }
 
@@ -66,15 +47,6 @@
   padding: 60px 20px;
   gap: 16px;
 
-  .spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid $border-color;
-    border-top-color: $primary-color;
-    border-radius: $radius-full;
-    animation: spin 1s linear infinite;
-  }
-
   p {
     color: $text-muted;
     font-size: $font-size-base;
@@ -82,81 +54,69 @@
   }
 }
 
-@keyframes spin {
+.fade-in {
+  animation: fadeIn 0.4s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
   to {
-    transform: rotate(360deg);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-.bills-section {
-  margin-bottom: $spacing-3xl;
+.cursor-pointer {
+  cursor: pointer;
 }
 
-.section-title {
-  color: $text-dark;
-  font-size: $font-size-xl;
-  font-weight: $font-weight-semibold;
-  margin: 0 0 $spacing-xl 0;
+.font-xs {
+  font-size: 0.75rem !important;
 }
 
-.table-wrapper {
-  overflow-x: auto;
-  margin-bottom: $spacing-xl;
+.font-sm {
+  font-size: 0.875rem !important;
 }
 
-.summary-section {
-  display: flex;
-  gap: 40px;
-  padding: $spacing-xl;
-  background: $bg-gray;
-  border-radius: $radius-md;
-  margin-bottom: $spacing-xl;
-  flex-wrap: wrap;
+.border-dashed {
+  border-style: dashed !important;
 }
 
-.summary-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.tracking-wider {
+  letter-spacing: 0.05em;
+}
 
-  .summary-label {
-    color: $text-muted;
-    font-size: $font-size-base;
-    font-weight: $font-weight-medium;
+.modal-backdrop {
+  z-index: 1040;
+}
+
+.modal {
+  z-index: 1050;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(59, 130, 246, 0.06);
+}
+
+.table-active {
+  background-color: rgba(59, 130, 246, 0.12) !important;
+}
+
+.form-select, .form-control {
+  border-color: #dee2e6;
+  &:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
   }
-
-  .summary-value {
-    color: $text-dark;
-    font-size: $font-size-md;
-    font-weight: $font-weight-bold;
-  }
-}
-
-.action-section {
-  display: flex;
-  justify-content: flex-end;
 }
 
 @media (max-width: 768px) {
-  .page-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .header-actions {
-    width: 100%;
-  }
-
   .summary-section {
     flex-direction: column;
     gap: 15px;
-  }
-
-  .action-section {
-    width: 100%;
-
-    .app-btn {
-      width: 100%;
-    }
   }
 }

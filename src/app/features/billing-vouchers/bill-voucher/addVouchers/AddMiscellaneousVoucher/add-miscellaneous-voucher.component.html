@@ -1,158 +1,173 @@
-<div class="add-miscellaneous-voucher-container">
-  <app-card customClass="no-padding" class="mb-4">
-    <div class="page-header">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <h1 class="page-title h4 fw-bold mb-2">Add Miscellaneous Store Vouchers</h1>
-          <nav aria-label="breadcrumb">
-            <ol class="breadcrumb mb-0">
-              <li class="breadcrumb-item"><a [routerLink]="['/vehicle']">Vehicle</a></li>
-              <li class="breadcrumb-item"><a [routerLink]="['/miscellaneous-store-voucher']">Miscellaneous Store Vouchers</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Add Miscellaneous Voucher</li>
-            </ol>
-          </nav>
+<div class="container-fluid p-4 bg-white">
+  <!-- Breadcrumb and Title -->
+  <div class="row mb-3">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+      <h3 class="fw-bold text-dark m-0">{{ isViewMode ? 'View' : isEditMode ? 'Edit' : 'Add' }} Miscellaneous Voucher</h3>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb m-0 bg-transparent p-0">
+          <li class="breadcrumb-item text-primary"><a routerLink="/vehicle">Vehicle</a></li>
+          <li class="breadcrumb-item text-primary"><a routerLink="/miscellaneous-store-voucher">Miscellaneous Store Vouchers</a></li>
+          <li class="breadcrumb-item active">{{ isViewMode ? 'View' : isEditMode ? 'Edit' : 'Add' }} Voucher</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Warning Banner -->
+  <div class="row">
+    <div class="col-12">
+      <div class="marquee-container">
+        <div class="marquee-text">
+          <h5 class="text-danger fw-bold m-0">Unverified Vehicle's Number will not be shown in Vehicle Number List.</h5>
         </div>
-        <app-btn label="← Back" variant="secondary" (click)="cancel()"></app-btn>
+      </div>
+      <p class="small text-muted text-center mb-4">
+        <span class="text-danger fw-bold">In case, entered Miscellaneous is above the allowed limit, please ensure it follows the format given in the following document. </span>
+        <a href="#" class="text-primary text-decoration-none">Click here to open document.</a>
+      </p>
+    </div>
+  </div>
+
+  <form [formGroup]="headerForm">
+    <!-- Section 1: Voucher and Sanction Details -->
+    <div class="card border-0 mb-4">
+        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+          <h6 class="text-dark-blue fw-bold mb-1">Add Voucher and Sanction Details DDO</h6>
+        </div>
+      <div class="card-body p-0">
+        <div class="row mb-3">
+          <div class="col-12 d-flex align-items-center">
+            <label class="fw-bold me-3 mb-0">Forwarded to Treasury?</label>
+            <div class="form-check form-check-inline mb-0">
+              <input class="form-check-input" type="radio" name="forwardedToTreasury" id="treasuryYes" value="yes" formControlName="forwardedToTreasury">
+              <label class="form-check-label" for="treasuryYes">Yes</label>
+            </div>
+            <div class="form-check form-check-inline mb-0">
+              <input class="form-check-input" type="radio" name="forwardedToTreasury" id="treasuryNo" value="no" formControlName="forwardedToTreasury">
+              <label class="form-check-label" for="treasuryNo">No</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <app-input label="Sub Voucher No." formControlName="subVoucherNo" placeholder="Sub Voucher No."></app-input>
+          </div>
+          <div class="col-md-6">
+            <app-input label="Sub Voucher Description" formControlName="subVoucherDescription" placeholder="Sub Voucher Description"></app-input>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <app-input label="Sanction Order No." formControlName="sanctionOrderNo" placeholder="Sanction Order No."></app-input>
+          </div>
+          <div class="col-md-6">
+            <app-input label="Select Sanction Order Date" type="date" formControlName="sanctionOrderDate" placeholder="Sanction Order Date (DD/MM/YYYY)"></app-input>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <app-input label="Sanction Authority" formControlName="sanctionAuthority" placeholder="Sanction Authority"></app-input>
+          </div>
+          <div class="col-md-6">
+            <app-input label="Firm Name" formControlName="firmName" placeholder="Firm Name"></app-input>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <app-input label="Tax(in Rs.)" type="number" formControlName="tax" placeholder="0"></app-input>
+          </div>
+        </div>
       </div>
     </div>
-  </app-card>
+  </form>
 
-  <app-card>
-    <form [formGroup]="voucherForm">
-      <div class="form-section">
-        <div class="alert alert-warning mb-3">
-          <strong>⚠️ Warning:</strong> Unverified Vehicle's Number will not be shown in Vehicle Number List.
-        </div>
-        <div class="alert alert-info mb-3">
-          <p class="mb-0">Please refer to the <a href="#" class="alert-link">documentation</a> for detailed instructions on how to fill this form.</p>
-        </div>
+  <!-- Section 2: Add Store Bills -->
+  <div class="card border-0 mb-4" *ngIf="!isViewMode">
+      <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+        <h6 class="text-dark-blue fw-bold mb-1">{{ isViewMode ? 'Bill Details' : (billForm.get('miscellaneousBillId')?.value ? 'Edit Bill Details' : 'Add Miscellaneous Bills') }}</h6>
       </div>
-
-      <div class="form-section">
-        <h5 class="section-title mb-3">Voucher & Sanction Details</h5>
-        <div class="row">
-          <div class="col-md-6 col-lg-4">
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Forwarded to Treasury <span class="text-danger">*</span></label>
-              <div class="radio-group">
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" id="treasuryYes" formControlName="forwardedToTreasury" value="yes">
-                  <label class="form-check-label" for="treasuryYes">Yes</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" id="treasuryNo" formControlName="forwardedToTreasury" value="no">
-                  <label class="form-check-label" for="treasuryNo">No</label>
-                </div>
-              </div>
-              <div class="text-danger error-message" *ngIf="voucherSection['forwardedToTreasury'].touched && voucherSection['forwardedToTreasury'].invalid">This field is required</div>
-            </div>
+    <div class="card-body p-0">
+      <form [formGroup]="billForm">
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <app-input label="Bill Number" formControlName="billNumber" placeholder="Enter bill number"></app-input>
           </div>
-          <div class="col-md-6 col-lg-4">
-            <div class="mb-3">
-              <app-input label="Sub Voucher No" [required]="true" type="text" formControlName="subVoucherNo" placeholder="Enter sub voucher number"></app-input>
-              <div class="text-danger error-message" *ngIf="voucherSection['subVoucherNo'].touched && voucherSection['subVoucherNo'].invalid">This field is required</div>
-            </div>
+          <div class="col-md-4">
+            <app-input label="Bill Date" type="date" formControlName="billDate"></app-input>
           </div>
-          <div class="col-md-6 col-lg-4">
-            <div class="mb-3">
-              <app-input label="Sub Voucher Description" [required]="true" type="text" formControlName="subVoucherDescription" placeholder="Enter sub voucher description"></app-input>
-              <div class="text-danger error-message" *ngIf="voucherSection['subVoucherDescription'].touched && voucherSection['subVoucherDescription'].invalid">This field is required</div>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-4">
-            <div class="mb-3">
-              <app-input label="Sanction Order No" [required]="true" type="text" formControlName="sanctionOrderNo" placeholder="Enter sanction order number"></app-input>
-              <div class="text-danger error-message" *ngIf="voucherSection['sanctionOrderNo'].touched && voucherSection['sanctionOrderNo'].invalid">This field is required</div>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-4">
-            <div class="mb-3">
-              <app-input label="Sanction Order Date" [required]="true" type="date" formControlName="sanctionOrderDate"></app-input>
-              <div class="text-danger error-message" *ngIf="voucherSection['sanctionOrderDate'].touched && voucherSection['sanctionOrderDate'].invalid">This field is required</div>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-4">
-            <div class="mb-3">
-              <app-input label="Sanction Authority" [required]="true" type="text" formControlName="sanctionAuthority" placeholder="Enter sanction authority"></app-input>
-              <div class="text-danger error-message" *ngIf="voucherSection['sanctionAuthority'].touched && voucherSection['sanctionAuthority'].invalid">This field is required</div>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-4">
-            <div class="mb-3">
-              <app-input label="Firm Name" [required]="true" type="text" formControlName="firmName" placeholder="Enter firm name"></app-input>
-              <div class="text-danger error-message" *ngIf="voucherSection['firmName'].touched && voucherSection['firmName'].invalid">This field is required</div>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-4">
-            <div class="mb-3">
-              <app-input label="Tax" [required]="true" type="number" formControlName="tax" placeholder="Enter tax amount"></app-input>
-              <div class="text-danger error-message" *ngIf="voucherSection['tax'].touched && voucherSection['tax'].invalid">This field is required and must be a positive number</div>
-            </div>
+          <div class="col-md-4">
+            <label class="form-label fw-bold small text-muted mb-1">Stock Item</label>
+            <select class="form-select" formControlName="inventoryMasterId">
+              <option value="">Select Item</option>
+              @for (item of stockItems(); track item.id) {
+                <option [value]="item.id">{{ item.name }}</option>
+              }
+            </select>
           </div>
         </div>
-      </div>
 
-      <div class="form-section">
-        <h5 class="section-title mb-3">Add Vehicle Bills</h5>
-        <div class="row">
-          <div class="col-md-6 col-lg-4">
-            <div class="mb-3">
-              <app-input label="Bill Number" [required]="true" type="text" formControlName="billNumber" placeholder="Enter bill number"></app-input>
-              <div class="text-danger error-message" *ngIf="voucherSection['billNumber'].touched && voucherSection['billNumber'].invalid">This field is required</div>
-            </div>
+        <div class="row mb-3">
+          <div class="col-md-4" *ngIf="showModel()">
+            <app-input label="Model Number" formControlName="modelNumber" placeholder="Model Number" [required]="true"></app-input>
           </div>
-          <div class="col-md-6 col-lg-4">
-            <div class="mb-3">
-              <app-input label="Bill Date" [required]="true" type="date" formControlName="billDate"></app-input>
-              <div class="text-danger error-message" *ngIf="voucherSection['billDate'].touched && voucherSection['billDate'].invalid">This field is required</div>
-            </div>
+          <div class="col-md-4">
+            <app-input label="Quantity" type="number" formControlName="quantity"></app-input>
           </div>
-          <div class="col-md-6 col-lg-4">
-            <div class="mb-3">
-              <app-input label="Stock Item" [required]="true" type="select" [options]="stockItemOptions" formControlName="stockItem" placeholder="Select Stock Item"></app-input>
-              <div class="text-danger error-message" *ngIf="voucherSection['stockItem'].touched && voucherSection['stockItem'].invalid">This field is required</div>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-4">
-            <div class="mb-3">
-              <app-input label="Quantity" [required]="true" type="number" formControlName="quantity" placeholder="Enter quantity"></app-input>
-              <div class="text-danger error-message" *ngIf="voucherSection['quantity'].touched && voucherSection['quantity'].invalid">This field is required and must be at least 1</div>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-4">
-            <div class="mb-3">
-              <app-input label="Bill Amount" [required]="true" type="number" formControlName="billAmount" placeholder="Enter bill amount"></app-input>
-              <div class="text-danger error-message" *ngIf="voucherSection['billAmount'].touched && voucherSection['billAmount'].invalid">This field is required and must be a positive number</div>
-            </div>
-          </div>
-          <div class="col-12">
-            <app-btn label="Add Bill & Save as Draft" variant="primary" (click)="addBillAndSaveAsDraft()"></app-btn>
+          <div class="col-md-4">
+            <app-input label="Bill Amount (in Rs.)" type="number" formControlName="billAmount" placeholder="Bill Amount"></app-input>
           </div>
         </div>
-      </div>
 
-      <div class="form-section">
-        <h5 class="section-title mb-3">Bills</h5>
-        <div class="table-responsive">
-          <app-data-table [columns]="tableColumns" [data]="getTableData()" [isLoading]="isLoading" [emptyMessage]="'No bills added yet'"></app-data-table>
-        </div>
-      </div>
-
-      <div class="form-section">
-        <div class="row">
-          <div class="col-md-6 offset-md-6">
-            <div class="mb-3">
-              <label class="form-label fw-bold">Total Bill Amount</label>
-              <input type="text" class="form-control form-control-lg" [value]="totalBillAmount | currency:'INR'" readonly>
-            </div>
+        <div class="text-center mb-4 d-flex justify-content-center gap-2">
+            @if (billForm.get('miscellaneousBillId')?.value) {
+              <app-btn type="button" label="Cancel" variant="outline-secondary" size="sm" (click)="billForm.reset({ quantity: 1, billAmount: 0 })"></app-btn>
+            }
+            <app-btn type="submit" label="{{ billForm.get('miscellaneousBillId')?.value ? 'Update Bill' : 'Add Bill & Save as Draft' }}" variant="dark-blue" size="sm" icon="pi pi-save" [disabled]="billForm.invalid || isLoading()" (click)="addBill()"></app-btn>
           </div>
-        </div>
-      </div>
+      </form>
+    </div>
+  </div>
 
-      <div class="form-actions">
-        <app-btn label="Lock Bills" variant="primary" [disabled]="!canLockBills()" (click)="lockBills()"></app-btn>
-        <app-btn label="Cancel" variant="secondary" (click)="cancel()"></app-btn>
+  <!-- Drafted Bills Table -->
+  <div class="row">
+    <div class="col-12">
+      <app-data-table
+        [columns]="tableColumns"
+        [data]="draftedBills() || []"
+        [actions]="isViewMode ? [] : tableActions"
+      ></app-data-table>
+    </div>
+  </div>
+
+  <!-- Footer Summary -->
+  <div class="row mt-4 mb-5">
+    <div class="col-md-4 offset-md-4 text-center">
+      <label class="fw-bold small text-muted d-block mb-1">Total Bill Amount</label>
+        <div class="bg-light p-4 rounded mb-4 shadow-sm border border-dark-blue-subtle">
+          <h3 class="m-0 fw-bold text-dark-blue">₹ {{totalAmount | number:'1.2-2'}}</h3>
+        </div>
+      
+      <div class="d-grid gap-2">
+          <app-btn 
+            label="Lock Bill" 
+            variant="dark-blue" 
+            size="sm" 
+            icon="pi pi-lock"
+            [disabled]="(draftedBills() || []).length === 0 || headerForm.invalid || isLoading()" 
+            (click)="lockBills()">
+          </app-btn>
+
+        <div *ngIf="headerForm.invalid && !isViewMode" class="alert alert-warning py-2 small mb-0">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          Please complete all sanction details in Section 1 to enable Locking.
+        </div>
+
+        <app-btn [label]="'Back to List'" variant="outline-secondary" size="sm" icon="pi pi-arrow-left" (click)="cancel()"></app-btn>
       </div>
-    </form>
-  </app-card>
+    </div>
+  </div>
 </div>

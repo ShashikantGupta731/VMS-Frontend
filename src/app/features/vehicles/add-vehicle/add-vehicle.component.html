@@ -1,21 +1,26 @@
-<div class="add-vehicle-container">
-  <!-- Single Card Container -->
-  <app-card>
-    <!-- Page Header -->
-    
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-          <h1 class="page-title h4 fw-bold mb-2">{{ isEditMode ? 'Edit Vehicle Details' : 'Add New Vehicle Details' }}</h1>
-        </div>
-        <app-btn label="← Back" variant="dark-blue" (click)="goBack()"></app-btn>
-      </div>
+<div class="container-fluid p-4 bg-white">
+  <!-- Breadcrumb and Title -->
+  <div class="row mb-3">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+      <h3 class="fw-bold text-dark m-0">{{ isEditMode ? 'Edit Vehicle Details' : 'Add New Vehicle Details' }}</h3>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb m-0 bg-transparent p-0">
+          <li class="breadcrumb-item text-primary"><a routerLink="/vehicle">Vehicle</a></li>
+          <li class="breadcrumb-item active">{{ isEditMode ? 'Edit Vehicle' : 'Add Vehicle' }}</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
     
 
     <form [formGroup]="vehicleForm" (ngSubmit)="onSubmit()">
       
       <!-- Section: Purchase Info -->
-      <div class="form-section">
-        <h5 class="section-title mt-4 mb-3">Purchase Info</h5>
+      <div class="card border-0 mb-4">
+        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+          <h6 class="text-dark-blue fw-bold mb-1">Purchase Info</h6>
+        </div>
+        <div class="card-body p-0">
         <div class="row">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
@@ -207,12 +212,16 @@
               <app-btn label="Validate" variant="primary" type="button" (click)="validatePurchaseInfo()"></app-btn>
             </div>
           </div>
-        </div>
+      </div>
+      </div>
       </div>
 
       <!-- Section: Office & Assignment -->
-      <div class="form-section">
-        <h5 class="section-title mb-3">Office & Assignment</h5>
+      <div class="card border-0 mb-4">
+        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+          <h6 class="text-dark-blue fw-bold mb-1">Office & Assignment</h6>
+        </div>
+        <div class="card-body p-0">
         <div class="row">
           <div class="col-md-6 col-lg-6">
             <div class="mb-3">
@@ -341,12 +350,16 @@
               </div>
             </div>
           </div>
-        </div>
+      </div>
+      </div>
       </div>
 
-      <!-- Section: Driver Details (shown only when Current Status is IN USE and Allocation Type is EARMARKED or POOLED) -->
-      <div class="form-section" *ngIf="isInUse() && (isEarmarked() || isPooled())">
-        <h5 class="section-title mb-3">Driver Details</h5>
+      <!-- Section: Driver Details -->
+      <div class="card border-0 mb-4" *ngIf="isInUse() && (isEarmarked() || isPooled())">
+        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+          <h6 class="text-dark-blue fw-bold mb-1">Driver Details</h6>
+        </div>
+        <div class="card-body p-0">
         <div class="row">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
@@ -394,12 +407,16 @@
               </div>
             </div>
           </div>
-        </div>
+      </div>
+      </div>
       </div>
 
-      <!-- Section: Contractor Details (shown for CONTRACTUAL EARMARKED and CONTRACTUAL POOLED when IN USE, CONDEMNED, or NOT IN USE) -->
-      <div class="form-section" *ngIf="(isInUse() || isCondemned() || isNotInUse()) && (isContractualEarmarked() || isContractualPooled())">
-        <h5 class="section-title mb-3">Contractor Details</h5>
+      <!-- Section: Contractor Details -->
+      <div class="card border-0 mb-4" *ngIf="(isInUse() || isCondemned() || isNotInUse()) && (isContractualEarmarked() || isContractualPooled())">
+        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+          <h6 class="text-dark-blue fw-bold mb-1">Contractor Details</h6>
+        </div>
+        <div class="card-body p-0">
         <div class="row">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
@@ -431,12 +448,16 @@
               </div>
             </div>
           </div>
-        </div>
+      </div>
+      </div>
       </div>
 
-      <!-- Section: Requisition Details (shown for REQUISITION EARMARKED and REQUISITION POOLED when IN USE, CONDEMNED, or NOT IN USE) -->
-      <div class="form-section" *ngIf="(isInUse() || isCondemned() || isNotInUse()) && isRequisitionType()">
-        <h5 class="section-title mb-3">Requisition Details</h5>
+      <!-- Section: Requisition Details -->
+      <div class="card border-0 mb-4" *ngIf="(isInUse() || isCondemned() || isNotInUse()) && isRequisitionType()">
+        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+          <h6 class="text-dark-blue fw-bold mb-1">Requisition Details</h6>
+        </div>
+        <div class="card-body p-0">
         <div class="row">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
@@ -469,12 +490,16 @@
               </div>
             </div>
           </div>
-        </div>
+      </div>
+      </div>
       </div>
 
       <!-- Section: Registration Details -->
-      <div class="form-section">
-        <h5 class="section-title mb-3">Registration Details</h5>
+      <div class="card border-0 mb-4">
+        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+          <h6 class="text-dark-blue fw-bold mb-1">Registration Details</h6>
+        </div>
+        <div class="card-body p-0">
         <div class="row">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
@@ -540,12 +565,16 @@
               </div>
             </div>
           </div>
-        </div>
+      </div>
+      </div>
       </div>
 
       <!-- Section: Vehicle Details -->
-      <div class="form-section">
-        <h5 class="section-title mb-3">Vehicle Details</h5>
+      <div class="card border-0 mb-4">
+        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+          <h6 class="text-dark-blue fw-bold mb-1">Vehicle Details</h6>
+        </div>
+        <div class="card-body p-0">
         <div class="row">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
@@ -596,12 +625,16 @@
               </div>
             </div>
           </div>
-        </div>
+      </div>
+      </div>
       </div>
 
       <!-- Section: Uploads -->
-      <div class="form-section">
-        <h5 class="section-title mb-3">Uploads</h5>
+      <div class="card border-0 mb-4">
+        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+          <h6 class="text-dark-blue fw-bold mb-1">Uploads</h6>
+        </div>
+        <div class="card-body p-0">
         <div class="row">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
@@ -634,12 +667,16 @@
               </div>
             </div>
           </div>
-        </div>
+      </div>
+      </div>
       </div>
 
       <!-- Section: Technical Details -->
-      <div class="form-section">
-        <h5 class="section-title mb-3">Technical Details</h5>
+      <div class="card border-0 mb-4">
+        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+          <h6 class="text-dark-blue fw-bold mb-1">Technical Details</h6>
+        </div>
+        <div class="card-body p-0">
         <div class="row">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
@@ -689,12 +726,16 @@
               </div>
             </div>
           </div>
-        </div>
+      </div>
+      </div>
       </div>
 
       <!-- Section: Dates & Usage -->
-      <div class="form-section">
-        <h5 class="section-title mb-3">Dates & Usage</h5>
+      <div class="card border-0 mb-4">
+        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+          <h6 class="text-dark-blue fw-bold mb-1">Dates & Usage</h6>
+        </div>
+        <div class="card-body p-0">
         <div class="row">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
@@ -740,10 +781,13 @@
           </div>
         </div>
       </div>
-
-      <!-- Section: Fuel & Maintenance -->
-      <div class="form-section">
-        <h5 class="section-title mb-3">Fuel & Maintenance (Last 3 Months)</h5>
+      </div>
+      <!-- Section: Fuel & Maintenance (Last 3 Months) -->
+      <div class="card border-0 mb-4">
+        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+          <h6 class="text-dark-blue fw-bold mb-1">Fuel & Maintenance (Last 3 Months)</h6>
+        </div>
+        <div class="card-body p-0">
         <div class="row">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
@@ -789,12 +833,16 @@
               </div>
             </div>
           </div>
-        </div>
+      </div>
+      </div>
       </div>
 
       <!-- Section: Tyre Details -->
-      <div class="form-section">
-        <h5 class="section-title mb-3">Tyre Details</h5>
+      <div class="card border-0 mb-4">
+        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+          <h6 class="text-dark-blue fw-bold mb-1">Tyre Details</h6>
+        </div>
+        <div class="card-body p-0">
         <div class="row">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
@@ -842,12 +890,12 @@
           </div>
         </div>
       </div>
+      </div>
 
       <!-- Action Buttons -->
-      <div class="form-actions">
-        <app-btn [label]="isEditMode ? 'Update Vehicle' : 'Save Vehicle'" variant="dark-blue" type="submit" [disabled]="vehicleForm.invalid || isSubmitting()"></app-btn>
-        <app-btn label="Back" variant="dark-blue" (click)="goBack()"></app-btn>
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <app-btn label="← Back" variant="dark-blue" size="sm" (click)="goBack()"></app-btn>
+        <app-btn [label]="isEditMode ? 'Update Vehicle' : 'Save Vehicle'" variant="dark-blue" size="sm" type="submit" [disabled]="vehicleForm.invalid || isSubmitting()" icon="pi pi-save"></app-btn>
       </div>
     </form>
-  </app-card>
 </div>

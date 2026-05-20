@@ -27,7 +27,9 @@
     "primeicons": "^7.0.0",
     "primeng": "^21.1.6",
     "rxjs": "~7.8.0",
-    "tslib": "^2.3.0"
+    "sweetalert2": "^11.26.24",
+    "tslib": "^2.3.0",
+    "pdf-lib": "^1.17.1"
   },
   "devDependencies": {
     "@angular/build": "^21.2.3",

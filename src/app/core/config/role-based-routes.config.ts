@@ -11,7 +11,7 @@ export interface RoleRouteConfig {
 export const ROLE_BASED_ROUTES: RoleRouteConfig[] = [
   { role: 'DDO', redirectUrl: '/vehicle' },
   { role: 'ADMN', redirectUrl: '/verify-vehicles' },
-  { role: 'NDOF', redirectUrl: '/non-ifms-claims' },
+  { role: 'NDOF', redirectUrl: '/claim-verification' },
   { role: 'SEC', redirectUrl: '/vehicle' },
   { role: 'HOD', redirectUrl: '/vehicle' },
   { role: 'DCL', redirectUrl: '/vehicle' },

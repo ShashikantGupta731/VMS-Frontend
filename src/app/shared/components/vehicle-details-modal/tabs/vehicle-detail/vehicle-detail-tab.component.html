@@ -1,35 +1,261 @@
-<app-card>
   @if (isLoading()) {
-    <div>Loading...</div>
-  }
-  @if (error()) {
-    <div class="error-message">{{ error() }}</div>
-  }
-  @if (vehicleDetail() && !isLoading()) {
-    <div>
-      <app-key-value-list
-        [items]="[
-          { label: 'DDO Code', value: vehicleDetail()?.ddoCode || '' },
-          { label: 'Nodal Officer Name', value: vehicleDetail()?.nodalOfficer?.name || '' },
-          { label: 'Nodal Officer Email', value: vehicleDetail()?.nodalOfficer?.email || '' },
-          { label: 'Nodal Officer Phone', value: vehicleDetail()?.nodalOfficer?.phone || '' },
-          { label: 'Current Status', value: vehicleDetail()?.currentStatus || '' },
-          { label: 'Treasury Type', value: vehicleDetail()?.treasuryType || '' },
-          { label: 'Verification Status', value: vehicleDetail()?.verificationStatus || '' },
-          { label: 'Office', value: vehicleDetail()?.office || '' },
-          { label: 'Office Address', value: vehicleDetail()?.officeAddress || '', isMultiline: true },
-          { label: 'District', value: vehicleDetail()?.district || '' },
-          { label: 'Tehsil', value: vehicleDetail()?.tehsil || '' },
-          { label: 'Department', value: vehicleDetail()?.department || '' },
-          { label: 'Vehicle Allocation Type', value: vehicleDetail()?.vehicleAllocationType || '' }
-        ]"
-        [columns]="2"
-      ></app-key-value-list>
+    <div class="loading-state">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p>Fetching vehicle details...</p>
     </div>
   }
+
+  @if (error()) {
+    <div class="error-state">
+      <i class="pi pi-exclamation-circle text-danger"></i>
+      <p>{{ error() }}</p>
+    </div>
+  }
+
+  @if (vehicleDetail(); as data) {
+    <div class="details-table-container">
+      <table class="details-table">
+        <tbody>
+          <tr>
+            <th scope="row">DDO Code</th>
+            <td>{{ data.ddoCode || 'N/A' }}</td>
+          </tr>
+
+          @if (data.nodalOfficerName) {
+            <tr>
+              <th scope="row">Nodal Officer</th>
+              <td>
+                <div class="fw-bold">{{ data.nodalOfficerName }}</div>
+                <div>{{ data.nodalOfficerEmail }}</div>
+                <div>{{ data.nodalOfficerMobileNo }}</div>
+              </td>
+            </tr>
+          }
+
+          <tr>
+            <th scope="row">Current Status</th>
+            <td>
+              {{ data.currentStatus }}
+            </td>
+          </tr>
+
+          <tr>
+            <th scope="row">Treasury Type</th>
+            <td>{{ data.treasuryType || 'N/A' }}</td>
+          </tr>
+
+          <tr>
+            <th scope="row">Verification Status</th>
+            <td>
+              @switch (data.verificationStatus) {
+                @case (1) { Verified }
+                @case (2) { Rejected }
+                @default { Pending }
+              }
+            </td>
+          </tr>
+
+          <tr>
+            <th scope="row">Office</th>
+            <td>{{ data.officeName }}</td>
+          </tr>
+
+          <tr>
+            <th scope="row">Office Address</th>
+            <td>{{ data.officeAddress || 'N/A' }}</td>
+          </tr>
+
+          <tr>
+            <th scope="row">District</th>
+            <td>{{ data.district }}</td>
+          </tr>
+
+          <tr>
+            <th scope="row">Tehsil</th>
+            <td>{{ data.tehsil }}</td>
+          </tr>
+
+          <tr>
+            <th scope="row">Department</th>
+            <td>{{ data.department }}</td>
+          </tr>
+
+          <tr>
+            <th scope="row">Vehicle Allocation Type</th>
+            <td>{{ data.vehicleAllocationType }}</td>
+          </tr>
+
+          @if (data.vehicleAllocationType.includes('Project')) {
+            <tr>
+              <th scope="row">Project</th>
+              <td>{{ data.projectName || 'N/A' }}</td>
+            </tr>
+          }
+
+          @if (data.vehicleAllocationType.includes('Requisition')) {
+            <tr>
+              <th scope="row">Owner Department</th>
+              <td>{{ data.requisitionDeptName || 'N/A' }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Owner Office</th>
+              <td>{{ data.requisitionOfficeName || 'N/A' }}</td>
+            </tr>
+          }
+
+          <tr>
+            <th scope="row">Allocated to (Officer Name)</th>
+            <td>
+              @if (data.vehicleAllocationType.includes('Earmarked')) {
+                {{ data.officerName || 'N/A' }}
+              } @else {
+                N/A
+              }
+            </td>
+          </tr>
+
+          <tr>
+            <th scope="row">Allocated to (Designation)</th>
+            <td>
+              @if (data.vehicleAllocationType.includes('Earmarked')) {
+                {{ data.designation || 'N/A' }}
+              } @else {
+                N/A
+              }
+            </td>
+          </tr>
+
+          @if ((data.vehicleAllocationType === 'Earmarked' || data.vehicleAllocationType === 'Pooled') && data.currentStatus !== 'Not In Use') {
+            <tr>
+              <th scope="row">Driver Type</th>
+              <td>{{ data.driverType || 'N/A' }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Driver Name</th>
+              <td>{{ data.driverName || 'N/A' }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Driver Contact Number</th>
+              <td>{{ data.driverContactNumber || 'N/A' }}</td>
+            </tr>
+          }
+
+          @if (data.vehicleAllocationType.includes('Contractual')) {
+            <tr>
+              <th scope="row">Contractor Name</th>
+              <td>{{ data.contractorName || 'N/A' }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Contractor Contact Number</th>
+              <td>{{ data.contractorContactNumber || 'N/A' }}</td>
+            </tr>
+          }
+
+          <tr>
+            <th scope="row">Vehicle Type</th>
+            <td>{{ data.vehicleType }}</td>
+          </tr>
+
+          <tr>
+            <th scope="row">Manufacturer</th>
+            <td>{{ data.manufacturer }}</td>
+          </tr>
+
+          <tr>
+            <th scope="row">Make / Model</th>
+            <td>{{ data.model }}</td>
+          </tr>
+
+          <tr>
+            <th scope="row">Manufacture Year</th>
+            <td>{{ data.manufactureYear }}</td>
+          </tr>
+
+          <tr>
+            <th scope="row">Vehicle Number</th>
+            <td><span class="vehicle-reg-no">{{ data.registrationNumber }}</span></td>
+          </tr>
+
+          <tr>
+            <th scope="row">Seating Capacity</th>
+            <td>{{ data.seatingCapacity }}</td>
+          </tr>
+
+          <tr>
+            <th scope="row">Fuel Used</th>
+            <td>{{ data.fuelUsed }}</td>
+          </tr>
+
+          @if (data.vehicleAllocationType !== 'Contractual - Pooled' && data.vehicleAllocationType !== 'Contractual - Earmarked') {
+            <tr>
+              <th scope="row">KM covered upto {{ data.readingUptodate | date: "dd MMMM yyyy" }}</th>
+              <td>{{ data.kmsCovered | number }}</td>
+            </tr>
+
+            <tr>
+              <th scope="row">Is Tyres Original</th>
+              <td>{{ data.isTyreOriginal === 'True' || data.isTyreOriginal === 'Yes' ? 'Yes' : 'No' }}</td>
+            </tr>
+
+            <tr>
+              <th scope="row">Tyres Changed Date</th>
+              <td>{{ (data.isTyreOriginal === 'True' || data.isTyreOriginal === 'Yes') ? 'N/A' : (data.tyreChangedDate | date: "dd/MM/yyyy") }}</td>
+            </tr>
+
+            <tr>
+              <th scope="row">Tyres Changed at (KM)</th>
+              <td>{{ (data.isTyreOriginal === 'True' || data.isTyreOriginal === 'Yes') ? 'N/A' : (data.tyreChangedMeterReading | number) }}</td>
+            </tr>
+
+            <tr>
+              <th scope="row">VMS Entry Date</th>
+              <td>{{ data.pDate | date: "dd/MM/yyyy" }}</td>
+            </tr>
+
+            <tr>
+              <th scope="row">Fuel Consuption in Rs. ({{ data.financialYearReading }})</th>
+              <td>{{ data.fuelCostLast3Months | currency:'INR':'symbol':'1.0-0' }}</td>
+            </tr>
+
+            <tr>
+              <th scope="row">Fuel Consuption in Litres ({{ data.financialYearReading }})</th>
+              <td>{{ data.fuelLitresLast3Months }}</td>
+            </tr>
+
+            <tr>
+              <th scope="row">Maintenance Cost ({{ data.maintenenceDuration || 'Last 3 Years' }})</th>
+              <td>{{ data.maintenanceCostLast3Months | currency:'INR':'symbol':'1.0-0' }}</td>
+            </tr>
+
+            <tr>
+              <th scope="row">Vehicle Purchase Date (DD-MM-YYYY)</th>
+              <td>{{ data.purchaseDate | date: "dd/MM/yyyy" }}</td>
+            </tr>
+
+            <tr>
+              <th scope="row">Fitness Upto (DD-MM-YYYY)</th>
+              <td>{{ data.fitnessUpto | date: "dd/MM/yyyy" }}</td>
+            </tr>
+
+            <tr>
+              <th scope="row">Vehicle Cost</th>
+              <td>{{ data.vehicleCost | currency:'INR':'symbol':'1.0-0' }}</td>
+            </tr>
+
+            <tr>
+              <th scope="row">Chasis No.</th>
+              <td>{{ data.chassisNumber }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
   @if (!vehicleDetail() && !isLoading() && !error()) {
     <div class="empty-state">
-      No Record Found
+      <p>No vehicle records found for the selected ID.</p>
     </div>
   }
-</app-card>

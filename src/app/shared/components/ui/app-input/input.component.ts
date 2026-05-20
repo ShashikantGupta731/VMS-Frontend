@@ -34,6 +34,7 @@ export class AppInputComponent implements ControlValueAccessor, OnInit {
   @Input() icon?: string;
   @Input() error?: string;
   @Input() isLoading: boolean = false;
+  @Input() searchable: boolean = false;
 
   @Output() change = new EventEmitter<any>();
 

@@ -1,4 +1,4 @@
-<div class="miscellaneous-store-vouchers-container">
+<div class="miscellaneous-store-vouchers-container p-4">
   <app-card>
     <!-- Page Header -->
     <div class="page-header mb-4">
@@ -8,8 +8,8 @@
         </div>
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item"><a [routerLink]="['/vehicle']">Vehicle</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Miscellaneous Store Vouchers</li>
+            <li class="breadcrumb-item text-primary"><a [routerLink]="['/vehicle']">Vehicle</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Miscellaneous Vouchers</li>
           </ol>
         </nav>
       </div>
@@ -17,31 +17,35 @@
 
     <!-- Top Action Section -->
     <div class="d-flex justify-content-end mb-4">
-      <app-btn label="Create New Voucher" variant="primary" (click)="createNewVoucher()"></app-btn>
+      <app-btn label="Create New Voucher" variant="dark-blue" size="sm" icon="pi pi-plus-circle" (click)="createNewVoucher()"></app-btn>
     </div>
 
     <!-- Section Title -->
-    <h5 class="section-title mb-3">Drafted Vouchers</h5>
+    <div class="section-header d-flex align-items-center mb-3">
+      <h5 class="section-title mb-0">Drafted Bills</h5>
+      <span class="badge bg-secondary ms-2">{{ totalItems() }} Total</span>
+    </div>
 
     <!-- Table Section -->
-    <div class="table-responsive">
+    <div class="table-container bg-white rounded shadow-sm">
       <app-data-table
         [columns]="tableColumns"
-        [data]="getPaginatedVouchers()"
+        [data]="paginatedVouchers()"
         [actions]="tableActions"
-        [isLoading]="isLoading"
-        [emptyMessage]="'No Record Found'"
+        [isLoading]="isLoading()"
+        [emptyMessage]="'No drafted bills found. Click \'Create New Voucher\' to start.'"
       ></app-data-table>
     </div>
 
     <!-- Pagination -->
-    <app-pagination
-      *ngIf="filteredVouchers.length > 0"
-      [currentPage]="currentPage"
-      [totalPages]="getTotalPages()"
-      [totalItems]="totalItems"
-      [itemsPerPage]="itemsPerPage"
-      (pageChange)="onPageChange($event)"
-    ></app-pagination>
+    <div class="mt-4 d-flex justify-content-center" *ngIf="totalItems() > 0">
+      <app-pagination
+        [currentPage]="currentPage()"
+        [totalPages]="totalPagesCount()"
+        [totalItems]="totalItems()"
+        [itemsPerPage]="itemsPerPage"
+        (pageChange)="onPageChange($event)"
+      ></app-pagination>
+    </div>
   </app-card>
 </div>

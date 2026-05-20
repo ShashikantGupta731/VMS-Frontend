@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Subject, debounceTime, switchMap, of, takeUntil } from 'rxjs';
+import { Subject, debounceTime, takeUntil } from 'rxjs';
 import { NonTreasuryClaimsService, NonTreasuryClaim, FilterSummary } from './non-treasury-claims.service';
 import { AppCardComponent } from '@shared/components/ui/app-card/card.component';
 import { AppButtonComponent } from '@shared/components/ui/app-button/button.component';
@@ -14,19 +14,25 @@ import { AppInputComponent } from '@shared/components/ui/app-input/input.compone
 @Component({
   selector: 'app-non-treasury-claims',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, AppCardComponent, AppButtonComponent, AppPaginationComponent, AppDataTableComponent, AppInputComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule,
+    AppCardComponent,
+    AppButtonComponent,
+    AppPaginationComponent,
+    AppDataTableComponent,
+    AppInputComponent
+  ],
   providers: [NonTreasuryClaimsService],
   templateUrl: './non-treasury-claims.component.html',
   styleUrl: './non-treasury-claims.component.scss'
 })
-export class NonTreasuryClaimsComponent implements OnInit {
+export class NonTreasuryClaimsComponent implements OnInit, OnDestroy {
   claimsForm: FormGroup;
-  claims: NonTreasuryClaim[] = [];
   filteredClaims: NonTreasuryClaim[] = [];
   filterSummary: FilterSummary | null = null;
   isLoading = false;
-
-  private searchSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
 
   // Pagination
@@ -39,32 +45,69 @@ export class NonTreasuryClaimsComponent implements OnInit {
   sortDirection: 'asc' | 'desc' = 'desc';
 
   // Dropdown options
-  financialYears = ['2024-2025', '2023-2024', '2022-2023', '2021-2022'];
-  claimTypes = ['Fuel', 'Maintenance', 'Tyre Replacement', 'Insurance', 'Other'];
+  financialYears: string[] = [];
+  financialYearOptions: { label: string; value: string }[] = [];
 
-  // Options format for app-input component
-  financialYearOptions = this.financialYears.map(year => ({ label: year, value: year }));
-  claimTypeOptions = this.claimTypes.map(type => ({ label: type, value: type }));
-
-  // Table columns with sortable support
-  tableColumns: TableColumn[] = [
-    { key: 'claimNo', label: 'Claim No', sortable: true },
-    { key: 'claimFor', label: 'Claim For', sortable: true },
-    { key: 'date', label: 'Date', sortable: true },
-    { key: 'amount', label: 'Amount', sortable: true },
-    { key: 'status', label: 'Status', sortable: true },
+  claimTypeOptions = [
+    { label: 'All', value: '0' },
+    { label: 'Fuel', value: '1' },
+    { label: 'Maintenance', value: '2' },
+    { label: 'Hired', value: '3' },
+    { label: 'Miscellaneous Store', value: '4' },
+    { label: 'Contractual/Requisite', value: '5' }
   ];
 
-  // Table actions
+  // Table columns with sortable support and custom rendering
+  tableColumns: TableColumn[] = [
+    { key: 'claimNo', label: 'Claim No', sortable: true },
+    { 
+      key: 'claimFor', 
+      label: 'Claim For', 
+      sortable: true,
+      render: (val: any) => `<strong>${val}</strong>`
+    },
+    { 
+      key: 'date', 
+      label: 'Date', 
+      sortable: true,
+      render: (val: any) => {
+        if (!val) return '';
+        const date = new Date(val);
+        if (isNaN(date.getTime())) return val;
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = months[date.getMonth()];
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+      }
+    },
+    { 
+      key: 'amount', 
+      label: 'Amount', 
+      sortable: true,
+      render: (val: any) => val !== undefined ? '₹' + Number(val).toLocaleString('en-IN') : '₹0'
+    },
+    { 
+      key: 'status', 
+      label: 'Status', 
+      sortable: true,
+      render: (val: any, row: any) => {
+        if (row.httpStatus === 200) {
+          return `<span class="badge bg-success-subtle text-success px-2 py-1 rounded" style="font-size: 0.85em; font-weight: 500;">Bill Created</span>`;
+        } else if (row.httpStatus === 301) {
+          return `<span class="badge bg-danger-subtle text-danger px-2 py-1 rounded" style="font-size: 0.85em; font-weight: 500;">Bill Discarded from VMS</span>`;
+        }
+        return `<span class="badge bg-secondary-subtle text-secondary px-2 py-1 rounded" style="font-size: 0.85em; font-weight: 500;">${val}</span>`;
+      }
+    },
+  ];
+
+  // Table actions (retained as mocks or read-only preview placeholders)
   tableActions: TableAction[] = [
     {
       label: 'View',
       action: (row: NonTreasuryClaim) => this.viewClaim(row),
-    },
-    {
-      label: 'Download',
-      action: (row: NonTreasuryClaim) => this.downloadClaim(row),
-    },
+    }
   ];
 
   constructor(
@@ -75,7 +118,7 @@ export class NonTreasuryClaimsComponent implements OnInit {
   ) {
     this.claimsForm = this.fb.group({
       financialYear: [''],
-      claimType: [''],
+      claimType: ['0'],
       fromDate: [''],
       toDate: [''],
       searchText: ['']
@@ -83,63 +126,60 @@ export class NonTreasuryClaimsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.setupSearchDebounce();
-    this.loadClaims();
+    this.generateFinancialYears(2017);
+    this.setupFormSubscription();
+    
+    // Defer initial load to prevent ExpressionChangedAfterItHasBeenCheckedError
+    setTimeout(() => {
+      this.applyFilters();
+    });
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-    this.searchSubject.complete();
   }
 
-  private setupSearchDebounce(): void {
-    this.searchSubject.pipe(
+  private generateFinancialYears(startYear: number = 2017): void {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const fyStartYear = (now.getMonth() < 3) ? currentYear - 1 : currentYear; // April is month 3 (0-based)
+
+    this.financialYears = [];
+    for (let year = fyStartYear; year >= startYear; year--) {
+      this.financialYears.push(`${year}-${year + 1}`);
+    }
+    this.financialYearOptions = this.financialYears.map(year => ({ label: year, value: year }));
+
+    const defaultFy = `${fyStartYear}-${fyStartYear + 1}`;
+    const dateRange = this.getDateRangeFromFinancialYear(defaultFy);
+
+    this.claimsForm.patchValue({
+      financialYear: defaultFy,
+      fromDate: dateRange.from,
+      toDate: dateRange.to
+    }, { emitEvent: false });
+  }
+
+  private setupFormSubscription(): void {
+    let lastProcessedFy = this.claimsForm.get('financialYear')?.value;
+
+    this.claimsForm.valueChanges.pipe(
       debounceTime(300),
-      switchMap((searchText) => {
-        this.claimsForm.patchValue({ searchText });
-        return this.nonTreasuryClaimsService.searchClaims(searchText, this.getFilterValues());
-      }),
       takeUntil(this.destroy$)
-    ).subscribe({
-      next: (claims) => {
-        this.filteredClaims = claims;
-        this.totalItems = claims.length;
-        this.updatePagination();
-      },
-      error: (error) => {
-        console.error('Search error:', error);
-        this.toastr.error('Failed to search claims', 'Error');
+    ).subscribe((values) => {
+      const currentFy = values.financialYear;
+      if (currentFy && currentFy !== lastProcessedFy) {
+        lastProcessedFy = currentFy;
+        const dateRange = this.getDateRangeFromFinancialYear(currentFy);
+        this.claimsForm.patchValue({
+          fromDate: dateRange.from,
+          toDate: dateRange.to
+        }, { emitEvent: false });
       }
+
+      this.applyFilters();
     });
-  }
-
-  onSearchChange(searchText: string): void {
-    this.searchSubject.next(searchText);
-  }
-
-  onFilterChange(): void {
-    const filters = this.getFilterValues();
-    
-    // Validate date range
-    if (filters.fromDate && filters.toDate) {
-      if (new Date(filters.fromDate) > new Date(filters.toDate)) {
-        this.toastr.error('From date cannot be after To date', 'Invalid Date Range');
-        this.claimsForm.patchValue({ toDate: '' });
-        return;
-      }
-    }
-
-    // Auto-set date range based on financial year
-    if (filters.financialYear && !filters.fromDate && !filters.toDate) {
-      const dateRange = this.getDateRangeFromFinancialYear(filters.financialYear);
-      this.claimsForm.patchValue({
-        fromDate: dateRange.from,
-        toDate: dateRange.to
-      });
-    }
-
-    this.applyFilters();
   }
 
   private getDateRangeFromFinancialYear(year: string): { from: string; to: string } {
@@ -170,30 +210,12 @@ export class NonTreasuryClaimsComponent implements OnInit {
         this.filterSummary = data.summary;
         this.totalItems = data.claims.length;
         this.currentPage = 1;
-        this.updatePagination();
+        this.sortClaims();
         this.isLoading = false;
       },
       error: (error: any) => {
         console.error('Filter error:', error);
         this.toastr.error('Failed to apply filters', 'Error');
-        this.isLoading = false;
-      }
-    });
-  }
-
-  private loadClaims(): void {
-    this.isLoading = true;
-    this.nonTreasuryClaimsService.getClaims().subscribe({
-      next: (claims: NonTreasuryClaim[]) => {
-        this.claims = claims;
-        this.filteredClaims = claims;
-        this.totalItems = claims.length;
-        this.updatePagination();
-        this.isLoading = false;
-      },
-      error: (error: any) => {
-        console.error('Load claims error:', error);
-        this.toastr.error('Failed to load claims', 'Error');
         this.isLoading = false;
       }
     });
@@ -236,13 +258,6 @@ export class NonTreasuryClaimsComponent implements OnInit {
 
   onPageChange(page: number): void {
     this.currentPage = page;
-    this.updatePagination();
-  }
-
-  private updatePagination(): void {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    // Pagination is handled in template with slice
   }
 
   getPaginatedClaims(): NonTreasuryClaim[] {
@@ -256,15 +271,11 @@ export class NonTreasuryClaimsComponent implements OnInit {
   }
 
   viewClaim(claim: NonTreasuryClaim): void {
-    console.log('View claim:', claim);
-    // TODO: Implement view claim logic
-    this.toastr.info('View claim details (Mock)', 'Info');
-  }
-
-  downloadClaim(claim: NonTreasuryClaim): void {
-    console.log('Download claim:', claim);
-    // TODO: Implement download logic
-    this.toastr.success('Downloading claim document (Mock)', 'Success');
+    if (claim.billClaimId) {
+      this.router.navigate(['/bill-voucher/claim-details', claim.billClaimId]);
+    } else {
+      this.toastr.warning('Claim details not available for this record.', 'Warning');
+    }
   }
 
   goBackToHome(): void {
@@ -272,11 +283,15 @@ export class NonTreasuryClaimsComponent implements OnInit {
   }
 
   clearFilters(): void {
-    this.claimsForm.reset();
-    this.filteredClaims = [...this.claims];
-    this.filterSummary = null;
-    this.totalItems = this.claims.length;
-    this.currentPage = 1;
+    this.claimsForm.reset({
+      financialYear: '',
+      claimType: '0',
+      fromDate: '',
+      toDate: '',
+      searchText: ''
+    });
+    this.generateFinancialYears(2017);
+    this.applyFilters();
   }
 
   getSortIcon(column: string): string {

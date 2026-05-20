@@ -8,6 +8,8 @@ export interface DropdownItem {
   disabled?: boolean;
 }
 
+type DropdownSize = 'sm' | 'md' | 'lg' | undefined;
+
 @Component({
   selector: 'app-dropdown',
   standalone: true,
@@ -22,6 +24,8 @@ export class AppDropdownComponent {
   @Input() menuClass?: string;
   @Input() showArrow: boolean = true;
   @Input() disabled: boolean = false;
+  @Input() size: DropdownSize;
+  @Input() icon?: string;
 
   @Output() select = new EventEmitter<DropdownItem>();
   @Output() toggle = new EventEmitter<boolean>();

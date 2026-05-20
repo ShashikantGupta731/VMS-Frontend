@@ -1,5 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+import { ApiService } from '@core/services/api';
 
 export interface Bill {
   claimNumber: string;
@@ -11,113 +13,83 @@ export interface Bill {
   claimFor: string;
   postDate: string;
   selected?: boolean;
+  fuelMaintenanceIFMSId?: number;
+  fuelMaintenance?: number;
+  incomeTaxAmount?: number;
+  vmsRefNo?: string;
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class SendBillsService {
-  private mockBills: Bill[] = [
-    {
-      claimNumber: 'CLM-2024-001',
-      amount: 15000,
-      subVoucherNo: 'SV-001',
-      sanctionOrderNo: 'SO-2024-001',
-      sanctionAuthority: 'Finance Department',
-      sanctionOrderDate: '2024-01-15',
-      claimFor: 'Vehicle Maintenance',
-      postDate: '2024-01-20',
-      selected: false,
-    },
-    {
-      claimNumber: 'CLM-2024-002',
-      amount: 25000,
-      subVoucherNo: 'SV-002',
-      sanctionOrderNo: 'SO-2024-002',
-      sanctionAuthority: 'Finance Department',
-      sanctionOrderDate: '2024-01-18',
-      claimFor: 'Fuel Expenses',
-      postDate: '2024-01-22',
-      selected: false,
-    },
-    {
-      claimNumber: 'CLM-2024-003',
-      amount: 0,
-      subVoucherNo: 'SV-003',
-      sanctionOrderNo: 'SO-2024-003',
-      sanctionAuthority: 'Finance Department',
-      sanctionOrderDate: '2024-01-20',
-      claimFor: 'Insurance',
-      postDate: '2024-01-25',
-      selected: false,
-    },
-    {
-      claimNumber: 'CLM-2024-004',
-      amount: 35000,
-      subVoucherNo: 'SV-004',
-      sanctionOrderNo: 'SO-2024-004',
-      sanctionAuthority: 'Transport Department',
-      sanctionOrderDate: '2024-01-22',
-      claimFor: 'Vehicle Purchase',
-      postDate: '2024-01-28',
-      selected: false,
-    },
-    {
-      claimNumber: 'CLM-2024-005',
-      amount: 12000,
-      subVoucherNo: 'SV-005',
-      sanctionOrderNo: 'SO-2024-005',
-      sanctionAuthority: 'Finance Department',
-      sanctionOrderDate: '2024-01-25',
-      claimFor: 'Repair & Maintenance',
-      postDate: '2024-01-30',
-      selected: false,
-    },
-    {
-      claimNumber: 'CLM-2024-006',
-      amount: 45000,
-      subVoucherNo: 'SV-006',
-      sanctionOrderNo: 'SO-2024-006',
-      sanctionAuthority: 'Health Department',
-      sanctionOrderDate: '2024-01-28',
-      claimFor: 'Ambulance Services',
-      postDate: '2024-02-02',
-      selected: false,
-    },
-    {
-      claimNumber: 'CLM-2024-007',
-      amount: 28000,
-      subVoucherNo: 'SV-007',
-      sanctionOrderNo: 'SO-2024-007',
-      sanctionAuthority: 'Finance Department',
-      sanctionOrderDate: '2024-02-01',
-      claimFor: 'Driver Salary',
-      postDate: '2024-02-05',
-      selected: false,
-    },
-    {
-      claimNumber: 'CLM-2024-008',
-      amount: 0,
-      subVoucherNo: 'SV-008',
-      sanctionOrderNo: 'SO-2024-008',
-      sanctionAuthority: 'Finance Department',
-      sanctionOrderDate: '2024-02-03',
-      claimFor: 'Miscellaneous',
-      postDate: '2024-02-08',
-      selected: false,
-    },
-  ];
+  private apiService = inject(ApiService);
 
   constructor() {}
 
   getBills(): Observable<Bill[]> {
-    return of(this.mockBills);
+    return this.apiService.post<any>('BillIntegration/GetBillsForSubmission', '').pipe(
+      map(res => {
+        if (res && res.success && res.result) {
+          return res.result.map((b: any) => {
+            let claimForText = 'Other';
+            if (b.fuelMaintenance === 1 || b.fuelMaintenance === '1') claimForText = 'Fuel';
+            else if (b.fuelMaintenance === 2 || b.fuelMaintenance === '2') claimForText = 'Maintenance';
+            else if (b.fuelMaintenance === 3 || b.fuelMaintenance === '3') claimForText = 'Hired Vehicle';
+            else if (b.fuelMaintenance === 4 || b.fuelMaintenance === '4') claimForText = 'Misc. Store';
+            else if (b.fuelMaintenance === 5 || b.fuelMaintenance === '5') claimForText = 'Contractual / Requisite Vehicle';
+
+            return {
+              claimNumber: b.claimNo || '',
+              amount: b.amount || 0,
+              subVoucherNo: b.subVoucherNo || '',
+              sanctionOrderNo: b.sanctionOrderNo || '',
+              sanctionAuthority: b.sanctionAuthority || '',
+              sanctionOrderDate: b.sanctionOrderDate || '',
+              claimFor: claimForText,
+              postDate: b.pDate || b.actionDate || '',
+              selected: false,
+              fuelMaintenanceIFMSId: b.fuelMaintenanceIFMSId,
+              fuelMaintenance: b.fuelMaintenance,
+              incomeTaxAmount: b.incomeTaxAmount,
+              vmsRefNo: b.vmsRefNo
+            };
+          });
+        }
+        return [];
+      }),
+      catchError(err => {
+        console.error('Error fetching bills from backend:', err);
+        return of([]);
+      })
+    );
   }
 
   processBills(bills: Bill[]): Observable<{ message: string; processedCount: number }> {
+    // Process selected bills (mock or connect to real integration postbill later if needed)
     return of({
       message: 'Bills successfully processed and sent to IFMS',
       processedCount: bills.length,
     });
+  }
+
+  getBTDetails(): Observable<any> {
+    return this.apiService.post<any>('BillIntegration/GetBTDetails', {});
+  }
+
+  getPayees(ddoCode: string): Observable<any> {
+    return this.apiService.post<any>('BillIntegration/GetPayees', { ddo_code: ddoCode });
+  }
+
+  getBudgetHeads(ddoCode: string, classOfExp: string, budgetTypeCode: number): Observable<any> {
+    return this.apiService.post<any>('BillIntegration/GetBudgetHeads', {
+      ddo_code: ddoCode,
+      class_of_exp: classOfExp,
+      budget_type_code: budgetTypeCode
+    });
+  }
+
+  sendBillsToIfms(payload: any): Observable<any> {
+    return this.apiService.post<any>('BillIntegration/SendBillsToIfms', payload);
   }
 }

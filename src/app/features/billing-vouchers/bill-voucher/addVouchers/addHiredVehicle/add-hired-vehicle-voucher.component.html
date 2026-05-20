@@ -1,79 +1,102 @@
-<div class="hired-voucher-container p-4">
+<div class="container-fluid p-4 bg-white">
   <!-- Breadcrumb and Title -->
   <div class="page-header mb-4">
     <div class="d-flex justify-content-between align-items-center">
       <div>
-        <h1 class="page-title h4 fw-bold mb-0 text-primary">Hired Vehicle Bill Entry</h1>
+        <h1 class="page-title h4 fw-bold mb-0 text-dark-blue">
+          {{ isViewMode() ? 'View Hired Vehicle Bill' : (currentBillId() ? 'Edit Hired Vehicle Bill' : 'Hired Vehicle Bill Entry') }}
+        </h1>
       </div>
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb mb-0">
-          <li class="breadcrumb-item"><a [routerLink]="['/bill-voucher']">Billing</a></li>
+          <li class="breadcrumb-item text-primary"><a [routerLink]="['/vehicle']">Vehicle</a></li>
+          <li class="breadcrumb-item text-primary"><a [routerLink]="['/hired-vehicle-voucher']">Hired Vehicle Vouchers</a></li>
           <li class="breadcrumb-item active">New Hired Bill</li>
         </ol>
       </nav>
     </div>
   </div>
 
-  <form [formGroup]="voucherForm" (ngSubmit)="addBillAndSaveAsDraft()">
-    <!-- Section 1: Voucher and Sanction Details -->
-    <div class="card border-0 mb-4">
-      <div class="card-header bg-transparent border-bottom-primary px-0 mb-3">
-        <h6 class="text-primary fw-bold mb-1">Add Voucher and Sanction Details DDO</h6>
-      </div>
-      <div class="card-body p-0">
-        <div class="row mb-3">
-          <div class="col-12">
-            <label class="fw-bold me-3">Forwarded to Treasury?</label>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="forwardedToTreasury" id="treasuryYes" value="yes" formControlName="forwardedToTreasury">
-              <label class="form-check-label" for="treasuryYes">Yes</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="forwardedToTreasury" id="treasuryNo" value="no" formControlName="forwardedToTreasury">
-              <label class="form-check-label" for="treasuryNo">No</label>
-            </div>
-          </div>
-        </div>
-
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <app-input label="Sub Voucher No." formControlName="subVoucherNo" placeholder="Sub Voucher No."></app-input>
-          </div>
-          <div class="col-md-6">
-            <app-input label="Sub Voucher Description" formControlName="subVoucherDescription" placeholder="Sub Voucher Description"></app-input>
-          </div>
-        </div>
-
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <app-input label="Sanction Order No." formControlName="sanctionOrderNo" placeholder="Sanction Order No."></app-input>
-          </div>
-          <div class="col-md-6">
-            <app-input label="Select Sanction Order Date" type="date" formControlName="sanctionOrderDate" placeholder="Sanction Order Date (DD/MM/YYYY)"></app-input>
-          </div>
-        </div>
-
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <app-input label="Sanction Authority" formControlName="sanctionAuthority" placeholder="Sanction Authority"></app-input>
-          </div>
-          <div class="col-md-6">
-            <app-input label="Firm Name" formControlName="firmName" placeholder="Firm Name"></app-input>
-          </div>
-        </div>
-
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <app-input label="Tax(in Rs.)" type="number" formControlName="tax" placeholder="0"></app-input>
-          </div>
+  <!-- Warning Banner -->
+  <div class="row">
+    <div class="col-12">
+      <div class="marquee-container">
+        <div class="marquee-text">
+          <h5 class="text-danger fw-bold m-0">Unverified Vehicle's Number will not be shown in Vehicle Number List.</h5>
         </div>
       </div>
+      <p class="small text-muted text-center mb-4">
+        <span class="text-danger fw-bold">In case, entered Bill is above the allowed limit, please ensure it follows the format given in the following document. </span>
+        <a href="#" class="text-primary text-decoration-none">Click here to open document.</a>
+      </p>
     </div>
+  </div>
 
-    <!-- Section 2: Add Hired Vehicle Bills -->
+  <!-- Section 1: Voucher and Sanction Details -->
+  @if (!isViewMode() && !currentBillId()) {
+    <form [formGroup]="headerForm">
+      <!-- ... existing section 1 content ... -->
+      <div class="card border-0 mb-4">
+        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+          <h6 class="text-dark-blue fw-bold mb-1">Add Voucher and Sanction Details DDO</h6>
+        </div>
+        <div class="card-body p-0">
+          <div class="row mb-3">
+            <div class="col-12">
+              <label class="fw-bold me-3">Forwarded to Treasury?</label>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="forwardedToTreasury" id="treasuryYes" value="yes" formControlName="forwardedToTreasury">
+                <label class="form-check-label" for="treasuryYes">Yes</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="forwardedToTreasury" id="treasuryNo" value="no" formControlName="forwardedToTreasury">
+                <label class="form-check-label" for="treasuryNo">No</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <app-input label="Sub Voucher No." formControlName="subVoucherNo" placeholder="Sub Voucher No."></app-input>
+            </div>
+            <div class="col-md-6">
+              <app-input label="Sub Voucher Description" formControlName="subVoucherDescription" placeholder="Sub Voucher Description"></app-input>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <app-input label="Sanction Order No." formControlName="sanctionOrderNo" placeholder="Sanction Order No."></app-input>
+            </div>
+            <div class="col-md-6">
+              <app-input label="Select Sanction Order Date" type="date" formControlName="sanctionOrderDate" placeholder="Sanction Order Date (DD/MM/YYYY)"></app-input>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <app-input label="Sanction Authority" formControlName="sanctionAuthority" placeholder="Sanction Authority"></app-input>
+            </div>
+            <div class="col-md-6">
+              <app-input label="Firm Name" formControlName="firmName" placeholder="Firm Name"></app-input>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <app-input label="Tax(in Rs.)" type="number" formControlName="tax" placeholder="0"></app-input>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  }
+
+  <!-- Section 2: Add Hired Vehicle Bills -->
+  <form [formGroup]="billForm" (ngSubmit)="addBillAndSaveAsDraft()">
     <div class="card border-0 mb-4">
-      <div class="card-header bg-transparent border-bottom-primary px-0 mb-3">
-        <h6 class="text-primary fw-bold mb-1">Add Hired Vehicle Bills</h6>
+      <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+        <h6 class="text-dark-blue fw-bold mb-1">{{ isViewMode() ? 'Bill Details' : (currentBillId() ? 'Edit Bill Details' : 'Add Hired Vehicle Bills') }}</h6>
       </div>
       <div class="card-body p-0">
         <div class="row mb-3">
@@ -84,7 +107,7 @@
             <app-input label="Bill Date" type="date" formControlName="billDate" placeholder="Bill Date"></app-input>
           </div>
           <div class="col-md-4">
-            <app-input label="Office Name" formControlName="officeName" placeholder="Office Name"></app-input>
+            <app-input label="Office Name" type="select" [options]="officeOptions()" formControlName="officeName" placeholder="Select Office"></app-input>
           </div>
         </div>
 
@@ -93,10 +116,13 @@
             <app-input label="Contractor Name" formControlName="contractorName" placeholder="Contractor Name"></app-input>
           </div>
           <div class="col-md-4">
-            <app-input label="Contractor Phone" formControlName="contractorPhone" placeholder="Contractor Phone"></app-input>
+            <app-input label="Contractor Phone" formControlName="contractorPhone" placeholder="10-digit number"></app-input>
+            @if (billForm.get('contractorPhone')?.touched && billForm.get('contractorPhone')?.errors?.['pattern']) {
+              <small class="text-danger">Phone number must be exactly 10 digits.</small>
+            }
           </div>
           <div class="col-md-4">
-            <app-input label="Vehicle Type" type="select" [options]="vehicleTypeOptions" formControlName="vehicleType" placeholder="Select Type"></app-input>
+            <app-input label="Vehicle Type" type="select" [options]="vehicleTypeOptions()" formControlName="vehicleType" placeholder="Select Type"></app-input>
           </div>
         </div>
 
@@ -124,38 +150,51 @@
           </div>
         </div>
 
-        <div class="text-end mb-4">
-          <app-btn type="submit" label="Add Bill & Save as Draft" variant="primary" [disabled]="voucherForm.invalid || isLoading()"></app-btn>
-        </div>
+        @if (!isViewMode()) {
+          <div class="text-center mb-4 d-flex justify-content-center gap-2">
+            @if (currentBillId()) {
+              <app-btn type="button" label="Cancel" variant="outline-secondary" size="sm" (click)="resetBillFields()"></app-btn>
+            }
+            <app-btn type="submit" label="{{ currentBillId() ? 'Update Bill' : 'Add Bill & Save as Draft' }}" variant="dark-blue" size="sm" icon="pi pi-save" [disabled]="billForm.invalid || isLoading()"></app-btn>
+          </div>
+        }
       </div>
     </div>
   </form>
 
   <!-- Table Summary -->
-  <div class="row">
-    <div class="col-12">
-      <app-data-table
-        [columns]="tableColumns"
-        [data]="draftedBillsResource.value() || []"
-        [actions]="tableActions"
-      ></app-data-table>
-    </div>
-  </div>
-
-  <!-- Footer -->
-  <div class="row mt-4 mb-5">
-    <div class="col-md-4 offset-md-4 text-center">
-      <label class="fw-bold small text-muted d-block mb-1">Total Claim Amount</label>
-      <div class="bg-light p-4 rounded mb-4 shadow-sm border border-primary-subtle">
-        <h3 class="m-0 fw-bold text-primary">₹ {{totalBillAmount | number:'1.2-2'}}</h3>
+  @if (!isViewMode() && !currentBillId()) {
+    <div class="row">
+      <div class="col-12">
+        <app-data-table
+          [columns]="tableColumns"
+          [data]="draftedBillsResource.value() || []"
+          [actions]="tableActions"
+        ></app-data-table>
       </div>
-      <app-btn label="Generate Claim & Submit" variant="primary" size="lg" [disabled]="(draftedBillsResource.value() || []).length === 0 || isLoading()" (click)="lockBills()"></app-btn>
     </div>
-  </div>
-</div>
 
-<style>
-  .border-bottom-primary {
-    border-bottom: 2px solid #6f42c1 !important;
+    <!-- Footer -->
+    <div class="row mt-4 mb-5">
+      <div class="col-md-4 offset-md-4 text-center">
+        <label class="fw-bold small text-muted d-block mb-1">Total Claim Amount</label>
+        <div class="bg-light p-4 rounded mb-4 shadow-sm border border-dark-blue-subtle">
+          <h3 class="m-0 fw-bold text-dark-blue">₹ {{totalBillAmount | number:'1.2-2'}}</h3>
+        </div>
+        <div class="d-grid gap-2">
+          <app-btn 
+            label="Lock Bill" 
+            variant="dark-blue" 
+            size="sm" 
+            icon="pi pi-lock"
+            [disabled]="(draftedBillsResource.value() || []).length === 0 || headerForm.invalid || isLoading()" 
+            (click)="lockBills()">
+          </app-btn>
+          @if (headerForm.invalid && (draftedBillsResource.value() || []).length > 0) {
+            <small class="text-danger mt-1">Please complete all sanction details in Section 1 to enable Locking.</small>
+          }
+        </div>
+      </div>
+    </div>
   }
-</style>
+</div>

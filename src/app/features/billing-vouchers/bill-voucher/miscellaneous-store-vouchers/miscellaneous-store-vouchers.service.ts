@@ -1,36 +1,33 @@
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-
-export interface MiscellaneousStoreVoucher {
-  id: number;
-  dateOfCreation: string;
-  voucherAmount: number;
-}
+import { Injectable, inject } from '@angular/core';
+import { ApiService } from '../../../../core/services/api';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { MiscellaneousBill } from '@shared/services/billing.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MiscellaneousStoreVouchersService {
-  private mockVouchers: MiscellaneousStoreVoucher[] = [
-    { id: 1, dateOfCreation: '2025-04-05', voucherAmount: 2500 },
-    { id: 2, dateOfCreation: '2025-04-11', voucherAmount: 4200 },
-    { id: 3, dateOfCreation: '2025-04-16', voucherAmount: 1800 },
-    { id: 4, dateOfCreation: '2025-04-21', voucherAmount: 3100 },
-    { id: 5, dateOfCreation: '2025-04-25', voucherAmount: 5200 },
-  ];
+  private api = inject(ApiService);
 
-  constructor() {}
-
-  getVouchers(): Observable<MiscellaneousStoreVoucher[]> {
-    return of(this.mockVouchers);
+  /**
+   * Fetches the list of miscellaneous store bills.
+   * If claimId is provided, it fetches bills for that claim.
+   * Otherwise, it fetches drafted bills.
+   */
+  getVouchers(claimId?: number): Observable<MiscellaneousBill[]> {
+    const url = claimId ? `Billing/miscellaneous?claimId=${claimId}` : 'Billing/miscellaneous';
+    return this.api.get<{ success: boolean, result: MiscellaneousBill[] }>(url).pipe(
+      map(res => res.result)
+    );
   }
 
-  getVoucherById(id: number): Observable<MiscellaneousStoreVoucher | undefined> {
-    return of(this.mockVouchers.find(v => v.id === id));
-  }
-
+  /**
+   * Deletes a drafted miscellaneous bill.
+   */
   deleteVoucher(id: number): Observable<boolean> {
-    this.mockVouchers = this.mockVouchers.filter(v => v.id !== id);
-    return of(true);
+    return this.api.delete<{ success: boolean }>(`Billing/miscellaneous/${id}`).pipe(
+      map(res => res.success)
+    );
   }
 }

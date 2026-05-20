@@ -7,6 +7,7 @@ import { AppButtonComponent } from '@shared/components/ui/app-button/button.comp
 import { AppDataTableComponent, TableColumn, TableAction } from '@shared/components/ui/app-data-table/data-table.component';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { firstValueFrom } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-hired-vehicle-vouchers',
@@ -30,7 +31,7 @@ export class HiredVehicleVouchersComponent implements OnInit {
 
   // Table columns
   tableColumns: TableColumn[] = [
-    { key: 'id', label: 'ID' },
+    { key: 'hiredVehicleBillId', label: 'ID' },
     { key: 'billNumber', label: 'Bill No.' },
     { key: 'vehicleNumber', label: 'Vehicle No.' },
     { key: 'amount', label: 'Amount (₹)' },
@@ -40,6 +41,16 @@ export class HiredVehicleVouchersComponent implements OnInit {
   // Table actions
   tableActions: TableAction[] = [
     {
+      label: 'View',
+      action: (row: HiredVehicleBill) => this.viewVoucher(row),
+      variant: 'primary'
+    },
+    {
+      label: 'Edit',
+      action: (row: HiredVehicleBill) => this.editVoucher(row),
+      variant: 'warning'
+    },
+    {
       label: 'Delete',
       action: (row: HiredVehicleBill) => this.deleteVoucher(row),
       variant: 'danger'
@@ -48,11 +59,35 @@ export class HiredVehicleVouchersComponent implements OnInit {
 
   ngOnInit(): void {}
 
+  viewVoucher(voucher: HiredVehicleBill): void {
+    // Navigate to create page with the bill ID and read-only mode
+    this.router.navigate(['/bill-voucher/hired-vehicle/create'], {
+      queryParams: { id: voucher.hiredVehicleBillId, mode: 'view' }
+    });
+  }
+
+  editVoucher(voucher: HiredVehicleBill): void {
+    // Navigate to create page with the bill ID for editing
+    this.router.navigate(['/bill-voucher/hired-vehicle/create'], {
+      queryParams: { id: voucher.hiredVehicleBillId, mode: 'edit' }
+    });
+  }
+
   async deleteVoucher(voucher: HiredVehicleBill): Promise<void> {
-    if (confirm('Are you sure you want to delete this drafted voucher?')) {
+    const result = await Swal.fire({
+      title: 'Delete Voucher?',
+      text: `Are you sure you want to delete Bill #${voucher.billNumber}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (result.isConfirmed) {
       this.isLoading.set(true);
       try {
-        await firstValueFrom(this.hiredService.deleteVoucher(voucher.id));
+        await firstValueFrom(this.hiredService.deleteVoucher(voucher.hiredVehicleBillId));
         this.toastr.success('Voucher deleted successfully', 'Success');
         this.vouchersResource.reload();
       } catch (error) {
@@ -67,3 +102,4 @@ export class HiredVehicleVouchersComponent implements OnInit {
     this.router.navigate(['/bill-voucher/hired-vehicle/create']);
   }
 }
+

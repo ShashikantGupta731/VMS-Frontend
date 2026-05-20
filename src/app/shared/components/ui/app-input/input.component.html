@@ -37,6 +37,8 @@
             [disabled]="disabled || isLoading"
             [style]="{'width': width}"
             [styleClass]="inputClass"
+            [filter]="searchable"
+            filterBy="label"
             (onChange)="onSelectChange($event)"
             appendTo="body">
           </p-select>
@@ -101,6 +103,8 @@
           [disabled]="disabled"
           [style]="{'width': width}"
           [styleClass]="inputClass"
+          [filter]="searchable"
+          filterBy="label"
           (onChange)="onSelectChange($event)"
           appendTo="body">
         </p-select>

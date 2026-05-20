@@ -56,8 +56,8 @@ export class ModelsComponent {
   tableActions = [
     {
       label: 'Edit',
+      icon: '<i class="pi pi-pencil"></i>',
       action: (row: VehicleModel) => this.onEditModel(row),
-      class: 'btn-sm',
     },
   ];
 

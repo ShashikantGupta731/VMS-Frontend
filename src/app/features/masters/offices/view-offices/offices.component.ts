@@ -60,8 +60,8 @@ export class OfficesComponent {
   tableActions = [
     {
       label: 'Edit',
+      icon: '<i class="pi pi-pencil"></i>',
       action: (row: Office) => this.onEditOffice(row),
-      class: 'btn-sm',
     },
   ];
 

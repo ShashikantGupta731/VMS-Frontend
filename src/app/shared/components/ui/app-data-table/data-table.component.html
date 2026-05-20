@@ -41,7 +41,7 @@
     </ng-template>
 
     <!-- Body Template -->
-    <ng-template pTemplate="body" let-rowData let-columns="columns">
+    <ng-template pTemplate="body" let-rowData>
       <tr [class]="getRowClass(rowData)">
         @if (selectable) {
           <td class="checkbox-column">
@@ -63,18 +63,21 @@
         }
         @if (actions && actions.length > 0) {
           <td class="actions-column">
-            <div class="d-flex justify-content-center">
+            <div class="d-flex flex-row justify-content-center align-items-center gap-2">
               @for (action of actions; track action.label) {
                 <button
                   class="app-data-table-action-btn"
+                  [class.icon-btn]="!!getActionIcon(action, rowData)"
+                  [class]="'variant-' + getActionVariant(action, rowData)"
                   [disabled]="isActionDisabled(action, rowData)"
                   (click)="executeAction(action, rowData)"
-                  [title]="action.label"
+                  [pTooltip]="getActionLabel(action, rowData)"
+                  tooltipPosition="top"
                 >
-                  @if (!action.icon) {
-                    <span>{{ action.label }}</span>
+                  @if (getActionIcon(action, rowData)) {
+                    <span [innerHTML]="getActionIcon(action, rowData)"></span>
                   } @else {
-                    <span [innerHTML]="action.icon"></span>
+                    <span>{{ getActionLabel(action, rowData) }}</span>
                   }
                 </button>
               }

@@ -4,11 +4,13 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 export interface ContractualBill {
-  id: number;
+  contractualBillId: number;
   billNumber: string;
   billDate: string;
   billPeriodFrom: string;
   billPeriodTo: string;
+  officeName: string;
+  vehicleType: string;
   ddoCode: string;
   vehicleNumber: string;
   amount: number;

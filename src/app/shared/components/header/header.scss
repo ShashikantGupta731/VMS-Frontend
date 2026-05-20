@@ -4,7 +4,7 @@
   align-items: center;
   padding: 16px 24px;
   height: 72px;
-  background: linear-gradient(120deg, #322446 0%, #558ace  50%, #332945 100%);
+  background: linear-gradient(45deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%);
   position: fixed;
   top: 0;
   left: 0;
@@ -38,17 +38,18 @@
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
+  color: #1e293b;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(15, 23, 42, 0.08);
   }
 
   &:active {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(15, 23, 42, 0.15);
   }
 
   svg {
-    stroke: #ffffff;
+    stroke: currentColor;
   }
 }
 
@@ -59,7 +60,7 @@
 }
 
 .user-greeting {
-  color: #ffffff;
+  color: #1e293b;
   font-size: 16px;
   font-weight: 600;
 }
@@ -79,17 +80,18 @@
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.2s ease;
+  color: #1e293b;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(15, 23, 42, 0.08);
   }
 
   &:active {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(15, 23, 42, 0.15);
   }
 
   svg {
-    stroke: #ffffff;
+    stroke: currentColor;
   }
 }
 

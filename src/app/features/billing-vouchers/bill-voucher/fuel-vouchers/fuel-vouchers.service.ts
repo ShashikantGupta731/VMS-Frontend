@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 export interface FuelVoucher {
-  id: number;
+  fuelBillId: number;
   vehicleId: number;
   vehicleNumber: string;
   billNumber: string;

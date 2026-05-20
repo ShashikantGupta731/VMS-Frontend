@@ -1,0 +1,143 @@
+<div class="unverified-vehicles-container">
+  <app-card>
+    <!-- Page Header -->
+    <div class="page-header mb-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="page-title h4 fw-bold mb-0">Unverified Vehicles</h1>
+          <p class="text-muted text-sm mb-0">Audit and view vehicles pending verification across DDO offices</p>
+        </div>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a [routerLink]="['/vehicle']">Vehicle</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Unverified Vehicles</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="filter-section p-3 mb-4 bg-light rounded border">
+      <div class="row g-3 align-items-end">
+        <!-- Search bar -->
+        <div class="col-md-3">
+          <label class="form-label fw-semibold text-dark text-sm">Search</label>
+          <input 
+            type="text" 
+            class="form-control form-control-sm" 
+            placeholder="Search Reg No. or Office..."
+            [(ngModel)]="searchText"
+            (ngModelChange)="applyFilters()"
+          />
+        </div>
+
+        <!-- Department Filter -->
+        <div class="col-md-3">
+          <label class="form-label fw-semibold text-dark text-sm">Department</label>
+          <select 
+            class="form-select form-select-sm" 
+            [(ngModel)]="selectedDept" 
+            (change)="applyFilters()"
+          >
+            <option value="">All Departments</option>
+            @for (dept of departmentOptions; track dept.value) {
+              <option [value]="dept.value">{{ dept.label }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- District Filter -->
+        <div class="col-md-2">
+          <label class="form-label fw-semibold text-dark text-sm">District</label>
+          <select 
+            class="form-select form-select-sm" 
+            [(ngModel)]="selectedDistrict" 
+            (change)="applyFilters()"
+          >
+            <option value="">All Districts</option>
+            @for (dist of districtOptions; track dist.value) {
+              <option [value]="dist.value">{{ dist.label }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Allocation Type Filter -->
+        <div class="col-md-2">
+          <label class="form-label fw-semibold text-dark text-sm">Allocation Type</label>
+          <select 
+            class="form-select form-select-sm" 
+            [(ngModel)]="selectedAllocation" 
+            (change)="applyFilters()"
+          >
+            <option value="">All Types</option>
+            @for (type of allocationOptions; track type) {
+              <option [value]="type">{{ type }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Clear Filters Button -->
+        <div class="col-md-2 d-flex gap-2">
+          <app-btn 
+            label="Clear" 
+            variant="secondary" 
+            size="sm" 
+            icon="pi pi-filter-slash" 
+            (click)="clearFilters()"
+            class="w-100"
+          ></app-btn>
+        </div>
+      </div>
+    </div>
+
+    <!-- Export / Action Section -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="section-title mb-0">Unverified Audit Records ({{ filteredVehicles.length }})</h5>
+      <div class="d-flex gap-2">
+        <app-btn 
+          label="Print" 
+          variant="outline" 
+          size="sm" 
+          icon="pi pi-print" 
+          (click)="onPrint()"
+        ></app-btn>
+        <app-btn 
+          label="Export to Excel" 
+          variant="dark-blue" 
+          size="sm" 
+          icon="pi pi-file-excel" 
+          (click)="onExportExcel()"
+        ></app-btn>
+      </div>
+    </div>
+
+    <!-- Table Section -->
+    <div class="table-responsive">
+      <app-data-table
+        [columns]="tableColumns"
+        [data]="getPaginatedVehicles()"
+        [actions]="tableActions"
+        [isLoading]="isLoading"
+        [emptyMessage]="'No Unverified Vehicles Found'"
+      ></app-data-table>
+    </div>
+
+    <!-- Pagination -->
+    <app-pagination
+      *ngIf="totalItems > 0"
+      [currentPage]="currentPage"
+      [totalPages]="totalPagesCount"
+      [totalItems]="totalItems"
+      [itemsPerPage]="itemsPerPage"
+      (pageChange)="onPageChange($event)"
+    ></app-pagination>
+  </app-card>
+
+  <!-- Vehicle Details Modal Popup -->
+  <app-vehicle-details-modal 
+    *ngIf="isDetailsModalVisible && selectedVehicleId" 
+    [vehicleId]="selectedVehicleId"
+    [registrationNumber]="selectedVehicleRegNo" 
+    (close)="closeDetailsModal()"
+  ></app-vehicle-details-modal>
+</div>

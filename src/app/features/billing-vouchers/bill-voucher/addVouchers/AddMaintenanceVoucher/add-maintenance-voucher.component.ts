@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { BillingService, BillType, MaintenanceBill } from '@shared/services/billing.service';
@@ -9,6 +9,7 @@ import { AppDataTableComponent, TableColumn, TableAction } from '@shared/compone
 import { AppInputComponent } from '@shared/components/ui/app-input/input.component';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { firstValueFrom } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-add-maintenance-voucher',
@@ -20,18 +21,20 @@ import { firstValueFrom } from 'rxjs';
 export class AddMaintenanceVoucherComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private toastr = inject(ToastrService);
   private billingService = inject(BillingService);
 
   voucherForm: FormGroup;
   isLoading = signal(false);
+  isViewMode = signal(false);
+  editId = signal<number | null>(null);
   
   // Smart Form State Signals
   permissionRequired = signal(false);
   lastReading = signal(0);
 
   // Load vehicles for current DDO
-  // Note: Reusing the same vehicles endpoint for now
   vehiclesResource = rxResource<any[], any>({
     stream: () => this.billingService.getDdoVehicles()
   });
@@ -93,12 +96,50 @@ export class AddMaintenanceVoucherComponent implements OnInit {
       odometerReading: ['', [Validators.required, Validators.min(0)]],
       maintenanceType: ['', Validators.required],
       amount: ['', [Validators.required, Validators.min(1)]],
-      repairDetails: [''],
-      sanctionPermissionFile: ['']
+      details: [''],
+      sanctionPermissionFile: [''],
+      maintenanceBillId: [0]
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    const id = this.route.snapshot.params['id'];
+    const isView = this.route.snapshot.queryParams['view'] === 'true';
+
+    if (id) {
+      this.editId.set(Number(id));
+      this.isViewMode.set(isView);
+      this.loadBillDetails(Number(id));
+    }
+  }
+
+  async loadBillDetails(id: number): Promise<void> {
+    try {
+      const bill = await firstValueFrom(this.billingService.getMaintenanceBillById(id));
+      if (bill) {
+        this.voucherForm.patchValue({
+          vehicleId: bill.vehicleId,
+          billNumber: bill.billNumber,
+          billDate: bill.billDate.split('T')[0],
+          odometerReading: bill.odometerReading,
+          maintenanceType: bill.maintenanceType,
+          amount: bill.amount,
+          details: bill.details,
+          sanctionPermissionFile: bill.sanctionPermissionFile,
+          maintenanceBillId: bill.maintenanceBillId
+        });
+
+        if (this.isViewMode()) {
+          this.voucherForm.disable();
+        } else {
+          // Trigger validations for editing
+          this.onVehicleChange(bill.vehicleId);
+        }
+      }
+    } catch (error) {
+      this.toastr.error('Failed to load bill details', 'Error');
+    }
+  }
 
   async onVehicleChange(vehicleId: any): Promise<void> {
     if (!vehicleId) return;
@@ -138,7 +179,20 @@ export class AddMaintenanceVoucherComponent implements OnInit {
 
     this.isLoading.set(true);
     try {
-      await firstValueFrom(this.billingService.saveBill(BillType.Maintenance, this.voucherForm.value));
+      const formValue = this.voucherForm.value;
+      const billPayload = {
+        vehicleId: Number(formValue.vehicleId),
+        billNumber: formValue.billNumber,
+        billDate: formValue.billDate,
+        odometerReading: Number(formValue.odometerReading),
+        amount: Number(formValue.amount),
+        maintenanceType: formValue.maintenanceType,
+        details: formValue.details,
+        sanctionPermissionFile: formValue.sanctionPermissionFile,
+        maintenanceBillId: formValue.maintenanceBillId || 0
+      };
+
+      await firstValueFrom(this.billingService.saveBill(BillType.Maintenance, billPayload));
       this.toastr.success('Maintenance bill saved as draft', 'Success');
       this.draftedBillsResource.reload();
       this.resetBillFields();
@@ -150,43 +204,91 @@ export class AddMaintenanceVoucherComponent implements OnInit {
   }
 
   async deleteDraft(voucher: MaintenanceBill): Promise<void> {
-    if (confirm('Are you sure you want to delete this drafted bill?')) {
-      await firstValueFrom(this.billingService.deleteBill(BillType.Maintenance, voucher.id));
-      this.draftedBillsResource.reload();
-      this.toastr.success('Draft deleted', 'Success');
+    const result = await Swal.fire({
+      title: 'Delete Draft?',
+      text: `Are you sure you want to delete Maintenance Bill #${voucher.billNumber}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await firstValueFrom(this.billingService.deleteBill(BillType.Maintenance, voucher.maintenanceBillId));
+        this.draftedBillsResource.reload();
+        this.toastr.success('Draft deleted successfully', 'Success');
+      } catch (error) {
+        this.toastr.error('Failed to delete draft', 'Error');
+      }
     }
   }
 
   async lockBills(): Promise<void> {
     const bills = this.draftedBillsResource.value() ?? [];
     if (bills.length === 0) {
-      this.toastr.warning('Please add at least one bill to create a claim', 'Warning');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Empty Voucher',
+        text: 'Please add at least one bill before locking.',
+        confirmButtonColor: '#3085d6'
+      });
       return;
     }
 
-    this.isLoading.set(true);
-    try {
-      const formValue = this.voucherForm.value;
-      const payload = {
-        type: 2, // Maintenance
-        billIds: bills.map(b => b.id),
-        forwardedToTreasury: formValue.forwardedToTreasury === 'yes',
-        subVoucherNo: formValue.subVoucherNo,
-        subVoucherDescription: formValue.subVoucherDescription,
-        sanctionOrderNo: formValue.sanctionOrderNo,
-        sanctionOrderDate: formValue.sanctionOrderDate,
-        sanctionAuthority: formValue.sanctionAuthority,
-        firmName: formValue.firmName,
-        tax: formValue.tax
-      };
+    if (this.voucherForm.invalid) {
+      this.toastr.error('Please fill all Sanction/Header details before locking', 'Validation Error');
+      return;
+    }
 
-      await firstValueFrom(this.billingService.createClaim(payload));
-      this.toastr.success('Maintenance claim created and submitted', 'Success');
-      this.router.navigate(['/maintenance-voucher']);
-    } catch (error) {
-      this.toastr.error('Failed to create claim', 'Error');
-    } finally {
-      this.isLoading.set(false);
+    const result = await Swal.fire({
+      title: 'Confirm Lock',
+      text: "Are you sure you want to lock these bills? You won't be able to add more bills to this claim once locked.",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#28a745',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, Lock & Submit'
+    });
+
+    if (result.isConfirmed) {
+      this.isLoading.set(true);
+      try {
+        const formValue = this.voucherForm.value;
+        const payload = {
+          type: 2, // Maintenance
+          billIds: bills.map(b => b.maintenanceBillId),
+          forwardedToTreasury: formValue.forwardedToTreasury === 'yes',
+          subVoucherNo: formValue.subVoucherNo,
+          subVoucherDescription: formValue.subVoucherDescription,
+          sanctionOrderNo: formValue.sanctionOrderNo,
+          sanctionOrderDate: formValue.sanctionOrderDate ? formValue.sanctionOrderDate : null,
+          sanctionAuthority: formValue.sanctionAuthority,
+          firmName: formValue.firmName,
+          tax: Number(formValue.tax || 0)
+        };
+
+        await firstValueFrom(this.billingService.createClaim(payload));
+        
+        await Swal.fire({
+          icon: 'success',
+          title: 'Locked!',
+          text: 'The maintenance claim has been submitted successfully.',
+          timer: 2000,
+          showConfirmButton: false
+        });
+
+        this.router.navigate(['/maintenance-voucher']);
+      } catch (error: any) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Locking Failed',
+          text: error.error?.msg || 'An error occurred while creating the claim.'
+        });
+      } finally {
+        this.isLoading.set(false);
+      }
     }
   }
 
@@ -198,7 +300,8 @@ export class AddMaintenanceVoucherComponent implements OnInit {
       odometerReading: '',
       maintenanceType: '',
       amount: '',
-      repairDetails: ''
+      details: '',
+      maintenanceBillId: 0
     });
     this.permissionRequired.set(false);
   }

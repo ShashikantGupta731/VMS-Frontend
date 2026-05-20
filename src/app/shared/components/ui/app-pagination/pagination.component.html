@@ -12,10 +12,12 @@
     >
       Previous
     </button>
-    @for (page of pages; track page) {
+    @for (page of pages; track $index) {
       <button
         class="app-btn btn-sm"
         [class.active]="page === currentPage"
+        [class.ellipsis]="page === '...'"
+        [disabled]="page === '...'"
         (click)="onPageChange(page)"
       >
         {{ page }}

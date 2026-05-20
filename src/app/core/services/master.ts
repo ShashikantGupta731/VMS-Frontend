@@ -7,6 +7,10 @@ export interface DropdownItem {
     name: string;
 }
 
+export interface InventoryItem extends DropdownItem {
+    isModelRequired: boolean;
+}
+
 export interface Department {
     deptId: number;
     deptName: string;
@@ -137,9 +141,16 @@ export class MasterService {
 
     getTehsilsByUser(): Observable<DropdownItem[]> { return this.api.get<DropdownItem[]>('/masters/tehsils/by-user'); }
 
-    getDesignations(officeId?: number): Observable<Designation[]> {
-        const endpoint = officeId ? `/masters/designations?officeId=${officeId}` : '/masters/designations';
-        return this.api.get<Designation[]>(endpoint);
+    getDesignations(officeId?: number, departmentId?: number): Observable<Designation[]> {
+        let url = '/masters/designations';
+        if (officeId && departmentId) {
+            url += `?officeId=${officeId}&departmentId=${departmentId}`;
+        } else if (officeId) {
+            url += `?officeId=${officeId}`;
+        } else if (departmentId) {
+            url += `?departmentId=${departmentId}`;
+        }
+        return this.api.get<Designation[]>(url);
     }
 
     // NEW: Get designations filtered by logged-in user's department (matching legacy GetDesignationByDeptId)
@@ -208,5 +219,9 @@ export class MasterService {
 
     deleteProject(id: number): Observable<any> {
         return this.api.delete(`/masters/projects/${id}`);
+    }
+
+    getInventoryItems(): Observable<InventoryItem[]> {
+        return this.api.get<InventoryItem[]>('/masters/inventory');
     }
 }

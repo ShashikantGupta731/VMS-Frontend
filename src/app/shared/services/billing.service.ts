@@ -7,7 +7,8 @@ export enum BillType {
   Fuel = 1,
   Maintenance = 2,
   Hired = 3,
-  Contractual = 4
+  Contractual = 4,
+  Miscellaneous = 5
 }
 
 export enum BillStatus {
@@ -18,7 +19,7 @@ export enum BillStatus {
 }
 
 export interface FuelVoucher {
-  id: number;
+  fuelBillId: number;
   vehicleId: number;
   vehicleNumber: string;
   billNumber: string;
@@ -30,7 +31,7 @@ export interface FuelVoucher {
 }
 
 export interface MaintenanceBill {
-  id: number;
+  maintenanceBillId: number;
   vehicleId: number;
   vehicleNumber: string;
   billNumber: string;
@@ -43,7 +44,7 @@ export interface MaintenanceBill {
 }
 
 export interface HiredVehicleBill {
-  id: number;
+  hiredVehicleBillId: number;
   billNumber: string;
   billDate: string;
   vehicleNumber: string;
@@ -60,13 +61,27 @@ export interface HiredVehicleBill {
 }
 
 export interface ContractualBill {
-  id: number;
+  contractualBillId: number;
   billNumber: string;
   billDate: string;
   billPeriodFrom: string;
   billPeriodTo: string;
+  officeName: string;
+  vehicleType: string;
   ddoCode: string;
   vehicleNumber: string;
+  amount: number;
+  status: number;
+}
+
+export interface MiscellaneousBill {
+  miscellaneousBillId: number;
+  billNumber: string;
+  billDate: string;
+  inventoryMasterId: number;
+  inventoryName: string;
+  modelNumber?: string;
+  quantity: number;
   amount: number;
   status: number;
 }
@@ -89,10 +104,15 @@ export interface BillClaimDetail extends BillClaim {
   sanctionOrderNo?: string;
   sanctionOrderDate?: string;
   sanctionAuthority?: string;
+  sanctionAuthorityMobileNo?: string;
+  fuelBillId?: number;
   firmName?: string;
   tax: number;
   fuelBills?: FuelVoucher[];
   maintenanceBills?: MaintenanceBill[];
+  hiredVehicleBills?: HiredVehicleBill[];
+  contractualBills?: ContractualBill[];
+  miscellaneousBills?: MiscellaneousBill[];
 }
 
 @Injectable({
@@ -105,6 +125,24 @@ export class BillingService {
   getDrafts(type: BillType): Observable<any[]> {
     const endpoint = this.getEndpointByType(type);
     return this.api.get<{ success: boolean, result: any[] }>(`Billing/${endpoint}`).pipe(
+      map(res => res.result)
+    );
+  }
+
+  getFuelBillById(id: number): Observable<any> {
+    return this.api.get<{ success: boolean, result: any }>(`Billing/fuel/${id}`).pipe(
+      map(res => res.result)
+    );
+  }
+
+  getMaintenanceBillById(id: number): Observable<any> {
+    return this.api.get<{ success: boolean, result: any }>(`Billing/maintenance/${id}`).pipe(
+      map(res => res.result)
+    );
+  }
+
+  getMiscellaneousBillById(id: number): Observable<any> {
+    return this.api.get<{ success: boolean, result: any }>(`Billing/miscellaneous/${id}`).pipe(
       map(res => res.result)
     );
   }
@@ -169,10 +207,22 @@ export class BillingService {
     );
   }
 
+  verifyVehicle(vehicleId: number): Observable<any> {
+    return this.api.post(`Vehicles/${vehicleId}/verify`, {});
+  }
+
+  rejectVehicle(vehicleId: number, comments: string): Observable<any> {
+    return this.api.post(`Vehicles/${vehicleId}/reject`, { comments });
+  }
+
   getDdoVehicles(): Observable<any[]> {
     return this.api.get<{ success: boolean, result: any[] }>('Billing/vehicles').pipe(
       map(res => res.result)
     );
+  }
+
+  insertPersonalUseDetails(payload: any): Observable<any> {
+    return this.api.post('Billing/personal-usage', payload);
   }
 
   private getEndpointByType(type: BillType): string {
@@ -181,6 +231,7 @@ export class BillingService {
       case BillType.Maintenance: return 'maintenance';
       case BillType.Hired: return 'hired';
       case BillType.Contractual: return 'contractual';
+      case BillType.Miscellaneous: return 'miscellaneous';
       default: return 'fuel';
     }
   }

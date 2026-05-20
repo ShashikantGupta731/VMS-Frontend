@@ -32,8 +32,8 @@ import { TabType } from './vehicle-details-modal.interfaces';
   styleUrl: './vehicle-details-modal.component.scss',
 })
 export class VehicleDetailsModalComponent implements OnInit {
-  @Input() vehicleNumber!: string;
-  @Input() isVisible = false;
+  @Input() vehicleId!: number;
+  @Input() registrationNumber: string = '';
   @Output() close = new EventEmitter<void>();
 
   activeTab: TabType = 'vehicle-detail';
@@ -51,7 +51,7 @@ export class VehicleDetailsModalComponent implements OnInit {
   loadedTabs: Set<TabType> = new Set(['vehicle-detail']);
 
   ngOnInit(): void {
-    if (this.vehicleNumber) {
+    if (this.vehicleId) {
       this.loadedTabs.add('vehicle-detail');
     }
   }

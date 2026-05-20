@@ -1,5 +1,7 @@
-import { Injectable } from '@angular/core';
-import { Observable, of, delay } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, map, of } from 'rxjs';
+import { environment } from '@env/environment';
 
 export interface NonTreasuryClaim {
   claimNo: string;
@@ -7,6 +9,9 @@ export interface NonTreasuryClaim {
   date: string;
   amount: number;
   status: string;
+  fuelMaintenance: number;
+  httpStatus: number;
+  billClaimId?: number;
 }
 
 export interface FilterSummary {
@@ -21,176 +26,112 @@ export interface FilterSummary {
   providedIn: 'root'
 })
 export class NonTreasuryClaimsService {
-  private mockClaims: NonTreasuryClaim[] = [
-    {
-      claimNo: 'NTC-001',
-      claimFor: 'Fuel',
-      date: '2024-03-15',
-      amount: 25000,
-      status: 'Pending'
-    },
-    {
-      claimNo: 'NTC-002',
-      claimFor: 'Maintenance',
-      date: '2024-03-18',
-      amount: 15000,
-      status: 'Approved'
-    },
-    {
-      claimNo: 'NTC-003',
-      claimFor: 'Tyre Replacement',
-      date: '2024-03-20',
-      amount: 32000,
-      status: 'Rejected'
-    },
-    {
-      claimNo: 'NTC-004',
-      claimFor: 'Insurance',
-      date: '2024-03-22',
-      amount: 45000,
-      status: 'Pending'
-    },
-    {
-      claimNo: 'NTC-005',
-      claimFor: 'Fuel',
-      date: '2024-03-25',
-      amount: 18000,
-      status: 'Approved'
-    },
-    {
-      claimNo: 'NTC-006',
-      claimFor: 'Maintenance',
-      date: '2024-03-28',
-      amount: 22000,
-      status: 'Pending'
-    },
-    {
-      claimNo: 'NTC-007',
-      claimFor: 'Other',
-      date: '2024-04-02',
-      amount: 12000,
-      status: 'Approved'
-    },
-    {
-      claimNo: 'NTC-008',
-      claimFor: 'Fuel',
-      date: '2024-04-05',
-      amount: 28000,
-      status: 'Pending'
-    },
-    {
-      claimNo: 'NTC-009',
-      claimFor: 'Tyre Replacement',
-      date: '2024-04-08',
-      amount: 35000,
-      status: 'Approved'
-    },
-    {
-      claimNo: 'NTC-010',
-      claimFor: 'Insurance',
-      date: '2024-04-10',
-      amount: 50000,
-      status: 'Rejected'
-    },
-    {
-      claimNo: 'NTC-011',
-      claimFor: 'Fuel',
-      date: '2024-04-12',
-      amount: 20000,
-      status: 'Pending'
-    },
-    {
-      claimNo: 'NTC-012',
-      claimFor: 'Maintenance',
-      date: '2024-04-15',
-      amount: 17000,
-      status: 'Approved'
+  private http = inject(HttpClient);
+  private apiUrl = `${environment.apiUrl}/BillIntegration`;
+  private billingApiUrl = `${environment.apiUrl}/billing`;
+
+  private cache: NonTreasuryClaim[] = [];
+  private cachedFrom: string = '';
+  private cachedTo: string = '';
+
+  private claimTypesMap: Record<number, string> = {
+    1: 'Fuel',
+    2: 'Maintenance',
+    3: 'Hired',
+    4: 'Miscellaneous Store',
+    5: 'Contractual/Requisite'
+  };
+
+  private statusMap: Record<number, string> = {
+    200: 'Bill Created',
+    301: 'Bill Discarded from VMS'
+  };
+
+  getClaims(filters?: { fromDate: string; toDate: string }): Observable<NonTreasuryClaim[]> {
+    const fromDate = filters?.fromDate || '';
+    const toDate = filters?.toDate || '';
+
+    // If cache is valid, return cached claims
+    if (this.cache.length > 0 && this.cachedFrom === fromDate && this.cachedTo === toDate) {
+      return of(this.cache);
     }
-  ];
 
-  constructor() {}
-
-  getClaims(): Observable<NonTreasuryClaim[]> {
-    return of(this.mockClaims).pipe(delay(300));
+    return this.http.get<{ success: boolean; result: any[] }>(
+      `${this.billingApiUrl}/claims?status=2&forwardedToTreasury=false`
+    ).pipe(
+      map(res => {
+        if (res && res.success && Array.isArray(res.result)) {
+          this.cache = res.result.map(item => this.mapClaim(item));
+          this.cachedFrom = fromDate;
+          this.cachedTo = toDate;
+          return this.cache;
+        }
+        return [];
+      })
+    );
   }
 
   getFilteredClaims(filters: any): Observable<{ claims: NonTreasuryClaim[]; summary: FilterSummary }> {
-    let filtered = [...this.mockClaims];
+    return this.getClaims({ fromDate: filters.fromDate, toDate: filters.toDate }).pipe(
+      map(claims => {
+        let filtered = [...claims];
 
-    if (filters.financialYear) {
-      const [startYear, endYear] = filters.financialYear.split('-').map(Number);
-      const startDate = new Date(`${startYear}-04-01`);
-      const endDate = new Date(`${endYear}-03-31`);
-      filtered = filtered.filter(claim => {
-        const claimDate = new Date(claim.date);
-        return claimDate >= startDate && claimDate <= endDate;
-      });
-    }
+        // Filter by claim type
+        if (filters.claimType && filters.claimType !== '0') {
+          const typeVal = parseInt(filters.claimType);
+          filtered = filtered.filter(claim => claim.fuelMaintenance === typeVal);
+        }
 
-    if (filters.claimType) {
-      filtered = filtered.filter(claim => claim.claimFor === filters.claimType);
-    }
+        // Filter by search text
+        if (filters.searchText) {
+          const searchLower = filters.searchText.toLowerCase();
+          filtered = filtered.filter(claim =>
+            claim.claimNo.toLowerCase().includes(searchLower) ||
+            claim.claimFor.toLowerCase().includes(searchLower)
+          );
+        }
 
-    if (filters.fromDate) {
-      filtered = filtered.filter(claim => new Date(claim.date) >= new Date(filters.fromDate));
-    }
+        // Filter locally by Date Range (fromDate and toDate)
+        if (filters.fromDate) {
+          const fromDateLimit = new Date(filters.fromDate);
+          fromDateLimit.setHours(0, 0, 0, 0);
+          filtered = filtered.filter(claim => claim.date ? new Date(claim.date) >= fromDateLimit : true);
+        }
+        if (filters.toDate) {
+          const toDateLimit = new Date(filters.toDate);
+          toDateLimit.setHours(23, 59, 59, 999);
+          filtered = filtered.filter(claim => claim.date ? new Date(claim.date) <= toDateLimit : true);
+        }
 
-    if (filters.toDate) {
-      filtered = filtered.filter(claim => new Date(claim.date) <= new Date(filters.toDate));
-    }
+        const summary: FilterSummary = {
+          claimType: this.claimTypesMap[parseInt(filters.claimType)] || 'All',
+          totalAmount: filtered.reduce((sum, claim) => sum + claim.amount, 0),
+          totalRows: filtered.length,
+          fromDate: filters.fromDate || 'N/A',
+          toDate: filters.toDate || 'N/A'
+        };
 
-    if (filters.searchText) {
-      const searchLower = filters.searchText.toLowerCase();
-      filtered = filtered.filter(claim =>
-        claim.claimNo.toLowerCase().includes(searchLower) ||
-        claim.claimFor.toLowerCase().includes(searchLower)
-      );
-    }
-
-    const summary: FilterSummary = {
-      claimType: filters.claimType || 'All',
-      totalAmount: filtered.reduce((sum, claim) => sum + claim.amount, 0),
-      totalRows: filtered.length,
-      fromDate: filters.fromDate || 'N/A',
-      toDate: filters.toDate || 'N/A'
-    };
-
-    return of({ claims: filtered, summary }).pipe(delay(300));
+        return { claims: filtered, summary };
+      })
+    );
   }
 
   searchClaims(searchText: string, filters: any): Observable<NonTreasuryClaim[]> {
-    let filtered = [...this.mockClaims];
+    return this.getFilteredClaims({ ...filters, searchText }).pipe(
+      map(data => data.claims)
+    );
+  }
 
-    if (filters.financialYear) {
-      const [startYear, endYear] = filters.financialYear.split('-').map(Number);
-      const startDate = new Date(`${startYear}-04-01`);
-      const endDate = new Date(`${endYear}-03-31`);
-      filtered = filtered.filter(claim => {
-        const claimDate = new Date(claim.date);
-        return claimDate >= startDate && claimDate <= endDate;
-      });
-    }
-
-    if (filters.claimType) {
-      filtered = filtered.filter(claim => claim.claimFor === filters.claimType);
-    }
-
-    if (filters.fromDate) {
-      filtered = filtered.filter(claim => new Date(claim.date) >= new Date(filters.fromDate));
-    }
-
-    if (filters.toDate) {
-      filtered = filtered.filter(claim => new Date(claim.date) <= new Date(filters.toDate));
-    }
-
-    if (searchText) {
-      const searchLower = searchText.toLowerCase();
-      filtered = filtered.filter(claim =>
-        claim.claimNo.toLowerCase().includes(searchLower) ||
-        claim.claimFor.toLowerCase().includes(searchLower)
-      );
-    }
-
-    return of(filtered).pipe(delay(200));
+  private mapClaim(item: any): NonTreasuryClaim {
+    return {
+      billClaimId: item.billClaimId,
+      claimNo: item.claimNumber || '',
+      claimFor: this.claimTypesMap[item.type] || 'Other',
+      date: item.createdAt || '',
+      amount: item.totalAmount || 0,
+      status: 'Verified',
+      fuelMaintenance: item.type,
+      httpStatus: 200
+    };
   }
 }

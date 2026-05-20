@@ -27,12 +27,36 @@ export class AppPaginationComponent {
     return end > this.totalItems ? this.totalItems : end;
   }
 
-  get pages(): number[] {
-    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  get pages(): (number | string)[] {
+    const pages: (number | string)[] = [];
+    const maxVisiblePages = 5;
+    
+    if (this.totalPages <= maxVisiblePages + 2) {
+      for (let i = 1; i <= this.totalPages; i++) pages.push(i);
+    } else {
+      pages.push(1);
+      
+      let start = Math.max(2, this.currentPage - 1);
+      let end = Math.min(this.totalPages - 1, this.currentPage + 1);
+      
+      // Adjust range if at the beginning or end
+      if (this.currentPage <= 3) {
+        end = 4;
+      } else if (this.currentPage >= this.totalPages - 2) {
+        start = this.totalPages - 3;
+      }
+      
+      if (start > 2) pages.push('...');
+      for (let i = start; i <= end; i++) pages.push(i);
+      if (end < this.totalPages - 1) pages.push('...');
+      
+      pages.push(this.totalPages);
+    }
+    return pages;
   }
 
-  onPageChange(page: number): void {
-    if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
+  onPageChange(page: number | string): void {
+    if (typeof page === 'number' && page >= 1 && page <= this.totalPages && page !== this.currentPage) {
       this.pageChange.emit(page);
     }
   }

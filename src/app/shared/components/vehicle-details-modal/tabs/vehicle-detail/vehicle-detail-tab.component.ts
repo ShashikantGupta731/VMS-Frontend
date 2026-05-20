@@ -1,7 +1,5 @@
 import { Component, input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { KeyValueListComponent } from '../../../ui/app-key-value-list/key-value-list.component';
-import { AppCardComponent } from '../../../ui/app-card/card.component';
 import { VehicleDetail } from '../../vehicle-details-modal.interfaces';
 import { VehicleDetailsModalService } from '../../vehicle-details-modal.service';
 import { rxResource } from '@angular/core/rxjs-interop';
@@ -9,16 +7,16 @@ import { rxResource } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'app-vehicle-detail-tab',
   standalone: true,
-  imports: [CommonModule, KeyValueListComponent, AppCardComponent],
+  imports: [CommonModule],
   templateUrl: './vehicle-detail-tab.component.html',
   styleUrl: './vehicle-detail-tab.component.scss',
 })
 export class VehicleDetailTabComponent {
-  vehicleNumber = input.required<string>();
+  vehicleId = input.required<number>();
   
-  private resource = rxResource<VehicleDetail | null, string>({
-    params: () => this.vehicleNumber(),
-    stream: ({ params }) => this.vehicleDetailsService.getVehicleDetails(params)
+  private resource = rxResource<VehicleDetail | null, number>({
+    params: () => this.vehicleId(),
+    stream: ({ params }) => this.vehicleDetailsService.getVehicleDetails(params.toString())
   });
 
   vehicleDetail = computed(() => this.resource.value() ?? null);

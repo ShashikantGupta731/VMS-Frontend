@@ -1,7 +1,6 @@
 import { Component, input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AppDataTableComponent, TableColumn } from '../../../ui/app-data-table/data-table.component';
-import { AppCardComponent } from '../../../ui/app-card/card.component';
 import { BillRecord } from '../../vehicle-details-modal.interfaces';
 import { VehicleDetailsModalService } from '../../vehicle-details-modal.service';
 import { rxResource } from '@angular/core/rxjs-interop';
@@ -9,16 +8,16 @@ import { rxResource } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'app-fuel-tab',
   standalone: true,
-  imports: [CommonModule, AppDataTableComponent, AppCardComponent],
+  imports: [CommonModule, AppDataTableComponent],
   templateUrl: './fuel-tab.component.html',
   styleUrl: './fuel-tab.component.scss',
 })
 export class FuelTabComponent {
-  vehicleNumber = input.required<string>();
+  vehicleId = input.required<number>();
   
   private resource = rxResource({
-    params: () => this.vehicleNumber(),
-    stream: ({ params }) => this.vehicleDetailsService.getFuelBills(params)
+    params: () => this.vehicleId(),
+    stream: ({ params }) => this.vehicleDetailsService.getFuelBills(params.toString())
   });
 
   fuelBills = computed(() => this.resource.value() ?? []);
@@ -31,16 +30,30 @@ export class FuelTabComponent {
   columns: TableColumn[] = [
     { key: 'recordId', label: 'Record ID' },
     { key: 'claimNumber', label: 'Claim Number' },
-    { key: 'subVoucherNo', label: 'Sub Voucher No' },
-    { key: 'date', label: 'Date' },
-    { key: 'type', label: 'Type' },
-    { key: 'amount', label: 'Amount' },
-    { key: 'odometerReading', label: 'Odometer Reading' },
-    { key: 'sanctionOrderNo', label: 'Sanction Order No' },
+    { key: 'subVoucherNo', label: 'Sub Voucher No.' },
+    { key: 'date', label: 'Fuel Date' },
+    { key: 'vmsEntryDate', label: 'VMS Entry Date' },
+    { key: 'fuelConsumptionLitres', label: 'Fuel Consumption (Litres)' },
+    { key: 'amount', label: 'Fuel Consumption (Rs.)' },
+    { key: 'odometerReading', label: 'Odometer Reading (KM)' },
+    { key: 'sanctionOrderNo', label: 'Sanction Order No.' },
     { key: 'sanctionOrderDate', label: 'Sanction Order Date' },
-    { key: 'sanctionAuthority', label: 'Sanction Authority' },
-    { key: 'permissionReceived', label: 'Permission Received' },
+    { key: 'sanctionAuthority', label: 'Sanction Authority' }
+  ];
+
+  actions = [
+    {
+      label: 'View Permission',
+      variant: 'primary' as const,
+      action: (row: BillRecord) => this.showPdfViewer(row.permissionNoc ?? ''),
+      disabled: (row: BillRecord) => !row.permissionNoc || row.permissionNoc === ''
+    }
   ];
 
   constructor(private vehicleDetailsService: VehicleDetailsModalService) {}
+
+  showPdfViewer(path: string) {
+    if (!path) return;
+    window.open(path, '_blank');
+  }
 }

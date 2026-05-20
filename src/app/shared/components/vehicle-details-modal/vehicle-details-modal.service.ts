@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable, of, delay } from 'rxjs';
+import { environment } from '@env/environment';
 import {
   VehicleDetail,
   FitnessCertificate,
@@ -11,58 +13,40 @@ import {
   providedIn: 'root',
 })
 export class VehicleDetailsModalService {
-  constructor() {}
+  private apiUrl = `${environment.apiUrl}/Vehicles`;
 
-  getVehicleDetails(vehicleNumber: string): Observable<VehicleDetail> {
-    return of(this.getMockVehicleDetail(vehicleNumber)).pipe(delay(300));
+  constructor(private http: HttpClient) {}
+
+  getVehicleDetails(id: string): Observable<VehicleDetail> {
+    return this.http.get<VehicleDetail>(`${this.apiUrl}/${id}`);
   }
 
-  getFitnessCertificates(vehicleNumber: string): Observable<FitnessCertificate[]> {
-    return of(this.getMockFitnessCertificates()).pipe(delay(300));
+  getFitnessCertificates(vehicleId: string): Observable<FitnessCertificate[]> {
+    return this.http.get<FitnessCertificate[]>(`${this.apiUrl}/${vehicleId}/fitness-certificates`);
   }
 
-  getFuelBills(vehicleNumber: string): Observable<BillRecord[]> {
-    return of(this.getMockFuelBills()).pipe(delay(300));
+  getFuelBills(vehicleId: string): Observable<BillRecord[]> {
+    return this.http.get<BillRecord[]>(`${this.apiUrl}/${vehicleId}/fuel-bills`);
   }
 
-  getMaintenanceBills(vehicleNumber: string): Observable<BillRecord[]> {
-    return of(this.getMockMaintenanceBills()).pipe(delay(300));
+  getMaintenanceBills(vehicleId: string): Observable<BillRecord[]> {
+    return this.http.get<BillRecord[]>(`${this.apiUrl}/${vehicleId}/maintenance-bills`);
   }
 
-  getServiceBills(vehicleNumber: string): Observable<BillRecord[]> {
-    return of(this.getMockServiceBills()).pipe(delay(300));
+  getServiceBills(vehicleId: string): Observable<BillRecord[]> {
+    return this.http.get<BillRecord[]>(`${this.apiUrl}/${vehicleId}/service-bills`);
   }
 
-  getBatteryChanges(vehicleNumber: string): Observable<BillRecord[]> {
-    return of(this.getMockBatteryChanges()).pipe(delay(300));
+  getBatteryChanges(vehicleId: string): Observable<BillRecord[]> {
+    return this.http.get<BillRecord[]>(`${this.apiUrl}/${vehicleId}/battery-changes`);
   }
 
-  getTyreChanges(vehicleNumber: string): Observable<BillRecord[]> {
-    return of(this.getMockTyreChanges()).pipe(delay(300));
+  getTyreChanges(vehicleId: string): Observable<BillRecord[]> {
+    return this.http.get<BillRecord[]>(`${this.apiUrl}/${vehicleId}/tyre-changes`);
   }
 
-  getTransferHistory(vehicleNumber: string): Observable<TransferHistory[]> {
-    return of(this.getMockTransferHistory()).pipe(delay(300));
-  }
-
-  private getMockVehicleDetail(vehicleNumber: string): VehicleDetail {
-    return {
-      ddoCode: 'DDO-2024-001',
-      nodalOfficer: {
-        name: 'Rajesh Kumar',
-        email: 'rajesh.kumar@gov.in',
-        phone: '+91-9876543210',
-      },
-      currentStatus: 'Active',
-      treasuryType: 'State Treasury',
-      verificationStatus: 'Verified',
-      office: 'District Collector Office',
-      officeAddress: 'Collector Office Building, Main Road, District Center',
-      district: 'Central District',
-      tehsil: 'Main Tehsil',
-      department: 'Transport Department',
-      vehicleAllocationType: 'Pool Vehicle',
-    };
+  getTransferHistory(vehicleId: string): Observable<TransferHistory[]> {
+    return this.http.get<TransferHistory[]>(`${this.apiUrl}/${vehicleId}/transfer-history`);
   }
 
   private getMockFitnessCertificates(): FitnessCertificate[] {
