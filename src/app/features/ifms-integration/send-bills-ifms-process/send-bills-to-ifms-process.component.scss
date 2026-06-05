@@ -1,0 +1,211 @@
+@use 'variables' as *;
+
+// Align with billing voucher list pages (e.g. fuel-vouchers, hired-vehicle-vouchers)
+.fuel-vouchers-container {
+  padding: 20px;
+
+  .page-header {
+    .page-title {
+      color: $text-dark;
+      font-size: $font-size-md;
+    }
+
+    .breadcrumb {
+      background: transparent;
+      padding: 0;
+      font-size: $font-size-base;
+
+      .breadcrumb-item {
+        a {
+          color: $primary-color;
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+
+        &.active {
+          color: $text-muted;
+        }
+      }
+    }
+  }
+
+  .section-title {
+    color: $text-dark;
+    font-weight: $font-weight-semibold;
+    font-size: $font-size-base;
+  }
+
+  .form-label {
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: $text-dark;
+    margin-bottom: 6px;
+  }
+
+  .form-control,
+  .form-select {
+    font-size: $font-size-base;
+    color: $text-dark;
+    border-color: $border-color;
+    border-width: 1px;
+
+    &:focus {
+      border-color: $primary-color;
+      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.2);
+    }
+
+    &:disabled {
+      background-color: $bg-gray-light;
+      color: $text-muted;
+    }
+  }
+
+  .btn-sm {
+    font-size: $font-size-sm;
+  }
+
+  .form-check-label {
+    font-size: $font-size-base;
+    color: $text-dark;
+  }
+
+  .table {
+    font-size: $font-size-sm;
+    color: $text-dark;
+
+    thead th {
+      font-size: $font-size-sm;
+      font-weight: $font-weight-semibold;
+      color: $text-muted;
+    }
+  }
+
+  .table-responsive {
+    margin-bottom: 0;
+  }
+
+  .amount-muted-label {
+    font-size: $font-size-sm;
+    color: $text-muted;
+  }
+
+  .panel-muted {
+    background: $bg-gray;
+    border: 1px solid $border-color !important;
+    border-radius: $radius-md;
+  }
+
+  .summary-strip {
+    background: $bg-white;
+    border: 1px solid $border-color;
+    border-radius: $radius-md;
+    padding: $spacing-md $spacing-lg;
+  }
+}
+
+.text-dark-blue {
+  color: #1a237e !important;
+}
+
+.border-bottom-dark-blue {
+  border-bottom: 2px solid #1a237e !important;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  gap: $spacing-lg;
+
+  p {
+    color: $text-muted;
+    font-size: $font-size-base;
+    margin: 0;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.font-xs {
+  font-size: $font-size-xs !important;
+}
+
+.font-sm {
+  font-size: $font-size-sm !important;
+}
+
+.border-dashed {
+  border-style: dashed !important;
+}
+
+.tracking-wider {
+  letter-spacing: 0.05em;
+}
+
+.modal-backdrop {
+  z-index: $z-index-modal-backdrop;
+}
+
+.modal {
+  z-index: $z-index-modal;
+  background: rgba(0, 0, 0, 0.4);
+
+  .modal-title {
+    font-size: $font-size-base;
+    color: $text-dark;
+  }
+
+  .form-label {
+    font-size: $font-size-base;
+    color: $text-dark;
+    font-weight: $font-weight-semibold;
+    margin-bottom: 6px;
+  }
+
+  .form-select,
+  .form-control {
+    font-size: $font-size-base;
+    border-color: $border-color;
+    color: $text-dark;
+  }
+
+  .btn {
+    font-size: $font-size-sm;
+  }
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(102, 126, 234, 0.06);
+}
+
+.table-active {
+  background-color: rgba(102, 126, 234, 0.12) !important;
+}
+
+@media (max-width: 768px) {
+  .fuel-vouchers-container {
+    padding: 15px;
+  }
+}

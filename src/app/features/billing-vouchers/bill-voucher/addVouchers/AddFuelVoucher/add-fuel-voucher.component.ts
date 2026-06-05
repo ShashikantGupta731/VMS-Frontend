@@ -4,6 +4,7 @@ import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { BillingService, BillType, FuelVoucher } from '@shared/services/billing.service';
+import { UploadService } from '@shared/services/upload.service';
 import { AppButtonComponent } from '@shared/components/ui/app-button/button.component';
 import { AppDataTableComponent, TableColumn, TableAction } from '@shared/components/ui/app-data-table/data-table.component';
 import { AppInputComponent } from '@shared/components/ui/app-input/input.component';
@@ -24,6 +25,7 @@ export class AddFuelVoucherComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private toastr = inject(ToastrService);
   private billingService = inject(BillingService);
+  private uploadService = inject(UploadService);
 
   voucherForm: FormGroup;
   isLoading = signal(false);
@@ -119,6 +121,31 @@ export class AddFuelVoucherComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     const isViewOnly = this.route.snapshot.queryParamMap.get('view') === 'true';
     
+    // Restore header details from localStorage if they exist
+    const savedHeader = localStorage.getItem('fuelVoucherDraftHeader');
+    if (savedHeader && !isViewOnly) {
+      try {
+        const parsed = JSON.parse(savedHeader);
+        this.voucherForm.patchValue(parsed, { emitEvent: false });
+      } catch (e) {}
+    }
+
+    // Subscribe to form changes to save header details
+    this.voucherForm.valueChanges.subscribe(val => {
+      const headerFields = {
+        forwardedToTreasury: val.forwardedToTreasury,
+        subVoucherNo: val.subVoucherNo,
+        subVoucherDescription: val.subVoucherDescription,
+        sanctionOrderNo: val.sanctionOrderNo,
+        sanctionOrderDate: val.sanctionOrderDate,
+        sanctionAuthority: val.sanctionAuthority,
+        firmName: val.firmName,
+        tax: val.tax,
+        sanctionAuthorityMobileNo: val.sanctionAuthorityMobileNo
+      };
+      localStorage.setItem('fuelVoucherDraftHeader', JSON.stringify(headerFields));
+    });
+
     if (id) {
       this.loadBill(Number(id), isViewOnly);
     }
@@ -289,6 +316,18 @@ export class AddFuelVoucherComponent implements OnInit {
     this.isLoading.set(true);
     try {
       const payload = { ...this.voucherForm.value };
+
+      // Upload files if they exist as File objects
+      if (payload.nocFile instanceof File) {
+        const uploadRes = await firstValueFrom(this.uploadService.uploadFile(payload.nocFile, 'billing/noc'));
+        payload.nocFile = uploadRes.dbPath;
+      }
+      
+      if (payload.sanctionPermissionFile instanceof File) {
+        const uploadRes = await firstValueFrom(this.uploadService.uploadFile(payload.sanctionPermissionFile, 'billing/sanctions'));
+        payload.sanctionPermissionFile = uploadRes.dbPath;
+      }
+
       // Convert empty strings to null for nullable backend fields (like dates)
       Object.keys(payload).forEach(key => {
         if (payload[key] === '') payload[key] = null;
@@ -385,6 +424,7 @@ export class AddFuelVoucherComponent implements OnInit {
 
       await firstValueFrom(this.billingService.createClaim(payload));
       this.toastr.success('Claim created and submitted for verification', 'Success');
+      localStorage.removeItem('fuelVoucherDraftHeader');
       this.router.navigate(['/bill-voucher']);
     } catch (error) {
       this.toastr.error('Failed to create claim', 'Error');

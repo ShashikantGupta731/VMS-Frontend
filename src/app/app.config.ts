@@ -11,12 +11,13 @@ import Aura from '@primeng/themes/aura';
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth-interceptor';
 import { errorInterceptor } from './core/interceptors/error-interceptor';
+import { loaderInterceptor } from './core/interceptors/loader.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor, loaderInterceptor])),
     provideToastr(),
 
     // 1. Enable animations for PrimeNG dropdowns/modals

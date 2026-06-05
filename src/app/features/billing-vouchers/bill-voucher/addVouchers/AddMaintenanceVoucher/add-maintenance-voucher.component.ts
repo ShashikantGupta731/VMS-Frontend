@@ -4,6 +4,7 @@ import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { BillingService, BillType, MaintenanceBill } from '@shared/services/billing.service';
+import { UploadService } from '@shared/services/upload.service';
 import { AppButtonComponent } from '@shared/components/ui/app-button/button.component';
 import { AppDataTableComponent, TableColumn, TableAction } from '@shared/components/ui/app-data-table/data-table.component';
 import { AppInputComponent } from '@shared/components/ui/app-input/input.component';
@@ -24,6 +25,7 @@ export class AddMaintenanceVoucherComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private toastr = inject(ToastrService);
   private billingService = inject(BillingService);
+  private uploadService = inject(UploadService);
 
   voucherForm: FormGroup;
   isLoading = signal(false);
@@ -106,6 +108,30 @@ export class AddMaintenanceVoucherComponent implements OnInit {
     const id = this.route.snapshot.params['id'];
     const isView = this.route.snapshot.queryParams['view'] === 'true';
 
+    // Restore header details from localStorage if they exist
+    const savedHeader = localStorage.getItem('maintVoucherDraftHeader');
+    if (savedHeader && !isView) {
+      try {
+        const parsed = JSON.parse(savedHeader);
+        this.voucherForm.patchValue(parsed, { emitEvent: false });
+      } catch (e) {}
+    }
+
+    // Subscribe to form changes to save header details
+    this.voucherForm.valueChanges.subscribe(val => {
+      const headerFields = {
+        forwardedToTreasury: val.forwardedToTreasury,
+        subVoucherNo: val.subVoucherNo,
+        subVoucherDescription: val.subVoucherDescription,
+        sanctionOrderNo: val.sanctionOrderNo,
+        sanctionOrderDate: val.sanctionOrderDate,
+        sanctionAuthority: val.sanctionAuthority,
+        firmName: val.firmName,
+        tax: val.tax
+      };
+      localStorage.setItem('maintVoucherDraftHeader', JSON.stringify(headerFields));
+    });
+
     if (id) {
       this.editId.set(Number(id));
       this.isViewMode.set(isView);
@@ -179,7 +205,13 @@ export class AddMaintenanceVoucherComponent implements OnInit {
 
     this.isLoading.set(true);
     try {
-      const formValue = this.voucherForm.value;
+      const formValue = { ...this.voucherForm.value };
+
+      if (formValue.sanctionPermissionFile instanceof File) {
+        const uploadRes = await firstValueFrom(this.uploadService.uploadFile(formValue.sanctionPermissionFile, 'billing/sanctions'));
+        formValue.sanctionPermissionFile = uploadRes.dbPath;
+      }
+
       const billPayload = {
         vehicleId: Number(formValue.vehicleId),
         billNumber: formValue.billNumber,
@@ -271,6 +303,8 @@ export class AddMaintenanceVoucherComponent implements OnInit {
 
         await firstValueFrom(this.billingService.createClaim(payload));
         
+        localStorage.removeItem('maintVoucherDraftHeader');
+
         await Swal.fire({
           icon: 'success',
           title: 'Locked!',
@@ -293,14 +327,26 @@ export class AddMaintenanceVoucherComponent implements OnInit {
   }
 
   resetBillFields(): void {
-    const vehicleId = this.voucherForm.get('vehicleId')?.value;
+    const formValue = this.voucherForm.getRawValue();
     this.voucherForm.reset({
-      vehicleId: vehicleId,
+      // Preserve Header/Sanction Details
+      forwardedToTreasury: formValue.forwardedToTreasury,
+      subVoucherNo: formValue.subVoucherNo,
+      subVoucherDescription: formValue.subVoucherDescription,
+      sanctionOrderNo: formValue.sanctionOrderNo,
+      sanctionOrderDate: formValue.sanctionOrderDate,
+      sanctionAuthority: formValue.sanctionAuthority,
+      firmName: formValue.firmName,
+      tax: formValue.tax,
+
+      // Reset specific Bill Details
+      vehicleId: formValue.vehicleId,
       billDate: new Date().toISOString().split('T')[0],
       odometerReading: '',
       maintenanceType: '',
       amount: '',
       details: '',
+      sanctionPermissionFile: '',
       maintenanceBillId: 0
     });
     this.permissionRequired.set(false);

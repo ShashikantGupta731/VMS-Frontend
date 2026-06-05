@@ -71,8 +71,8 @@ export class MainLayout {
             label: 'Condemned Vehicles',
             icon: 'fas fa-car-crash',
             children: [
-              { label: 'Register Replacement', route: '/vehicle/new-vehicle-details', icon: 'fas fa-plus' },
-              { label: 'Amount Deposited', route: '/vehicle/condemned-vehicle-details', icon: 'fas fa-receipt' }
+              { label: 'Mark for Condemned', route: '/vehicles/condemned/mark-condemned', icon: 'fas fa-ban' },
+              { label: 'Treasury Deposit (GRN)', route: '/vehicles/condemned/deposit', icon: 'fas fa-receipt' }
             ]
           }
         ];
@@ -84,7 +84,16 @@ export class MainLayout {
             children: [
               { label: 'Officers', route: '/master/officer', icon: 'fas fa-user-tie' },
               { label: 'Models', route: '/models', icon: 'fas fa-car' },
-              { label: 'Designations', route: '/designations', icon: 'fas fa-user-tie' }
+              { label: 'Designations', route: '/designations', icon: 'fas fa-user-tie' },
+              { label: 'Departments', route: '/master/departments', icon: 'fas fa-building' },
+              { label: 'Districts', route: '/master/districts', icon: 'fas fa-map-marker-alt' },
+              { label: 'Tehsils', route: '/master/tehsils', icon: 'fas fa-map' },
+              { label: 'Vehicle Types', route: '/master/vehicle-types', icon: 'fas fa-truck-pickup' },
+              { label: 'Manufacturers', route: '/master/manufacturers', icon: 'fas fa-industry' },
+              { label: 'Office Types', route: '/master/office-types', icon: 'fas fa-building' },
+              { label: 'Allocations', route: '/master/allocations', icon: 'fas fa-tasks' },
+              { label: 'Fleet Strength', route: '/master/fleet-strength', icon: 'fas fa-truck-monster' },
+              { label: 'Store Items', route: '/master/store-items', icon: 'fas fa-boxes' }
             ]
           },
           { label: 'Vehicle Verification', route: '/verify-vehicles', icon: 'fas fa-check-double' },
@@ -96,8 +105,8 @@ export class MainLayout {
             label: 'Logs',
             icon: 'fas fa-clipboard-list',
             children: [
-              { label: 'Activity Logs', route: '/activity-logs', icon: 'fas fa-history' },
-              { label: 'Error Logs', route: '/error-logs', icon: 'fas fa-exclamation-triangle' }
+              { label: 'Activity Logs', route: '/user-management/activity-log', icon: 'fas fa-history' },
+              { label: 'Error Logs', route: '/user-management/error-log', icon: 'fas fa-exclamation-triangle' }
             ]
           },
           { label: 'Reports', route: '/reports', icon: 'fas fa-chart-bar' },
@@ -128,7 +137,7 @@ export class MainLayout {
       case 'FD':
         return [
           { label: 'Reports', route: '/reports', icon: 'fas fa-chart-bar' },
-          { label: 'Vehicle Status Update', route: '/vehicle/status-update', icon: 'fas fa-sync' },
+          { label: 'Vehicle Status Update by FD', route: '/vehicles/condemned/fd-approval', icon: 'fas fa-sync' },
           ...commonItems,
         ];
       case 'NDOF':
@@ -140,7 +149,7 @@ export class MainLayout {
       case 'PPOF':
         return [
           { label: 'Filled Fuel Details', route: '/ppo', icon: 'fas fa-gas-pump' },
-          { label: 'Record Filling', route: '/ppo/filling', icon: 'fas fa-plus-circle' },
+          { label: 'Record Filling', route: '/ppo/fill-fuel', icon: 'fas fa-plus-circle' },
           ...commonItems,
         ];
       case 'GUEST':

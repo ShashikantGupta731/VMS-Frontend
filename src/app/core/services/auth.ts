@@ -13,6 +13,7 @@ export interface User {
   phone: string;
   roles: string[];
   isGuest: boolean;
+  ddoCode?: string;       // IFMS-formatted Drawing & Disbursing Officer code (e.g. CHD00/0135)
   tokenExpiry?: number;
 }
 

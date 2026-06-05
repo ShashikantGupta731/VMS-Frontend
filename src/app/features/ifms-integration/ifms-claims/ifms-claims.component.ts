@@ -69,6 +69,7 @@ export class IfmsClaimsComponent implements OnInit, OnDestroy {
   tableActions: TableAction[] = [
     {
       label: 'Upload Vouchers',
+      icon: '<i class="pi pi-upload"></i>',
       action: (row: ExtendedIfmsClaim) => {
         if (this.canUploadVouchers(row)) {
           this.upLoadDocumentDetails(row);
@@ -79,6 +80,7 @@ export class IfmsClaimsComponent implements OnInit, OnDestroy {
     },
     {
       label: 'View Details',
+      icon: '<i class="pi pi-eye"></i>',
       action: (row: ExtendedIfmsClaim) => this.viewClaim(row),
     }
   ];

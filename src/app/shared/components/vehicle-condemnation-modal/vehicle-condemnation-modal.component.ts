@@ -74,7 +74,7 @@ export class VehicleCondemnationModalComponent {
       formData.append('condemnationOrderFile', this.disposalOrderFile);
     }
 
-    this.vehicleService.condemnVehicle(formData).subscribe({
+    this.vehicleService.markForCondemned(formData).subscribe({
       next: () => {
         this.toastr.success('Vehicle condemned successfully');
         this.isSubmitting.set(false);

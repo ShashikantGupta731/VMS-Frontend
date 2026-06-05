@@ -1,11 +1,13 @@
 <div class="send-bills-container">
   <app-card>
-    
+
     <!-- ==================== PAGE HEADER ==================== -->
     <div class="page-header mb-4">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex align-items-center">
-          <button *ngIf="showPage2" (click)="turnToPage(1)" class="btn btn-outline-secondary btn-sm me-3 border-0 rounded-circle shadow-sm" style="width: 36px; height: 36px;">
+          <button *ngIf="showPage2" (click)="turnToPage(1)"
+            class="btn btn-outline-secondary btn-sm me-3 border-0 rounded-circle shadow-sm"
+            style="width: 36px; height: 36px;">
             <i class="pi pi-arrow-left"></i>
           </button>
           <h1 class="page-title h4 fw-bold mb-0">Send Bills to IFMS (eTreasury)</h1>
@@ -34,23 +36,17 @@
       <div *ngIf="showPage1" class="fade-in">
         <!-- Table Section -->
         <div class="table-responsive">
-          <app-data-table
-            [columns]="tableColumns"
-            [data]="bills"
-            [selectable]="true"
-            [selectAll]="selectAll"
-            [actions]="tableActions"
-            [isLoading]="isLoading"
-            [emptyMessage]="'No bills available for IFMS treasury submission.'"
-            [rowSelected]="isRowSelected"
-            [rowDisabled]="isRowDisabled"
-            (select)="onRowSelect($event)"
-            (selectAllChange)="toggleSelectAllFromTable($event)"
-          ></app-data-table>
+          <app-data-table [columns]="tableColumns" [data]="bills" [selectable]="true" [selectAll]="selectAll"
+            [actions]="tableActions" [isLoading]="isLoading"
+            [emptyMessage]="'No bills available for IFMS treasury submission.'" [rowSelected]="isRowSelected"
+            [rowDisabled]="isRowDisabled" (select)="onRowSelect($event)"
+            (selectAllChange)="toggleSelectAllFromTable($event)"></app-data-table>
         </div>
 
         <!-- Summary Section -->
-        <div class="filter-summary mb-4 p-4 bg-light rounded border border-light-subtle d-flex justify-content-between align-items-center flex-wrap gap-3" *ngIf="bills.length > 0">
+        <div
+          class="filter-summary mb-4 p-4 bg-light rounded border border-light-subtle d-flex justify-content-between align-items-center flex-wrap gap-3"
+          *ngIf="bills.length > 0">
           <div class="d-flex gap-4 flex-wrap">
             <div>
               <span class="text-muted small d-block text-uppercase fw-semibold">Total Tax</span>
@@ -62,14 +58,8 @@
             </div>
           </div>
 
-          <app-btn
-            label="Compile and Allocate"
-            variant="dark-blue"
-            size="sm"
-            icon="pi pi-cog"
-            [disabled]="selectedBills.length === 0 || isLoading"
-            (click)="processSelectedBills()"
-          ></app-btn>
+          <app-btn label="Process Selected Bills" variant="dark-blue" size="sm" icon="pi pi-cog"
+            [disabled]="selectedBills.length === 0 || isLoading" (click)="processSelectedBills()"></app-btn>
         </div>
       </div>
 
@@ -79,7 +69,8 @@
         <div class="filter-summary mb-4 p-4 bg-light rounded border border-light-subtle">
           <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
-              <span class="badge bg-secondary text-white mb-2 px-3 py-1 fw-semibold text-uppercase font-xs">Treasury Compilation Mode</span>
+              <span class="badge bg-secondary text-white mb-2 px-3 py-1 fw-semibold text-uppercase font-xs">Treasury
+                Compilation Mode</span>
               <h4 class="mb-0 fw-bold text-dark">Compiling {{ selectedBills.length }} Claim Bills</h4>
             </div>
             <div class="d-flex gap-4 align-items-center bg-white p-3 rounded border border-light-subtle">
@@ -116,9 +107,14 @@
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Bill Type *</label>
-                  <select class="form-select border-2" [(ngModel)]="billType">
+                  <!-- Locked after DDO Grant Head is selected to prevent HOA mismatch -->
+                  <select class="form-select border-2" [(ngModel)]="billType" [disabled]="billTypeLocked">
                     <option *ngFor="let bt of billTypeArray" [value]="bt.value">{{ bt.label }}</option>
                   </select>
+                  <small *ngIf="billTypeLocked" class="text-muted d-block mt-1">
+                    <i class="pi pi-lock me-1 text-warning"></i>
+                    Bill Type is locked after Budget Head selection. Go back to reset.
+                  </small>
                 </div>
               </div>
 
@@ -126,7 +122,8 @@
               <div class="my-4">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                   <label class="form-label mb-0">Grant / Budget Head Allocation *</label>
-                  <button type="button" class="btn btn-primary btn-sm rounded-pill shadow-sm" (click)="openGrantSearch()">
+                  <button type="button" class="btn btn-primary btn-sm rounded-pill shadow-sm"
+                    (click)="openGrantSearch()">
                     <i class="pi pi-search me-1"></i> Search Budget Head
                   </button>
                 </div>
@@ -139,7 +136,7 @@
                         No Budget Head selected. Click Search above to fetch active heads.
                       </div>
                     </div>
-                    
+
                     <div class="row g-3 small" *ngIf="budgetForm.value.budget_majorhead">
                       <div class="col-4">
                         <span class="text-muted d-block font-xs">DEMAND</span>
@@ -183,11 +180,13 @@
               </div>
 
               <!-- DC Bill Voucher details if Abstract Contingent -->
-              <div *ngIf="billType === 6" class="mt-3 p-3 bg-light rounded-3 border border-warning" [formGroup]="dcbillForm">
+              <div *ngIf="billType === 6" class="mt-3 p-3 bg-light rounded-3 border border-warning"
+                [formGroup]="dcbillForm">
                 <h6 class="fw-bold text-dark mb-2">DC Bill Reference Details</h6>
                 <div class="row g-2">
                   <div class="col-6">
-                    <app-input label="AC Voucher No." type="text" formControlName="vch_no" placeholder="Enter AC Vch No"></app-input>
+                    <app-input label="AC Voucher No." type="text" formControlName="vch_no"
+                      placeholder="Enter AC Vch No"></app-input>
                   </div>
                   <div class="col-6">
                     <app-input label="AC Voucher Date" type="date" formControlName="vch_dt"></app-input>
@@ -200,7 +199,7 @@
           <!-- RIGHT PANEL: Book Transfer, ECS Payees, Demand Drafts -->
           <div class="col-lg-6">
             <div class="d-flex flex-column gap-4">
-              
+
               <!-- BOOK TRANSFER SECTION -->
               <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
                 <h5 class="section-title mb-3 border-bottom pb-2">
@@ -211,14 +210,17 @@
                   <div class="row g-2 align-items-end">
                     <div class="col-md-5">
                       <label class="form-label">BT Code / Purpose</label>
-                      <select class="form-select border-2" formControlName="btCode" (change)="onBTCodeChange(btForm.value.btCode)">
+                      <select class="form-select border-2" formControlName="btCode"
+                        (change)="onBTCodeChange(btForm.value.btCode)">
                         <option value="">-- Select Purpose --</option>
-                        <option *ngFor="let bt of BTArrayCopy" [value]="bt.description">{{ bt.description }} (IT Deductions)</option>
+                        <option *ngFor="let bt of BTArrayCopy" [value]="bt.description">{{ bt.description }} (IT
+                          Deductions)</option>
                       </select>
                     </div>
                     <div class="col-md-4">
                       <label class="form-label">Amount (₹)</label>
-                      <input type="number" class="form-control border-2 text-end fw-bold" formControlName="amount" placeholder="0">
+                      <input type="number" class="form-control border-2 text-end fw-bold" formControlName="amount"
+                        placeholder="0">
                     </div>
                     <div class="col-md-3">
                       <button type="submit" class="btn btn-outline-primary w-100" [disabled]="btForm.invalid">
@@ -242,7 +244,8 @@
                     <tbody>
                       <tr *ngFor="let bt of btDetailsArray; let i = index">
                         <td><strong>{{ bt.btCode }}</strong></td>
-                        <td class="font-xs text-muted">{{ bt.mjrHead }}-{{ bt.subMjrHead }}-{{ bt.minrHead }}-{{ bt.sbHead }}-{{ bt.dtlHead }}</td>
+                        <td class="font-xs text-muted">{{ bt.mjrHead }}-{{ bt.subMjrHead }}-{{ bt.minrHead }}-{{
+                          bt.sbHead }}-{{ bt.dtlHead }}</td>
                         <td class="text-end fw-bold text-dark">₹ {{ bt.amount | number:'1.2-2' }}</td>
                         <td class="text-center">
                           <button type="button" class="btn btn-link text-danger p-0" (click)="removeBTDetail(i)">
@@ -261,13 +264,15 @@
                   <h5 class="section-title mb-0">
                     <i class="pi pi-users text-primary me-2"></i>3. Payee Details (ECS)
                   </h5>
-                  <button type="button" class="btn btn-outline-primary btn-sm rounded-pill shadow-sm" (click)="openPayeeSearch()">
+                  <button type="button" class="btn btn-outline-primary btn-sm rounded-pill shadow-sm"
+                    (click)="openPayeeSearch()">
                     <i class="pi pi-search me-1"></i> Search Payee
                   </button>
                 </div>
 
                 <form [formGroup]="ecsForm" (ngSubmit)="addECSDetail()">
-                  <div class="p-3 bg-light rounded-3 mb-3 border border-2 border-dashed" *ngIf="ecsForm.value.payeename">
+                  <div class="p-3 bg-light rounded-3 mb-3 border border-2 border-dashed"
+                    *ngIf="ecsForm.value.payeename">
                     <div class="row g-2 font-xs text-secondary">
                       <div class="col-md-6">
                         <span class="d-block font-xs text-muted">Payee Name:</span>
@@ -299,7 +304,8 @@
                     </div>
                     <div class="col-md-5">
                       <label class="form-label">Disbursal Amount (₹) *</label>
-                      <input type="number" class="form-control border-2 text-end fw-bold text-success" formControlName="payment_amount" placeholder="0">
+                      <input type="number" class="form-control border-2 text-end fw-bold text-success"
+                        formControlName="payment_amount" placeholder="0">
                     </div>
                     <div class="col-md-3">
                       <button type="submit" class="btn btn-outline-success w-100" [disabled]="ecsForm.invalid">
@@ -342,58 +348,78 @@
                 </div>
               </div>
 
-              <!-- DEMAND DRAFT SECTION (Optional Checkbox) -->
+              <!-- DEMAND DRAFT SECTION -->
               <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
-                <div class="form-check form-switch mb-3">
-                  <input class="form-check-input border-2 cursor-pointer" type="checkbox" id="ddToggle" 
-                         [checked]="isDemandDraft === 'true'" 
-                         (change)="isDemandDraft = (isDemandDraft === 'true' ? 'false' : 'true')">
-                  <label class="form-check-label fw-bold text-dark cursor-pointer" for="ddToggle">
-                    <i class="pi pi-envelope text-primary me-2"></i>Option: Demand Draft Required?
-                  </label>
-                </div>
 
-                <div *ngIf="isDemandDraft === 'true'" class="p-3 bg-light rounded-3 border border-primary">
-                  <form [formGroup]="ddForm" (ngSubmit)="addDDDetail()">
-                    <div class="row g-2 align-items-end">
-                      <div class="col-md-5">
-                        <app-input label="Party Name" type="text" formControlName="partyname" placeholder="Enter party name"></app-input>
-                      </div>
-                      <div class="col-md-4">
-                        <app-input label="Amount (₹)" type="number" formControlName="payment_amount" placeholder="0"></app-input>
-                      </div>
-                      <div class="col-md-3">
-                        <button type="submit" class="btn btn-outline-primary w-100" [disabled]="ddForm.invalid">
-                          <i class="pi pi-plus"></i> Add DD
-                        </button>
-                      </div>
-                    </div>
-                  </form>
-
-                  <!-- DD List Table -->
-                  <div class="table-responsive mt-3" *ngIf="ddDetailsArray.length > 0">
-                    <table class="table table-sm table-striped border align-middle small mb-0">
-                      <thead class="table-light text-secondary">
-                        <tr>
-                          <th>Party Name</th>
-                          <th class="text-end">Amount</th>
-                          <th class="text-center" style="width: 50px;">Remove</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr *ngFor="let dd of ddDetailsArray; let i = index">
-                          <td><strong>{{ dd.partyname }}</strong></td>
-                          <td class="text-end fw-bold text-dark">₹ {{ dd.payment_amount | number:'1.2-2' }}</td>
-                          <td class="text-center">
-                            <button type="button" class="btn btn-link text-danger p-0" (click)="removeDDDetail(i)">
-                              <i class="pi pi-trash"></i>
-                            </button>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                <!-- Treasury has disabled DD payments for this DDO -->
+                <div *ngIf="isDDPaymentDisabled"
+                     class="d-flex align-items-start gap-3 p-3 bg-warning-subtle border border-warning rounded-3">
+                  <i class="pi pi-exclamation-triangle text-warning fs-5 mt-1"></i>
+                  <div>
+                    <p class="mb-1 fw-bold text-dark">Demand Draft Payments Unavailable</p>
+                    <p class="mb-0 small text-muted">
+                      DD payments have been disabled for your DDO account by the Treasury Department.
+                      Please use ECS payment mode only.
+                    </p>
                   </div>
                 </div>
+
+                <!-- DD enabled — show the toggle and form -->
+                <ng-container *ngIf="!isDDPaymentDisabled">
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input border-2 cursor-pointer" type="checkbox" id="ddToggle"
+                      [checked]="isDemandDraft === 'true'"
+                      (change)="isDemandDraft = (isDemandDraft === 'true' ? 'false' : 'true')">
+                    <label class="form-check-label fw-bold text-dark cursor-pointer" for="ddToggle">
+                      <i class="pi pi-envelope text-primary me-2"></i>Option: Demand Draft Required?
+                    </label>
+                  </div>
+
+                  <div *ngIf="isDemandDraft === 'true'" class="p-3 bg-light rounded-3 border border-primary">
+                    <form [formGroup]="ddForm" (ngSubmit)="addDDDetail()">
+                      <div class="row g-2 align-items-end">
+                        <div class="col-md-5">
+                          <app-input label="Party Name" type="text" formControlName="partyname"
+                            placeholder="Enter party name"></app-input>
+                        </div>
+                        <div class="col-md-4">
+                          <app-input label="Amount (₹)" type="number" formControlName="payment_amount"
+                            placeholder="0"></app-input>
+                        </div>
+                        <div class="col-md-3">
+                          <button type="submit" class="btn btn-outline-primary w-100" [disabled]="ddForm.invalid">
+                            <i class="pi pi-plus"></i> Add DD
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+
+                    <!-- DD List Table -->
+                    <div class="table-responsive mt-3" *ngIf="ddDetailsArray.length > 0">
+                      <table class="table table-sm table-striped border align-middle small mb-0">
+                        <thead class="table-light text-secondary">
+                          <tr>
+                            <th>Party Name</th>
+                            <th class="text-end">Amount</th>
+                            <th class="text-center" style="width: 50px;">Remove</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let dd of ddDetailsArray; let i = index">
+                            <td><strong>{{ dd.partyname }}</strong></td>
+                            <td class="text-end fw-bold text-dark">₹ {{ dd.payment_amount | number:'1.2-2' }}</td>
+                            <td class="text-center">
+                              <button type="button" class="btn btn-link text-danger p-0" (click)="removeDDDetail(i)">
+                                <i class="pi pi-trash"></i>
+                              </button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </ng-container>
+
               </div>
 
             </div>
@@ -404,30 +430,37 @@
         <div class="filter-summary mb-4 p-4 bg-light rounded border border-light-subtle my-4">
           <div class="row g-4 align-items-center">
             <div class="col-md-7">
-              <h5 class="fw-bold mb-3 text-uppercase tracking-wider text-muted fs-6">Financial Verification Checklist</h5>
+              <h5 class="fw-bold mb-3 text-uppercase tracking-wider text-muted fs-6">Financial Verification Checklist
+              </h5>
               <div class="d-flex flex-column gap-2 font-sm text-dark">
                 <!-- Check Gross -->
                 <div class="d-flex align-items-center gap-2">
-                  <i class="pi" [ngClass]="isGrossMatch ? 'pi-check-circle text-success' : 'pi-times-circle text-danger'"></i>
-                  <span>Gross Amount Check: Compilation Total (₹{{ totalAmount | number:'1.0-0' }}) matches Entered allocations (₹{{ grossAmount | number:'1.0-0' }})</span>
+                  <i class="pi"
+                    [ngClass]="isGrossMatch ? 'pi-check-circle text-success' : 'pi-times-circle text-danger'"></i>
+                  <span>Gross Amount Check: Compilation Total (₹{{ totalAmount | number:'1.0-0' }}) matches Entered
+                    allocations (₹{{ grossAmount | number:'1.0-0' }})</span>
                 </div>
                 <!-- Check IT -->
                 <div class="d-flex align-items-center gap-2">
-                  <i class="pi" [ngClass]="isITMatch ? 'pi-check-circle text-success' : 'pi-times-circle text-danger'"></i>
-                  <span>Tax Deductions Check: Selected IT (₹{{ totalIncomeTaxAmountSelected | number:'1.0-0' }}) matches Entered Book Transfers (₹{{ totalIncomeTaxAmountEntered | number:'1.0-0' }})</span>
+                  <i class="pi"
+                    [ngClass]="isITMatch ? 'pi-check-circle text-success' : 'pi-times-circle text-danger'"></i>
+                  <span>Tax Deductions Check: Selected IT (₹{{ totalIncomeTaxAmountSelected | number:'1.0-0' }}) matches
+                    Entered Book Transfers (₹{{ totalIncomeTaxAmountEntered | number:'1.0-0' }})</span>
                 </div>
                 <!-- Check Net -->
                 <div class="d-flex align-items-center gap-2">
-                  <i class="pi" [ngClass]="isNetMatch ? 'pi-check-circle text-success' : 'pi-times-circle text-danger'"></i>
-                  <span>Net Disbursal Check: Net Payable (₹{{ totalPayableAmount | number:'1.0-0' }}) matches Payee Disbursals (₹{{ netAmount | number:'1.0-0' }})</span>
+                  <i class="pi"
+                    [ngClass]="isNetMatch ? 'pi-check-circle text-success' : 'pi-times-circle text-danger'"></i>
+                  <span>Net Disbursal Check: Net Payable (₹{{ totalPayableAmount | number:'1.0-0' }}) matches Payee
+                    Disbursals (₹{{ netAmount | number:'1.0-0' }})</span>
                 </div>
               </div>
             </div>
             <div class="col-md-5 text-end">
               <div class="d-flex gap-2 justify-content-end">
                 <app-btn label="Back to Selection" variant="secondary" size="sm" (click)="turnToPage(1)"></app-btn>
-                <app-btn label="Confirm & Send to IFMS" variant="dark-blue" size="sm" icon="pi pi-send" 
-                         [disabled]="!isFormValid || isLoading" (click)="onSubmit()"></app-btn>
+                <app-btn label="Confirm & Send to IFMS" variant="dark-blue" size="sm" icon="pi pi-send"
+                  [disabled]="!isFormValid || isLoading" (click)="onSubmit()"></app-btn>
               </div>
             </div>
           </div>
@@ -500,9 +533,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let grant of ddoGrantHead" 
-                  [class.table-active]="selectedGrantRow === grant"
-                  (click)="selectGrantRow(grant)" class="cursor-pointer">
+              <tr *ngFor="let grant of ddoGrantHead" [class.table-active]="selectedGrantRow === grant"
+                (click)="selectGrantRow(grant)" class="cursor-pointer">
                 <td class="text-center">
                   <input type="radio" name="grantRadio" [checked]="selectedGrantRow === grant">
                 </td>
@@ -526,7 +558,8 @@
 
       <div class="modal-footer bg-light border-0 p-3 rounded-bottom-4">
         <button type="button" class="btn btn-outline-secondary" (click)="showDdoGrantFlag = false">Cancel</button>
-        <button type="button" class="btn btn-success" [disabled]="!selectedGrantRow" (click)="confirmGrantHead()">Confirm Grant Head</button>
+        <button type="button" class="btn btn-success" [disabled]="!selectedGrantRow"
+          (click)="confirmGrantHead()">Confirm Grant Head</button>
       </div>
     </div>
   </div>
@@ -552,9 +585,9 @@
             <span class="input-group-text bg-white border-0 ps-3">
               <i class="pi pi-search text-muted"></i>
             </span>
-            <input type="text" class="form-control border-0 ps-2" 
-                   placeholder="Search payee by name, code, bank account number..." 
-                   [(ngModel)]="payeeSearchText" (keyup)="searchPayees()">
+            <input type="text" class="form-control border-0 ps-2"
+              placeholder="Search payee by name, code, bank account number..." [(ngModel)]="payeeSearchText"
+              (keyup)="searchPayees()">
           </div>
         </div>
 

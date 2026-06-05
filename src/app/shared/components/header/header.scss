@@ -4,7 +4,7 @@
   align-items: center;
   padding: 16px 24px;
   height: 72px;
-  background: linear-gradient(45deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%);
+  background: linear-gradient(200deg, #8bc5d3 0%, #9bdded 50%, #8bc5d3 100%);
   position: fixed;
   top: 0;
   left: 0;
@@ -21,10 +21,11 @@
 }
 
 .header-logo {
-  height: 50px;
+  height: 100px;
   width: auto;
   max-width: 200px;
   object-fit: contain;
+  margin-left: -30px; /* Pull the logo further to the left edge */
 }
 
 .sidebar-toggle {

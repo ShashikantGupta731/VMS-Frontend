@@ -7,6 +7,7 @@ import { TransferVehicleComponent } from '@features/vehicles/transfer-vehicle/tr
 import { IfmsClaimsComponent } from '@features/ifms-integration/ifms-claims/ifms-claims.component';
 import { NonTreasuryClaimsComponent } from '@features/ifms-integration/non-treasury-claims/non-treasury-claims.component';
 import { SendBillsToIfmsComponent } from '@features/ifms-integration/send-bills-ifms/send-bills-to-ifms.component';
+import { SendBillsToIfmsProcessComponent } from '@features/ifms-integration/send-bills-ifms-process/send-bills-to-ifms-process.component';
 import { ClaimVerificationComponent } from '@features/ifms-integration/claim-verification/claim-verification.component';
 import { VerifyVehiclesComponent } from '@features/vehicles/verify-vehicles/verify-vehicles.component';
 import { VehicleDetailsComponent } from '@features/vehicles/vehicle-details/vehicle-details.component';
@@ -38,12 +39,21 @@ import { AppRole } from './core/config/roles.enum';
 import { HomeRedirectComponent } from '@features/home/home-redirect/home-redirect.component';
 import { UserListComponent } from '@features/users/user-list/user-list.component';
 import { UserFormComponent } from '@features/users/user-form/user-form.component';
+import { UserActivityLogComponent } from '@features/users/user-activity-log/user-activity-log.component';
+import { UserErrorLogComponent } from '@features/users/user-error-log/user-error-log.component';
 import { InventoryDashboardComponent } from '@features/inventory/inventory-dashboard/inventory-dashboard.component';
 import { AddStockComponent } from '@features/inventory/add-stock/add-stock.component';
 import { AllotItemComponent } from '@features/inventory/allot-item/allot-item.component';
 import { ReportsDashboardComponent } from '@features/reports/reports-dashboard/reports-dashboard.component';
 import { ReportViewerComponent } from '@features/reports/report-viewer/report-viewer.component';
-
+import { SecondaryMastersComponent } from '@features/masters/secondary-masters/secondary-masters.component';
+import { PpoDashboardComponent } from '@features/ppo/ppo-dashboard/ppo-dashboard.component';
+import { AddFillFuelComponent } from '@features/ppo/add-fill-fuel/add-fill-fuel.component';
+import { MarkCondemnedComponent } from '@features/vehicles/condemned/mark-condemned/mark-condemned';
+import { CondemnedDepositComponent } from '@features/vehicles/condemned/condemned-deposit/condemned-deposit';
+import { FdApprovalComponent } from '@features/vehicles/condemned/fd-approval/fd-approval';
+import { OdometerCorrectionComponent } from '@features/vehicle/odometer-correction/odometer-correction';
+import { UpdateVehicleDetailsComponent } from '@features/vehicle/update-vehicle-details/update-vehicle-details';
 export const routes: Routes = [
   { path: '', component: HomeRedirectComponent },
   { path: 'login', component: Login },
@@ -54,14 +64,21 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       // Dashboard & Vehicles
-       { path: 'vehicle', component: Dashboard, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator, AppRole.HOD, AppRole.DeputyCommissioner])] },
+       { path: 'vehicle', component: Dashboard, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator, AppRole.HOD, AppRole.DeputyCommissioner, AppRole.FD, AppRole.SEC, AppRole.RevenueOfficer])] },
       { path: 'vehicles/add', component: AddVehicleComponent, canActivate: [roleGuard([AppRole.DDO])] },
-      { path: 'vehicles/edit/:id', component: AddVehicleComponent, canActivate: [roleGuard([AppRole.DDO])] },
+      { path: 'vehicles/edit/:id', component: AddVehicleComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator])] },
       { path: 'vehicles/transfer/:id', component: TransferVehicleComponent, canActivate: [roleGuard([AppRole.DDO])] },
       { path: 'verify-vehicles', component: VerifyVehiclesComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator])] },
       { path: 'vehicle-details', component: VehicleDetailsComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator, AppRole.HOD, AppRole.DeputyCommissioner])] },
+      { path: 'vehicle/update-vehicle-details', component: UpdateVehicleDetailsComponent, canActivate: [roleGuard([AppRole.Administrator])] },
       { path: 'unverified-vehicles', component: UnverifiedVehiclesComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator, AppRole.HOD, AppRole.DeputyCommissioner])] },
+      { path: 'vehicles/condemned/mark-condemned', component: MarkCondemnedComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator, AppRole.FD])] },
+      { path: 'vehicles/condemned/deposit', component: CondemnedDepositComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator, AppRole.FD])] },
+      { path: 'vehicles/condemned/fd-approval', component: FdApprovalComponent, canActivate: [roleGuard([AppRole.FD])] },
       
+      // Admin specific legacy paths
+      { path: 'odometer-correction', component: OdometerCorrectionComponent, canActivate: [roleGuard([AppRole.Administrator])] },
+
       // Inventory Management
       { path: 'inventory', component: InventoryDashboardComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator])] },
       { path: 'inventory/add-stock', component: AddStockComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator])] },
@@ -69,10 +86,7 @@ export const routes: Routes = [
 
       // MIS Reports
       { path: 'reports', component: ReportsDashboardComponent, canActivate: [roleGuard([AppRole.SEC, AppRole.Administrator, AppRole.HOD, AppRole.DeputyCommissioner])] },
-      { path: 'reports/allocation', component: ReportViewerComponent, data: { type: 'allocation' }, canActivate: [roleGuard([AppRole.SEC, AppRole.Administrator])] },
-      { path: 'reports/expenditure', component: ReportViewerComponent, data: { type: 'expenditure' }, canActivate: [roleGuard([AppRole.SEC, AppRole.Administrator, AppRole.FD])] },
-      { path: 'reports/odometer', component: ReportViewerComponent, data: { type: 'odometer' }, canActivate: [roleGuard([AppRole.SEC, AppRole.Administrator])] },
-      { path: 'reports/unverified', component: ReportViewerComponent, data: { type: 'unverified' }, canActivate: [roleGuard([AppRole.SEC, AppRole.Administrator, AppRole.HOD])] },
+      { path: 'reports/view/:reportId', component: ReportViewerComponent, canActivate: [roleGuard([AppRole.SEC, AppRole.Administrator, AppRole.HOD, AppRole.DeputyCommissioner, AppRole.FD])] },
 
       // Billing & Vouchers
       { path: 'bill-voucher', component: BillingDashboardComponent, canActivate: [roleGuard([AppRole.DDO])] },
@@ -96,6 +110,8 @@ export const routes: Routes = [
       { path: 'ifms-claims', component: IfmsClaimsComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator])] },
       { path: 'non-ifms-claims', component: NonTreasuryClaimsComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator])] },
       { path: 'bill-integration', component: SendBillsToIfmsComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator])] },
+      { path: 'bill-integration/process-selected-bills', component: SendBillsToIfmsProcessComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator])] },
+      { path: 'pending-bill-integration', loadComponent: () => import('./features/ifms-integration/pending-bill-integration/pending-bill-integration').then(c => c.PendingBillIntegrationComponent), canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator])] },
       { path: 'claim-verification', component: ClaimVerificationComponent, canActivate: [roleGuard([AppRole.NDOF, AppRole.Administrator])] },
       
       // Masters
@@ -111,10 +127,27 @@ export const routes: Routes = [
       { path: 'models', component: ModelsComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator])] },
       { path: 'designations', component: DesignationsComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator])] },
       
+      // Secondary Masters
+      { path: 'master/departments', component: SecondaryMastersComponent, data: { type: 'departments' }, canActivate: [roleGuard([AppRole.Administrator])] },
+      { path: 'master/districts', component: SecondaryMastersComponent, data: { type: 'districts' }, canActivate: [roleGuard([AppRole.Administrator])] },
+      { path: 'master/tehsils', component: SecondaryMastersComponent, data: { type: 'tehsils' }, canActivate: [roleGuard([AppRole.Administrator])] },
+      { path: 'master/vehicle-types', component: SecondaryMastersComponent, data: { type: 'vehicle-types' }, canActivate: [roleGuard([AppRole.Administrator])] },
+      { path: 'master/manufacturers', component: SecondaryMastersComponent, data: { type: 'manufacturers' }, canActivate: [roleGuard([AppRole.Administrator])] },
+      { path: 'master/office-types', component: SecondaryMastersComponent, data: { type: 'office-types' }, canActivate: [roleGuard([AppRole.Administrator])] },
+      { path: 'master/allocations', component: SecondaryMastersComponent, data: { type: 'allocations' }, canActivate: [roleGuard([AppRole.Administrator])] },
+      { path: 'master/fleet-strength', component: SecondaryMastersComponent, data: { type: 'fleet-strength' }, canActivate: [roleGuard([AppRole.Administrator])] },
+      { path: 'master/store-items', component: SecondaryMastersComponent, data: { type: 'store-items' }, canActivate: [roleGuard([AppRole.Administrator])] },
+      
       // User Management
-      { path: 'user-management', component: UserListComponent, canActivate: [roleGuard([AppRole.Administrator, AppRole.HOD, AppRole.DeputyCommissioner])] },
+      { path: 'user-management', component: UserListComponent, canActivate: [roleGuard([AppRole.Administrator, AppRole.HOD, AppRole.DeputyCommissioner, AppRole.SEC])] },
       { path: 'user-management/add', component: UserFormComponent, canActivate: [roleGuard([AppRole.Administrator])] },
       { path: 'user-management/edit/:id', component: UserFormComponent, canActivate: [roleGuard([AppRole.Administrator, AppRole.HOD, AppRole.DeputyCommissioner])] },
+      { path: 'user-management/activity-log', component: UserActivityLogComponent, canActivate: [roleGuard([AppRole.Administrator])] },
+      { path: 'user-management/error-log', component: UserErrorLogComponent, canActivate: [roleGuard([AppRole.Administrator])] },
+      
+      // Petrol Pump Operator (PPO)
+      { path: 'ppo', component: PpoDashboardComponent, canActivate: [roleGuard([AppRole.PetrolPumpOfficer, AppRole.Administrator])] },
+      { path: 'ppo/fill-fuel', component: AddFillFuelComponent, canActivate: [roleGuard([AppRole.PetrolPumpOfficer, AppRole.Administrator])] },
     ]
   },
 ];

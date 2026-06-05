@@ -1,0 +1,520 @@
+<div class="fuel-vouchers-container">
+  <app-card>
+
+ 
+    <div *ngIf="isLoading" class="loading-state text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2 fw-medium">Communicating with eTreasury portal. Please wait...</p>
+    </div>
+ 
+    <div *ngIf="!isLoading" class="fade-in">
+      <!-- Compilation summary -->
+      <div class="card border-0 mb-4">
+        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3 pb-2">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+            <div>
+              <h6 class="text-dark-blue fw-bold mb-0">Bills to Process</h6>
+            </div>
+            <div class="d-flex gap-4 align-items-center summary-strip flex-wrap">
+              <div class="text-end">
+                <span class="d-block amount-muted-label">Gross Amount</span>
+                <span class="fw-bold text-dark">₹ {{ totalAmount | number:'1.2-2' }}</span>
+              </div>
+              <div class="text-end border-start ps-3 border-secondary-subtle">
+                <span class="d-block amount-muted-label">Income Tax (BT)</span>
+                <span class="fw-bold text-dark">₹ {{ totalIncomeTaxAmountSelected | number:'1.2-2' }}</span>
+              </div>
+              <div class="text-end border-start ps-3 border-secondary-subtle">
+                <span class="d-block amount-muted-label">Net Allocation</span>
+                <span class="fw-bold text-dark">₹ {{ totalPayableAmount | number:'1.2-2' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+      <div class="row g-4">
+        <!-- Budget allocation -->
+        <div class="col-lg-6">
+          <div class="card border-0 h-100 mb-4 mb-lg-0">
+            <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3 pb-2">
+              <h6 class="text-dark-blue fw-bold mb-1 d-flex align-items-center gap-2">
+                <i class="pi pi-briefcase text-primary"></i>
+                <span>1. DDO Information</span>
+              </h6>
+            </div>
+            <div class="card-body px-0 pt-0">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label" for="billMonthSelect">Bill Month *</label>
+                  <select id="billMonthSelect" class="form-select" [(ngModel)]="month">
+                    <option *ngFor="let m of monthArray" [value]="m.value">{{ m.label }}</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="billTypeSelect">Bill Type *</label>
+                  <select id="billTypeSelect" class="form-select" [(ngModel)]="billType" [disabled]="billTypeLocked">
+                    <option *ngFor="let bt of billTypeArray" [value]="bt.value">{{ bt.label }}</option>
+                  </select>
+                  <small *ngIf="billTypeLocked" class="text-muted d-block mt-1 font-sm">
+                    <i class="pi pi-lock me-1 text-warning"></i>
+                    Bill Type is locked after Budget Head selection. Go back to reset.
+                  </small>
+                </div>
+              </div>
+ 
+              <div class="mt-4">
+                <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2 pt-3 border-top mt-3">
+                  <h6 class="text-dark-blue fw-bold mb-0 d-flex align-items-center gap-2">
+                    <i class="pi pi-search text-primary"></i>
+                    <span>2. Budget Details</span>
+                  </h6>
+                  <app-btn label="Search Budget Head" variant="dark-blue" size="sm" icon="pi pi-search" (click)="openGrantSearch()"></app-btn>
+                </div>
+ 
+                <form [formGroup]="budgetForm">
+                  <div class="p-3 panel-muted border-dashed">
+                    <div class="row g-2 text-center" *ngIf="!budgetForm.value.budget_majorhead">
+                      <div class="col-12 py-3 text-muted font-sm">
+                        <i class="pi pi-info-circle d-block mb-1 text-primary" style="font-size: 1.25rem;"></i>
+                        No Budget Head selected. Click Search above to fetch active heads.
+                      </div>
+                    </div>
+ 
+                    <div class="row g-3 font-sm" *ngIf="budgetForm.value.budget_majorhead">
+                      <div class="col-4"><span class="text-muted d-block font-xs text-uppercase">Demand</span><strong class="text-dark">{{ budgetForm.value.budget_demand }}</strong></div>
+                      <div class="col-4"><span class="text-muted d-block font-xs text-uppercase">Major Head</span><strong class="text-dark">{{ budgetForm.value.budget_majorhead }}</strong></div>
+                      <div class="col-4"><span class="text-muted d-block font-xs text-uppercase">Sub Major</span><strong class="text-dark">{{ budgetForm.value.budget_submajorhead }}</strong></div>
+                      <div class="col-4"><span class="text-muted d-block font-xs text-uppercase">Minor Head</span><strong class="text-dark">{{ budgetForm.value.budget_minorhead }}</strong></div>
+                      <div class="col-4"><span class="text-muted d-block font-xs text-uppercase">Sub Head</span><strong class="text-dark">{{ budgetForm.value.budget_subhead }}</strong></div>
+                      <div class="col-4"><span class="text-muted d-block font-xs text-uppercase">Detail Head</span><strong class="text-dark">{{ budgetForm.value.budget_detailedhead }}</strong></div>
+                      <div class="col-4"><span class="text-muted d-block font-xs text-uppercase">SOE Code</span><strong class="text-dark">{{ budgetForm.value.budget_soecode }}</strong></div>
+                      <div class="col-4"><span class="text-muted d-block font-xs text-uppercase">Sub SOE</span><strong class="text-dark">{{ budgetForm.value.budget_subsoecode }}</strong></div>
+                      <div class="col-4"><span class="text-muted d-block font-xs text-uppercase">Wallet ID</span><strong class="text-dark">{{ budgetForm.value.budget_ddowalletid }}</strong></div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+ 
+              <div *ngIf="billType === 6" class="mt-3 p-3 panel-muted border-warning" [formGroup]="dcbillForm">
+                <h6 class="text-dark-blue fw-bold mb-3">AC Bill Details</h6>
+                <div class="row g-2">
+                  <div class="col-6">
+                    <app-input label="AC Voucher No." type="text" formControlName="vch_no" placeholder="Enter AC Vch No"></app-input>
+                  </div>
+                  <div class="col-6">
+                    <app-input label="AC Voucher Date" type="date" formControlName="vch_dt"></app-input>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BT / ECS / DD -->
+        <div class="col-lg-6">
+          <div class="d-flex flex-column gap-4">
+            <div class="card border-0">
+              <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3 pb-2">
+                <h6 class="text-dark-blue fw-bold mb-1 d-flex align-items-center gap-2">
+                  <i class="pi pi-sync text-primary"></i>
+                  <span>3. BT Details</span>
+                </h6>
+              </div>
+              <div class="card-body px-0 pt-0">
+                <form [formGroup]="btForm" (ngSubmit)="addBTDetail()">
+                  <div class="row g-2 align-items-end">
+                    <div class="col-md-5">
+                      <label class="form-label">BT Code / Purpose</label>
+                      <select class="form-select" formControlName="btCode" (change)="onBTCodeChange(btForm.value.btCode)">
+                        <option value="">-- Select Purpose --</option>
+                        <option *ngFor="let bt of BTArrayCopy" [value]="bt.description">{{ bt.description }} (IT Deductions)</option>
+                      </select>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Amount (₹)</label>
+                      <input type="number" class="form-control text-end fw-semibold" formControlName="amount" placeholder="0">
+                    </div>
+                    <div class="col-md-3">
+                      <app-btn type="submit" label="Add" variant="dark-blue" size="sm" icon="pi pi-plus" [disabled]="btForm.invalid" customClass="w-100"></app-btn>
+                    </div>
+                  </div>
+                </form>
+ 
+                <div class="table-responsive mt-3" *ngIf="btDetailsArray.length > 0">
+                  <table class="table table-sm table-striped border align-middle mb-0">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Code</th>
+                        <th>HOA Head</th>
+                        <th class="text-end">Amount</th>
+                        <th class="text-center" style="width: 50px;">Remove</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let bt of btDetailsArray; let i = index">
+                        <td><strong>{{ bt.btCode }}</strong></td>
+                        <td class="font-xs text-muted">{{ bt.mjrHead }}-{{ bt.subMjrHead }}-{{ bt.minrHead }}-{{ bt.sbHead }}-{{ bt.dtlHead }}</td>
+                        <td class="text-end fw-semibold text-dark">₹ {{ bt.amount | number:'1.2-2' }}</td>
+                        <td class="text-center">
+                          <button type="button" class="btn btn-link text-danger p-0 btn-sm" (click)="removeBTDetail(i)" aria-label="Remove BT row">
+                            <i class="pi pi-trash"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+ 
+            <!-- ECS -->
+            <div class="card border-0">
+              <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3 pb-2">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                  <h6 class="text-dark-blue fw-bold mb-0 d-flex align-items-center gap-2">
+                    <i class="pi pi-users text-primary"></i>
+                    <span>4. Payment Info</span>
+                  </h6>
+                  <app-btn label="Search Payee" variant="dark-blue" size="sm" icon="pi pi-search" (click)="openPayeeSearch()"></app-btn>
+                </div>
+              </div>
+              <div class="card-body px-0 pt-0">
+                <form [formGroup]="ecsForm" (ngSubmit)="addECSDetail()">
+                  <div class="mb-3 mt-1">
+                    <h6 class="text-secondary fw-semibold font-sm mb-0">Selected Bills</h6>
+                  </div>
+                  <div class="p-3 panel-muted mb-3 border-dashed" *ngIf="ecsForm.value.payeename">
+                    <div class="row g-2 font-sm text-secondary">
+                      <div class="col-md-6"><span class="d-block font-xs text-muted">Payee Name</span><strong class="text-dark">{{ ecsForm.value.payeename }}</strong></div>
+                      <div class="col-md-6"><span class="d-block font-xs text-muted">Account No</span><strong class="text-dark">{{ ecsForm.value.accountno }} ({{ ecsForm.value.ifsccode }})</strong></div>
+                      <div class="col-md-6"><span class="d-block font-xs text-muted">Bank Name</span><strong class="text-dark">{{ ecsForm.value.bankname }}</strong></div>
+                      <div class="col-md-6"><span class="d-block font-xs text-muted">Pan No</span><strong class="text-dark">{{ ecsForm.value.panno || 'N/A' }}</strong></div>
+                    </div>
+                  </div>
+
+                  <div *ngIf="isGSTAccount" class="row g-2 mb-3">
+                    <div class="col-md-4">
+                      <label class="form-label" for="chalanValidityDate">Date of Validity *</label>
+                      <input type="date" id="chalanValidityDate" class="form-control" formControlName="chalanValidityDate">
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label" for="gstNumber">GST Number *</label>
+                      <input type="text" id="gstNumber" class="form-control" formControlName="gstNumber" placeholder="Enter GSTIN">
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label" for="gstFirmName">GST Firm Name *</label>
+                      <input type="text" id="gstFirmName" class="form-control" formControlName="gstFirmName" placeholder="Enter GST Firm Name">
+                    </div>
+                  </div>
+
+                  <div class="row g-2 align-items-end">
+                    <div class="col-md-4">
+                      <label class="form-label">Payment Type</label>
+                      <select class="form-select" formControlName="payment_type">
+                        <option value="NEFT">NEFT</option>
+                        <option value="RTGS">RTGS</option>
+                        <option value="ECS">ECS Direct</option>
+                      </select>
+                    </div>
+                    <div class="col-md-5">
+                      <label class="form-label">Disbursal Amount (₹) *</label>
+                      <input type="number" class="form-control text-end fw-semibold text-dark" formControlName="payment_amount" placeholder="0">
+                    </div>
+                    <div class="col-md-3">
+                      <app-btn type="submit" label="Disburse" variant="dark-blue" size="sm" icon="pi pi-plus" [disabled]="ecsForm.invalid" customClass="w-100"></app-btn>
+                    </div>
+                  </div>
+                </form>
+
+                <div class="table-responsive mt-3" *ngIf="ecsDetailsArray.length > 0">
+                  <table class="table table-sm table-striped border align-middle mb-0">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Payee Name</th>
+                        <th>Account Info</th>
+                        <th>Contact & Pan Info</th>
+                        <th class="text-end">Amount</th>
+                        <th class="text-center" style="width: 50px;">Remove</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let payee of ecsDetailsArray; let i = index">
+                        <td>
+                          <strong>{{ payee.payeename }}</strong>
+                          <span class="d-block text-muted font-xs">Code: {{ payee.partyname }}</span>
+                        </td>
+                        <td class="font-xs text-muted">{{ payee.bankname }} <br> Ac: {{ payee.accountno }} | {{ payee.ifsccode }}</td>
+                        <td class="font-xs text-muted">
+                          <span class="d-block">PAN: <strong>{{ payee.panno || 'N/A' }}</strong></span>
+                          <span class="d-block">Mob: {{ payee.contactno }}</span>
+                          <span class="d-block text-truncate" style="max-width: 150px;" [title]="payee.email">{{ payee.email || 'N/A' }}</span>
+                          <span class="d-block text-truncate" style="max-width: 150px;" [title]="payee.address">{{ payee.address }}</span>
+                        </td>
+                        <td class="text-end fw-semibold text-dark">₹ {{ payee.payment_amount | number:'1.2-2' }}</td>
+                        <td class="text-center">
+                          <button type="button" class="btn btn-link text-danger p-0 btn-sm" (click)="removeECSDetail(i)" aria-label="Remove payee row">
+                            <i class="pi pi-trash"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Demand Draft -->
+            <div class="card border-0">
+              <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3 pb-2">
+                <h6 class="text-dark-blue fw-bold mb-1 d-flex align-items-center gap-2">
+                  <i class="pi pi-envelope text-primary"></i>
+                  <span>5. Demand Draft (Optional)</span>
+                </h6>
+              </div>
+              <div class="card-body px-0 pt-0">
+                <div *ngIf="isDDPaymentDisabled" class="d-flex align-items-start gap-3 p-3 bg-warning-subtle border border-warning rounded-3 mb-0">
+                  <i class="pi pi-exclamation-triangle text-warning mt-1"></i>
+                  <div>
+                    <p class="mb-1 fw-semibold text-dark font-sm">Demand Draft Payments Unavailable</p>
+                    <p class="mb-0 font-sm text-muted">
+                      DD payments have been disabled for your DDO account by the Treasury Department.
+                      Please use ECS payment mode only.
+                    </p>
+                  </div>
+                </div>
+
+                <ng-container *ngIf="!isDDPaymentDisabled">
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input cursor-pointer" type="checkbox" id="ddToggle"
+                      [checked]="isDemandDraft === 'true'"
+                      (change)="isDemandDraft = (isDemandDraft === 'true' ? 'false' : 'true')">
+                    <label class="form-check-label fw-semibold cursor-pointer" for="ddToggle">
+                      Option: Demand Draft Required?
+                    </label>
+                  </div>
+
+                  <div *ngIf="isDemandDraft === 'true'" class="p-3 panel-muted border-primary border-opacity-25">
+                    <form [formGroup]="ddForm" (ngSubmit)="addDDDetail()">
+                      <div class="row g-2 align-items-end">
+                        <div class="col-md-5">
+                          <app-input label="Party Name" type="text" formControlName="partyname" placeholder="Enter party name"></app-input>
+                        </div>
+                        <div class="col-md-4">
+                          <app-input label="Amount (₹)" type="number" formControlName="payment_amount" placeholder="0"></app-input>
+                        </div>
+                        <div class="col-md-3">
+                          <app-btn type="submit" label="Add DD" variant="dark-blue" size="sm" icon="pi pi-plus" [disabled]="ddForm.invalid" customClass="w-100"></app-btn>
+                        </div>
+                      </div>
+                    </form>
+
+                    <div class="table-responsive mt-3" *ngIf="ddDetailsArray.length > 0">
+                      <table class="table table-sm table-striped border align-middle mb-0">
+                        <thead class="table-light">
+                          <tr>
+                            <th>Party Name</th>
+                            <th class="text-end">Amount</th>
+                            <th class="text-center" style="width: 50px;">Remove</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let dd of ddDetailsArray; let i = index">
+                            <td><strong>{{ dd.partyname }}</strong></td>
+                            <td class="text-end fw-semibold text-dark">₹ {{ dd.payment_amount | number:'1.2-2' }}</td>
+                            <td class="text-center">
+                              <button type="button" class="btn btn-link text-danger p-0 btn-sm" (click)="removeDDDetail(i)" aria-label="Remove DD row">
+                                <i class="pi pi-trash"></i>
+                              </button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="d-flex justify-content-center gap-3 mt-4 pt-3 border-top">
+        <app-btn label="Back to Selection" variant="secondary" size="sm" (click)="goBackToSelection()"></app-btn>
+        <app-btn label="Confirm & Send to IFMS" variant="dark-blue" size="sm" icon="pi pi-send"
+          [disabled]="!isFormValid || isLoading" (click)="onSubmit()"></app-btn>
+      </div>
+    </div>
+  </app-card>
+
+  <!-- Budget head modal -->
+  <div class="modal-backdrop fade show" *ngIf="showDdoGrantFlag"></div>
+  <div class="modal d-block" tabindex="-1" *ngIf="showDdoGrantFlag" role="dialog" aria-modal="true" aria-labelledby="grantModalTitle">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 rounded-3 shadow">
+        <div class="modal-header border-bottom-dark-blue bg-white py-3">
+          <h5 class="modal-title fw-bold text-dark-blue d-flex align-items-center gap-2 mb-0" id="grantModalTitle">
+            <i class="pi pi-search text-primary"></i>
+            Search active Budget / Grant Heads
+          </h5>
+          <button type="button" class="btn-close" (click)="showDdoGrantFlag = false" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="row g-2 mb-3">
+            <div class="col-md-3">
+              <label class="form-label">Fund Scheme</label>
+              <select class="form-select form-select-sm" [(ngModel)]="modalFund">
+                <option value="1">State Scheme</option>
+                <option value="2">Central Scheme</option>
+                <option value="3">Other Scheme</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Class of Exp</label>
+              <select class="form-select form-select-sm" [(ngModel)]="modalClassOfExp">
+                <option value="1">Voted (V)</option>
+                <option value="2">Charged (C)</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Budget Type</label>
+              <select class="form-select form-select-sm" [(ngModel)]="modalBudgetType">
+                <option value="1">Revenue (Rev)</option>
+                <option value="2">Capital (Cap)</option>
+              </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+              <app-btn label="Fetch Heads" variant="dark-blue" size="sm" icon="pi pi-refresh" (click)="fetchGrants()" customClass="w-100"></app-btn>
+            </div>
+          </div>
+
+          <div class="row g-2 mb-3 mt-1" *ngIf="ddoGrantHeadCopy.length > 0">
+            <div class="col-md-2">
+              <label class="form-label font-xs text-muted mb-1" for="searchMajorHead">Major Head</label>
+              <input [(ngModel)]="searchMajorHead" (keyup)="searchList()" type="text" class="form-control form-control-sm" placeholder="Search Major" id="searchMajorHead">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label font-xs text-muted mb-1" for="searchSubMajorHead">Sub-Major Head</label>
+              <input [(ngModel)]="searchSubMajorHead" (keyup)="searchList()" type="text" class="form-control form-control-sm" placeholder="Search Sub-Mjr" id="searchSubMajorHead">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label font-xs text-muted mb-1" for="searchMinorHead">Minor Head</label>
+              <input [(ngModel)]="searchMinorHead" (keyup)="searchList()" type="text" class="form-control form-control-sm" placeholder="Search Minor" id="searchMinorHead">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label font-xs text-muted mb-1" for="searchSubHead">Sub Head</label>
+              <input [(ngModel)]="searchSubHead" (keyup)="searchList()" type="text" class="form-control form-control-sm" placeholder="Search Sub" id="searchSubHead">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label font-xs text-muted mb-1" for="searchDetailsHead">Detail Head</label>
+              <input [(ngModel)]="searchDetailsHead" (keyup)="searchList()" type="text" class="form-control form-control-sm" placeholder="Search Detail" id="searchDetailsHead">
+            </div>
+            <div class="col-md-2" *ngIf="modalFund !== '3'">
+              <label class="form-label font-xs text-muted mb-1" for="searchSoe">SOE</label>
+              <input [(ngModel)]="searchSoe" (keyup)="searchList()" type="text" class="form-control form-control-sm" placeholder="Search SOE" id="searchSoe">
+            </div>
+          </div>
+
+          <div class="table-responsive border rounded panel-muted" style="max-height: 280px; overflow-y: auto;">
+            <table class="table table-sm table-hover align-middle mb-0">
+              <thead class="table-light sticky-top">
+                <tr>
+                  <th style="width: 40px;">Select</th>
+                  <th>Major Head</th>
+                  <th>Sub-Major</th>
+                  <th>Minor Head</th>
+                  <th>Sub Head</th>
+                  <th>Detail Head</th>
+                  <th>SOE</th>
+                  <th>Wallet ID</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let grant of ddoGrantHead" [class.table-active]="selectedGrantRow === grant"
+                  (click)="selectGrantRow(grant)" class="cursor-pointer">
+                  <td class="text-center">
+                    <input type="radio" name="grantRadio" [checked]="selectedGrantRow === grant" aria-label="Select grant row">
+                  </td>
+                  <td><strong>{{ grant.majorHead }}</strong></td>
+                  <td>{{ grant.subMajorHead }}</td>
+                  <td>{{ grant.minorHead }}</td>
+                  <td>{{ grant.subHead }}</td>
+                  <td>{{ grant.detailHead }}</td>
+                  <td><strong>{{ grant.soe }}</strong></td>
+                  <td>{{ grant.ddoWalletId }}</td>
+                </tr>
+                <tr *ngIf="ddoGrantHead.length === 0">
+                  <td colspan="8" class="text-center py-4 text-muted font-sm">No budget head results found. Adjust options and click &quot;Fetch Heads&quot;.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer bg-white border-0 pt-0 pb-3 px-4">
+          <button type="button" class="btn btn-outline-secondary btn-sm" (click)="showDdoGrantFlag = false">Cancel</button>
+          <app-btn label="Confirm Grant Head" variant="dark-blue" size="sm" [disabled]="!selectedGrantRow" (click)="confirmGrantHead()"></app-btn>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payee modal -->
+  <div class="modal-backdrop fade show" *ngIf="showPayeeFlag"></div>
+  <div class="modal d-block" tabindex="-1" *ngIf="showPayeeFlag" role="dialog" aria-modal="true" aria-labelledby="payeeModalTitle">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 rounded-3 shadow">
+        <div class="modal-header border-bottom-dark-blue bg-white py-3">
+          <h5 class="modal-title fw-bold text-dark-blue d-flex align-items-center gap-2 mb-0" id="payeeModalTitle">
+            <i class="pi pi-users text-primary"></i>
+            Search DDO Payees (ECS / Bank Account)
+          </h5>
+          <button type="button" class="btn-close" (click)="showPayeeFlag = false" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="mb-3">
+            <div class="input-group border rounded overflow-hidden border-secondary-subtle">
+              <span class="input-group-text bg-white border-0 ps-3">
+                <i class="pi pi-search text-muted"></i>
+              </span>
+              <input type="text" class="form-control border-0 ps-2 font-sm"
+                placeholder="Search payee by name, code, bank account number..." [(ngModel)]="payeeSearchText"
+                (keyup)="searchPayees()" aria-label="Search payees">
+            </div>
+          </div>
+
+          <div class="table-responsive border rounded panel-muted" style="max-height: 280px; overflow-y: auto;">
+            <table class="table table-sm table-hover align-middle mb-0">
+              <thead class="table-light sticky-top">
+                <tr>
+                  <th>Payee Name</th>
+                  <th>Payee Code</th>
+                  <th>Bank Info</th>
+                  <th>Account Number</th>
+                  <th>IFSC Code</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let payee of ECSPayeeArray" (click)="selectPayee(payee)" class="cursor-pointer">
+                  <td><strong>{{ payee.payeeName }}</strong></td>
+                  <td><span class="badge bg-secondary">{{ payee.payeeCode }}</span></td>
+                  <td>{{ payee.bankName }}</td>
+                  <td><strong class="text-primary">{{ payee.accountNo }}</strong></td>
+                  <td><code class="font-xs">{{ payee.ifscCode }}</code></td>
+                </tr>
+                <tr *ngIf="ECSPayeeArray.length === 0">
+                  <td colspan="5" class="text-center py-4 text-muted font-sm">No payees found matching the search criteria.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer bg-white border-0 pt-0 pb-3 px-4">
+          <button type="button" class="btn btn-outline-secondary btn-sm" (click)="showPayeeFlag = false">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

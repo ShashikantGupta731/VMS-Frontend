@@ -1,0 +1,19 @@
+@use '../../../shared/styles/variables' as *;
+
+/* Reports-specific styles to mirror the dashboard design system */
+.dashboard-container {
+  padding: $spacing-xs;
+  background: transparent;
+}
+
+.text-custom-primary {
+  color: $primary-color !important;
+}
+
+.fs-28 {
+  font-size: $font-size-3xl !important;
+}
+
+.fs-18 {
+  font-size: $font-size-lg !important;
+}

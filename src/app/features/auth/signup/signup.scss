@@ -1,27 +1,18 @@
-.login-container {
-  background: transparent;
-  padding: 20px;
-}
 
-.login-wrapper {
-  max-width: 1000px;
-  background: rgba(224, 229, 236, 0.85);
-  border-radius: 20px;
-  box-shadow: 10px 10px 20px #a7aab1, -10px -10px 20px #ffffff;
-  overflow: hidden;
-}
 
 .left-section {
-  padding: 30px 30px;
+  padding: 40px 80px;
   background: transparent;
+  z-index: 2;
+  flex: 1;
+  height: 100vh;
+  position: relative; /* Crucial for positioning the circuit lines */
 }
 
 .brand-container {
-  max-width: 350px;
-  background: rgba(224, 229, 236, 0.6);
-  border-radius: 20px;
-  padding: 30px;
-  box-shadow: inset 5px 5px 10px #a7aab1, inset -5px -5px 10px #ffffff;
+  max-width: 500px;
+  background: transparent;
+  padding: 0;
 }
 
 .brand-icon {
@@ -30,9 +21,11 @@
 }
 
 .brand-car-image {
-  max-width: 300px;
+  max-width: 500px;
+  width: 100%;
   height: auto;
   display: block;
+  filter: drop-shadow(5px 10px 15px rgba(0,0,0,0.5));
 }
 
 .brand-logo {
@@ -42,108 +35,178 @@
 }
 
 .brand-title {
-  color: #333;
+  color: #cdd4db; /* Metallic silver/gray */
+  font-size: 2.5rem;
+  letter-spacing: 1px;
+  text-shadow: 2px 3px 5px rgba(0,0,0,0.6);
 }
 
 .brand-subtitle {
-  color: #333;
+  color: #cdd4db;
+  font-size: 2.5rem;
+  letter-spacing: 1px;
   margin-top: 5px;
+  text-shadow: 2px 3px 5px rgba(0,0,0,0.6);
 }
 
 .right-section {
-  padding: 30px 30px;
-  background: transparent;
+  padding: 40px;
+  background-color: transparent;
+  z-index: 2;
+  flex: 1;
+  height: 100vh;
 }
 
 .login-form-container {
   width: 100%;
-  background: rgba(224, 229, 236, 0.85);
-  border-radius: 20px;
-  padding: 15px 20px;
-  box-shadow: 10px 10px 20px #a7aab1, -10px -10px 20px #ffffff;
+  max-width: 400px;
+  background: rgba(255, 255, 255, 0.3); /* Dark solid/translucent background */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 30px;
+  padding: 0;
+  margin-right: 25px;
+  border-top: 2px solid rgba(0, 0, 0, 0.11);
+  border-left: 2px solid rgba(0, 0, 0, 0.11);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.11);
+  border-right: 2px solid rgba(0, 0, 0, 0.11);
+  box-shadow: 
+    inset 3px 3px 8px rgba(0, 0, 0, 0.15), 
+    inset -3px -3px 8px rgba(0, 0, 0, 0.15), 
+    0 20px 50px rgba(0, 0, 0, 0.5);
+  overflow: hidden; /* To ensure the header separator doesn't bleed */
 }
 
-.neumorphic-input {
-  background: #e0e5ec !important;
+/* Form Content Padding */
+.form-content {
+  padding: 0px 40px 30px 40px;
+}
+
+/* Minimal Inputs */
+.minimal-input {
+  width: 100%;
+  height: 40px;
+  background: transparent !important;
   border: none !important;
-  box-shadow: inset 5px 5px 10px #a7aab1, inset -5px -5px 10px #ffffff;
-  color: #333;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15) !important;
+  border-radius: 0 !important;
+  padding: 0 0 0 30px !important;
+  color: #000000 !important;
+  font-size: 14px;
+  font-weight: 300;
+  box-shadow: none !important;
+  transition: border-color 0.3s ease;
 
   &:focus {
-    box-shadow: inset 5px 5px 10px #a7aab1, inset -5px -5px 10px #ffffff;
+    outline: none;
+    box-shadow: none !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.5) !important;
   }
 
   &::placeholder {
-    color: #999;
+    color: #000000 !important;
   }
 }
 
-.input-wrapper {
-  position: relative;
-  width: 100%;
-
-  .input-icon {
-    position: absolute;
-    left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #999;
-    font-size: 16px;
-    z-index: 10;
-  }
-
-  .pill-input {
-    padding-left: 45px;
-    border-radius: 50px;
-    border: 1px solid #e0e0e0;
-    background: #f8f9fa;
-    color: #333;
-    font-size: 14px;
-    height: 45px;
-    transition: all 0.3s ease;
-
-    &:focus {
-      background: #fff;
-      border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
-    &::placeholder {
-      color: #aaa;
-    }
-  }
+/* Custom Checkbox */
+.custom-check {
+  background-color: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 3px !important;
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
 }
 
-.neumorphic-btn {
-  background: #e0e5ec !important;
-  color: #667eea !important;
+.custom-check:checked {
+  background-color: rgba(255, 255, 255, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Light Pill Button */
+.light-pill-btn {
+  background: #ffffff !important; /* Brighter, pure white */
+  color: #333 !important;
   border: none !important;
-  box-shadow: 6px 6px 12px #a7aab1, -6px -6px 12px #ffffff;
+  border-radius: 50px !important; /* Pill shape */
+  height: 45px !important;
+  font-weight: 600 !important;
+  letter-spacing: 1px !important;
+  box-shadow: none !important; /* Removed shadow */
+  transition: all 0.3s ease;
+  width: 100% !important; /* Full width */
+  margin: 0;
+  display: block;
 
-  &:hover:not(:disabled) {
-    box-shadow: 8px 8px 16px #a7aab1, -8px -8px 16px #ffffff;
+  &:hover {
+    transform: translateY(-1px);
+    background: #1f6fb6 !important; /* Vibrant theme blue on hover */
+    color: #ffffff !important;      /* White text on hover */
+    box-shadow: none !important; /* Keep shadow removed */
+    cursor: pointer;
   }
 
-  &:active:not(:disabled) {
-    box-shadow: inset 4px 4px 8px #a7aab1, inset -4px -4px 8px #ffffff;
+  &:active {
+    transform: translateY(1px);
+    box-shadow: none !important; /* Keep shadow removed */
   }
 
   &:disabled {
-    opacity: 0.6;
+    opacity: 0.7;
   }
 }
 
-@media (max-width: 768px) {
-  .login-wrapper {
+.social-icon {
+  width: 30px;
+  height: 30px;
+  background: #e0e5ec;
+  color: #555;
+  font-size: 20px;
+  box-shadow: 5px 5px 10px #a7aab1, -5px -5px 10px #ffffff;
+
+  &:hover {
+    box-shadow: 8px 8px 16px #a7aab1, -8px -8px 16px #ffffff;
+  }
+
+  &.facebook:hover {
+    background: #1877f2;
+    color: #fff;
+  }
+
+  &.google:hover {
+    background: #db4437;
+    color: #fff;
+  }
+
+  &.linkedin:hover {
+    background: #0077b5;
+    color: #fff;
+  }
+
+  &.twitter:hover {
+    background: #1da1f2;
+    color: #fff;
+  }
+}
+
+@media (max-width: 992px) {
+  .login-container {
     flex-direction: column !important;
+    justify-content: center !important;
   }
 
   .left-section,
   .right-section {
+    width: 100%;
+    height: auto;
     padding: 40px 20px;
+    flex: none;
   }
-
-  .brand-container {
-    padding: 30px 20px;
+  
+  .login-container::before {
+    top: -50%;
+    left: -10%;
+    width: 120%;
+    height: 100%;
   }
 }

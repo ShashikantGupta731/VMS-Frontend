@@ -57,6 +57,11 @@
                 width="100%"
               ></app-input>
               <small class="text-muted">Max size: 5MB. Formats: JPG, JPEG, PNG, PDF</small>
+              <div *ngIf="existingFdApprovalUrl && isEditMode" class="mt-2">
+                <a [href]="existingFdApprovalUrl" target="_blank" class="text-primary small text-decoration-none">
+                  <i class="pi pi-external-link me-1"></i> View Current File
+                </a>
+              </div>
               <div *ngIf="fdApprovalFile" class="mt-2">
                 <span class="text-success">✓ {{fdApprovalFile.name}}</span>
               </div>
@@ -136,6 +141,11 @@
                 width="100%"
               ></app-input>
               <small class="text-muted">Max size: 5MB. Formats: JPG, JPEG, PNG, PDF</small>
+              <div *ngIf="existingFleetStrengthLetterUrl && isEditMode" class="mt-2">
+                <a [href]="existingFleetStrengthLetterUrl" target="_blank" class="text-primary small text-decoration-none">
+                  <i class="pi pi-external-link me-1"></i> View Current Letter
+                </a>
+              </div>
               <div *ngIf="fleetStrengthLetterFile" class="mt-2">
                 <span class="text-success">✓ {{fleetStrengthLetterFile.name}}</span>
               </div>
@@ -646,6 +656,11 @@
                 width="100%"
               ></app-input>
               <small class="text-muted">Max size: 2MB. Formats: JPG, JPEG, PNG</small>
+              <div *ngIf="existingVehiclePhotoUrl && isEditMode" class="mt-2">
+                <a [href]="existingVehiclePhotoUrl" target="_blank" class="text-primary small text-decoration-none">
+                  <i class="pi pi-external-link me-1"></i> View Current Photo
+                </a>
+              </div>
               <div *ngIf="vehiclePhotoFile" class="mt-2">
                 <span class="text-success">✓ {{vehiclePhotoFile.name}}</span>
               </div>
@@ -662,6 +677,11 @@
                 width="100%"
               ></app-input>
               <small class="text-muted">Max size: 2MB. Formats: JPG, JPEG, PNG</small>
+              <div *ngIf="existingRegistrationCertificateUrl && isEditMode" class="mt-2">
+                <a [href]="existingRegistrationCertificateUrl" target="_blank" class="text-primary small text-decoration-none">
+                  <i class="pi pi-external-link me-1"></i> View Current Certificate
+                </a>
+              </div>
               <div *ngIf="registrationCertificateFile" class="mt-2">
                 <span class="text-success">✓ {{registrationCertificateFile.name}}</span>
               </div>

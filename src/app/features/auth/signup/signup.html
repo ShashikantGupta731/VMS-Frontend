@@ -1,150 +1,97 @@
-<div class="d-flex min-vh-100 align-items-center justify-content-center login-container">
-  <div class="d-flex w-100 login-wrapper">
-    <!-- Left Section - Brand -->
-    <div class="left-section d-flex align-items-center justify-content-center" style="width: 50%;">
-      <div class="brand-container">
-        <div class="d-flex flex-column align-items-center gap-4 brand-content">
-          <div class="brand-icon">
-            <img src="Car.png" alt="Car" class="brand-car-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
-            <i class="fas fa-car" style="display: none;"></i>
+<div class="d-flex min-vh-100 align-items-center justify-content-between login-container position-relative" style="background-image: url('login_background1.png'); background-size: cover; background-position: center; overflow: hidden;">
+  
+  <!-- Background Elements -->
+  <img src="login_element1.png" alt="VMS Illustration" class="position-absolute d-none d-lg-block" style="left: 1%; top: 50%; transform: translateY(-50%); max-height: 85vh; max-width: 80vw; object-fit: contain; z-index: 1;" />
+  <img src="login_element2.png" alt="Truck" class="position-absolute d-none d-lg-block" style="right: 1%; bottom: 30%; max-height: 60vh; max-width: 35vw; object-fit: contain; z-index: 1;" />
+
+  <!-- Top Left Logo -->
+  <div class="position-absolute top-0 start-0 p-4" style="z-index: 10;">
+    <img src="vms_logo.png" alt="VMS Logo" class="top-left-logo" style="max-height: 50px; width: auto;" />
+  </div>
+
+  <!-- Right Section - Signup Form Anchored to Right -->
+  <div class="w-100 d-flex align-items-center justify-content-end pe-md-5" style="z-index: 2;">
+    <div class="login-form-container position-relative">
+      <!-- Header -->
+      <div class="login-header text-center">
+        <h2 class="text-uppercase m-0 pt-4 pb-4" style="letter-spacing: 2px; font-weight: 300; font-size: 18px; color: #000000; border-bottom: 1px solid rgba(0,0,0,0.1);">SIGNUP</h2>
+      </div>
+
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="form-content pt-4">
+        <!-- Username Field -->
+        <div class="mb-4 position-relative">
+          <label class="d-none" style="color: #000000;">Username (Email)</label>
+          <i class="fas fa-envelope position-absolute" style="left: 0; top: 12px; color: #000000;"></i>
+          <input type="email" id="username" class="form-control minimal-input" formControlName="username" placeholder="Email ID" />
+          <div *ngIf="signupForm.get('username')?.errors?.['required'] && signupForm.get('username')?.touched" class="text-danger mt-1" style="font-size: 12px;">
+            Username is required
           </div>
-          <img src="vms_logo.png" alt="VMS Logo" class="brand-logo" />
-          <div class="brand-title-container text-center">
-            <h1 class="brand-title h3 fw-bold mb-0">Vehicle Management</h1>
-            <h2 class="brand-subtitle h3 fw-bold mb-0">System</h2>
+          <div *ngIf="signupForm.get('username')?.errors?.['email'] && signupForm.get('username')?.touched" class="text-danger mt-1" style="font-size: 12px;">
+            Please enter a valid email
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Right Section - Signup Form -->
-    <div class="right-section d-flex align-items-center justify-content-center" style="width: 50%;">
-      <div class="login-form-container">
-        <h2 class="form-title h4 fw-bold text-center mb-3">Sign Up</h2>
-
-        <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
-          <!-- Username Field -->
-          <div class="mb-3">
-            <label for="username" class="form-label fw-semibold" style="font-size: 14px;">Username (Email)</label>
-            <div class="input-wrapper">
-              <i class="fas fa-envelope input-icon"></i>
-              <input
-                type="email"
-                id="username"
-                class="form-control pill-input"
-                formControlName="username"
-                placeholder="Enter your email"
-              />
-            </div>
-            <div *ngIf="signupForm.get('username')?.errors?.['required'] && signupForm.get('username')?.touched" class="text-danger" style="font-size: 12px;">
-              Username is required
-            </div>
-            <div *ngIf="signupForm.get('username')?.errors?.['email'] && signupForm.get('username')?.touched" class="text-danger" style="font-size: 12px;">
-              Please enter a valid email
-            </div>
+        <!-- Name Field -->
+        <div class="mb-4 position-relative">
+          <label class="d-none" style="color: #000000;">Full Name</label>
+          <i class="fas fa-user position-absolute" style="left: 0; top: 12px; color: #000000;"></i>
+          <input type="text" id="name" class="form-control minimal-input" formControlName="name" placeholder="Full Name" />
+          <div *ngIf="signupForm.get('name')?.errors?.['required'] && signupForm.get('name')?.touched" class="text-danger mt-1" style="font-size: 12px;">
+            Name is required
           </div>
+        </div>
 
-          <!-- Name Field -->
-          <div class="mb-3">
-            <label for="name" class="form-label fw-semibold" style="font-size: 14px;">Full Name</label>
-            <div class="input-wrapper">
-              <i class="fas fa-user input-icon"></i>
-              <input
-                type="text"
-                id="name"
-                class="form-control pill-input"
-                formControlName="name"
-                placeholder="Enter your full name"
-              />
-            </div>
-            <div *ngIf="signupForm.get('name')?.errors?.['required'] && signupForm.get('name')?.touched" class="text-danger" style="font-size: 12px;">
-              Name is required
-            </div>
+        <!-- Phone Field -->
+        <div class="mb-4 position-relative">
+          <label class="d-none" style="color: #000000;">Phone Number</label>
+          <i class="fas fa-phone position-absolute" style="left: 0; top: 12px; color: #000000;"></i>
+          <input type="tel" id="phone" class="form-control minimal-input" formControlName="phone" placeholder="Phone Number" />
+          <div *ngIf="signupForm.get('phone')?.errors?.['required'] && signupForm.get('phone')?.touched" class="text-danger mt-1" style="font-size: 12px;">
+            Phone number is required
           </div>
-
-          <!-- Phone Field -->
-          <div class="mb-3">
-            <label for="phone" class="form-label fw-semibold" style="font-size: 14px;">Phone Number</label>
-            <div class="input-wrapper">
-              <i class="fas fa-phone input-icon"></i>
-              <input
-                type="tel"
-                id="phone"
-                class="form-control pill-input"
-                formControlName="phone"
-                placeholder="Enter 10-digit phone number"
-              />
-            </div>
-            <div *ngIf="signupForm.get('phone')?.errors?.['required'] && signupForm.get('phone')?.touched" class="text-danger" style="font-size: 12px;">
-              Phone number is required
-            </div>
-            <div *ngIf="signupForm.get('phone')?.errors?.['pattern'] && signupForm.get('phone')?.touched" class="text-danger" style="font-size: 12px;">
-              Please enter a valid 10-digit phone number
-            </div>
+          <div *ngIf="signupForm.get('phone')?.errors?.['pattern'] && signupForm.get('phone')?.touched" class="text-danger mt-1" style="font-size: 12px;">
+            Please enter a valid 10-digit phone number
           </div>
+        </div>
 
-          <!-- Password Field -->
-          <div class="mb-3">
-            <label for="password" class="form-label fw-semibold" style="font-size: 14px;">Password</label>
-            <div class="input-wrapper">
-              <i class="fas fa-lock input-icon"></i>
-              <input
-                type="password"
-                id="password"
-                class="form-control pill-input"
-                formControlName="password"
-                placeholder="Enter password"
-              />
-            </div>
-            <div *ngIf="signupForm.get('password')?.errors?.['required'] && signupForm.get('password')?.touched" class="text-danger" style="font-size: 12px;">
-              Password is required
-            </div>
-            <div *ngIf="signupForm.get('password')?.errors?.['minlength'] && signupForm.get('password')?.touched" class="text-danger" style="font-size: 12px;">
-              Password must be at least 6 characters
-            </div>
+        <!-- Password Field -->
+        <div class="mb-4 position-relative">
+          <label class="d-none" style="color: #000000;">Password</label>
+          <i class="fas fa-lock position-absolute" style="left: 0; top: 12px; color: #000000;"></i>
+          <input type="password" id="password" class="form-control minimal-input" formControlName="password" placeholder="Password" />
+          <div *ngIf="signupForm.get('password')?.errors?.['required'] && signupForm.get('password')?.touched" class="text-danger mt-1" style="font-size: 12px;">
+            Password is required
           </div>
-
-          <!-- Confirm Password Field -->
-          <div class="mb-3">
-            <label for="confirmPassword" class="form-label fw-semibold" style="font-size: 14px;">Confirm Password</label>
-            <div class="input-wrapper">
-              <i class="fas fa-lock input-icon"></i>
-              <input
-                type="password"
-                id="confirmPassword"
-                class="form-control pill-input"
-                formControlName="confirmPassword"
-                placeholder="Confirm your password"
-              />
-            </div>
-            <div *ngIf="signupForm.get('confirmPassword')?.errors?.['required'] && signupForm.get('confirmPassword')?.touched" class="text-danger" style="font-size: 12px;">
-              Please confirm your password
-            </div>
-            <div *ngIf="signupForm.get('confirmPassword')?.errors?.['mismatch'] && signupForm.get('confirmPassword')?.touched" class="text-danger" style="font-size: 12px;">
-              Passwords do not match
-            </div>
+          <div *ngIf="signupForm.get('password')?.errors?.['minlength'] && signupForm.get('password')?.touched" class="text-danger mt-1" style="font-size: 12px;">
+            Password must be at least 6 characters
           </div>
+        </div>
 
-          <!-- Sign Up Button -->
-          <button type="submit" class="btn w-100 neumorphic-btn" [disabled]="signupForm.invalid" style="font-size: 14px; padding: 10px;">
-            Sign Up
+        <!-- Confirm Password Field -->
+        <div class="mb-4 position-relative">
+          <label class="d-none" style="color: #000000;">Confirm Password</label>
+          <i class="fas fa-check-circle position-absolute" style="left: 0; top: 12px; color: #000000;"></i>
+          <input type="password" id="confirmPassword" class="form-control minimal-input" formControlName="confirmPassword" placeholder="Confirm Password" />
+          <div *ngIf="signupForm.get('confirmPassword')?.errors?.['required'] && signupForm.get('confirmPassword')?.touched" class="text-danger mt-1" style="font-size: 12px;">
+            Please confirm your password
+          </div>
+          <div *ngIf="signupForm.get('confirmPassword')?.errors?.['mismatch'] && signupForm.get('confirmPassword')?.touched" class="text-danger mt-1" style="font-size: 12px;">
+            Passwords do not match
+          </div>
+        </div>
+
+        <!-- Sign Up Button -->
+        <div class="mt-4 mb-4 text-center">
+          <button type="submit" class="light-pill-btn w-100">
+            SIGNUP
           </button>
-        </form>
-
-        <!-- Login Link -->
-        <div class="text-center mt-3">
-          <p class="mb-0" style="font-size: 14px;">
-            Already have an account? <a href="#" (click)="goToLogin()" class="fw-semibold" style="color: #667eea;">Login</a>
-          </p>
         </div>
 
-        <!-- Copyright -->
-        <div class="text-center mt-3">
-          <p class="mb-0" style="color: #888; font-size: 11px;">
-            © 2026, Design and Developed by NIC Punjab
-          </p>
+        <!-- Footer Links -->
+        <div class="text-center pb-2">
+          <a href="javascript:void(0)" (click)="goToLogin()" class="text-decoration-none" style="color: #000000; font-size: 13px; font-weight: 400;">Already have an account? Login</a>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 </div>

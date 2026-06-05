@@ -163,8 +163,12 @@ export class AddVehicleComponent implements OnInit {
   vehicleId: number | null = null;
 
   isSaving = signal(false);
-
-
+  isPatching = false;
+  
+  existingVehiclePhotoUrl: string | null = null;
+  existingRegistrationCertificateUrl: string | null = null;
+  existingFdApprovalUrl: string | null = null;
+  existingFleetStrengthLetterUrl: string | null = null;
 
   // Mock dropdown data (short options kept in component)
 
@@ -587,6 +591,11 @@ export class AddVehicleComponent implements OnInit {
     this.vehicleService.getVehicleById(id).subscribe({
 
       next: (data) => {
+        this.isPatching = true;
+        this.existingVehiclePhotoUrl = data.vehiclePhoto;
+        this.existingRegistrationCertificateUrl = data.registrationCertificate;
+        this.existingFdApprovalUrl = data.fdApproval;
+        this.existingFleetStrengthLetterUrl = data.fleetStrengthLetter;
 
         // Map backend response to form names
 
@@ -649,9 +658,15 @@ export class AddVehicleComponent implements OnInit {
           fuelUsed: data.fuelUsed,
 
           purchaseDate: data.purchaseDate ? new Date(data.purchaseDate).toISOString().split('T')[0] : null,
-
-          fitnessUpto: data.fitnessUpto ? new Date(data.fitnessUpto).toISOString().split('T')[0] : null
-
+          fitnessUpto: data.fitnessUpto ? new Date(data.fitnessUpto).toISOString().split('T')[0] : null,
+          kmsCovered: data.kmsCovered,
+          fuelCostLast3Months: data.fuelCostLast3Months,
+          fuelLitresLast3Months: data.fuelLitresLast3Months,
+          maintenanceCostLast3Months: data.maintenanceCostLast3Months,
+          isTyreOriginal: data.isTyreOriginal || 'Yes',
+          tyreChangedDate: data.tyreChangedDate ? new Date(data.tyreChangedDate).toISOString().split('T')[0] : null,
+          tyreChangedMeterReading: data.tyreChangedMeterReading,
+          registrationType: data.registrationType
         });
 
 
@@ -671,10 +686,15 @@ export class AddVehicleComponent implements OnInit {
           }, 500);
 
         }
+        
+        this.isPatching = false;
 
       },
 
-      error: () => this.toastr.error('Failed to load vehicle details')
+      error: () => {
+        this.isPatching = false;
+        this.toastr.error('Failed to load vehicle details');
+      }
 
     });
 
@@ -850,14 +870,15 @@ export class AddVehicleComponent implements OnInit {
 
 
       // Reset all conditional fields
+      if (!this.isPatching) {
+        fdApprovalControl?.setValue(null);
 
-      fdApprovalControl?.setValue(null);
+        vehiclePurchaseTypeControl?.setValue('');
 
-      vehiclePurchaseTypeControl?.setValue('');
+        vehicleSourceControl?.setValue('');
 
-      vehicleSourceControl?.setValue('');
-
-      this.resetVehiclePurchaseTypeFields();
+        this.resetVehiclePurchaseTypeFields();
+      }
 
 
 
@@ -917,7 +938,9 @@ export class AddVehicleComponent implements OnInit {
 
     this.vehicleForm.get('vehiclePurchaseType')?.valueChanges.subscribe(value => {
 
-      this.resetVehiclePurchaseTypeFields();
+      if (!this.isPatching) {
+        this.resetVehiclePurchaseTypeFields();
+      }
 
 
 
@@ -986,6 +1009,10 @@ export class AddVehicleComponent implements OnInit {
   private setupCondemnedVehicleDependency(): void {
 
     this.vehicleForm.get('condemnedVehicleRegNo')?.valueChanges.subscribe(value => {
+
+      if (!this.isPatching) {
+        this.vehicleForm.get('condemnedVehicleChassisNo')?.setValue('');
+      }
 
       const condemnedVehicleChassisNoControl = this.vehicleForm.get('condemnedVehicleChassisNo');
 
@@ -1121,6 +1148,10 @@ export class AddVehicleComponent implements OnInit {
 
     this.vehicleForm.get('manufacturer')?.valueChanges.subscribe(manufacturerName => {
 
+      if (!this.isPatching) {
+        this.vehicleForm.get('model')?.setValue('');
+      }
+
       const modelControl = this.vehicleForm.get('model');
 
       const vehicleType = this.vehicleForm.get('vehicleType')?.value;
@@ -1238,6 +1269,12 @@ export class AddVehicleComponent implements OnInit {
 
     // Initially disable both fields
 
+      if (!this.isPatching) {
+        this.vehicleForm.get('designation')?.setValue('');
+
+        this.vehicleForm.get('project')?.setValue('');
+      }
+
     this.vehicleForm.get('officerName')?.disable();
 
     this.vehicleForm.get('hrmsCode')?.disable();
@@ -1267,20 +1304,15 @@ export class AddVehicleComponent implements OnInit {
 
 
       // Reset all conditional fields
-
-      driverTypeControl?.setValue('');
-
-      driverNameControl?.setValue('');
-
-      driverContactNumberControl?.setValue('');
-
-      contractorNameControl?.setValue('');
-
-      contractorContactNumberControl?.setValue('');
-
-      departmentControl?.setValue('');
-
-      vehicleOwnerOfficeControl?.setValue('');
+      if (!this.isPatching) {
+        driverTypeControl?.setValue('');
+        driverNameControl?.setValue('');
+        driverContactNumberControl?.setValue('');
+        contractorNameControl?.setValue('');
+        contractorContactNumberControl?.setValue('');
+        departmentControl?.setValue('');
+        vehicleOwnerOfficeControl?.setValue('');
+      }
 
 
 
@@ -1341,6 +1373,12 @@ export class AddVehicleComponent implements OnInit {
 
     // Initially disable all conditional fields
 
+      if (!this.isPatching) {
+        this.vehicleForm.get('hrmsCode')?.setValue('');
+
+        this.vehicleForm.get('officerName')?.setValue('');
+      }
+
     this.vehicleForm.get('driverType')?.disable();
 
     this.vehicleForm.get('driverName')?.disable();
@@ -1362,6 +1400,10 @@ export class AddVehicleComponent implements OnInit {
   private setupVehicleAllocationTypeDependency(): void {
 
     this.vehicleForm.get('vehicleAllocationType')?.valueChanges.subscribe(allocationType => {
+
+      if (!this.isPatching) {
+        this.vehicleForm.get('vehicleAllocationType')?.setValue('');
+      }
 
       const driverTypeControl = this.vehicleForm.get('driverType');
 
@@ -2276,8 +2318,11 @@ export class AddVehicleComponent implements OnInit {
       if (value === 'Yes') {
         tyreDateControl?.disable();
         tyreKmControl?.disable();
+        if (!this.isPatching) {
         tyreDateControl?.setValue('');
+
         tyreKmControl?.setValue('');
+      }
       } else {
         tyreDateControl?.enable();
         tyreKmControl?.enable();

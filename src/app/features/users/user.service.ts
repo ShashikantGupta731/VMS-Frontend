@@ -41,4 +41,22 @@ export class UserService {
     const query = params.length > 0 ? '?' + params.join('&') : '';
     return this.http.get<any[]>(`${this.apiUrl}/ddo-list${query}`);
   }
+
+  getActivityLogs(fromDate?: string, toDate?: string, page: number = 1, pageSize: number = 10): Observable<any> {
+    const params = new URLSearchParams();
+    if (fromDate) params.append('fromDate', fromDate);
+    if (toDate) params.append('toDate', toDate);
+    params.append('page', page.toString());
+    params.append('pageSize', pageSize.toString());
+    return this.http.get<any>(`${this.apiUrl}/activity-logs?${params.toString()}`);
+  }
+
+  getErrorLogs(fromDate?: string, toDate?: string, page: number = 1, pageSize: number = 10): Observable<any> {
+    const params = new URLSearchParams();
+    if (fromDate) params.append('fromDate', fromDate);
+    if (toDate) params.append('toDate', toDate);
+    params.append('page', page.toString());
+    params.append('pageSize', pageSize.toString());
+    return this.http.get<any>(`${this.apiUrl}/error-logs?${params.toString()}`);
+  }
 }

@@ -2,7 +2,8 @@ import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { SendBillsService, Bill } from './send-bills.service';
+import { SendBillsService, Bill } from '../send-bills-ifms/send-bills.service';
+import { IfmsBillProcessStateService } from '../send-bills-ifms-process/ifms-bill-process-state.service';
 import { AppCardComponent } from '@shared/components/ui/app-card/card.component';
 import { AppButtonComponent } from '@shared/components/ui/app-button/button.component';
 import { AppDataTableComponent, TableColumn, TableAction } from '@shared/components/ui/app-data-table/data-table.component';
@@ -31,6 +32,7 @@ export class SendBillsToIfmsComponent implements OnInit {
   // Services
   private sendBillsService = inject(SendBillsService);
   private authService = inject(AuthService);
+  private processStateService = inject(IfmsBillProcessStateService);
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
@@ -91,6 +93,11 @@ export class SendBillsToIfmsComponent implements OnInit {
   // Search modals toggle flags
   showDdoGrantFlag = false;
   showPayeeFlag = false;
+
+  // DDO states
+  schemeCode: string = '';      // captured from DDO Grant Head selection
+  isDDPaymentDisabled = false;  // set from API payee response
+  billTypeLocked = false;       // locked after budget head is fetched
 
   // Budget query parameters
   modalFund = '1';
@@ -179,7 +186,11 @@ export class SendBillsToIfmsComponent implements OnInit {
   }
 
   getDdoCode(): string {
-    return this.authService.currentUserValue?.username || 'CHD00/0135';
+    // Use the IFMS-specific DDO code (e.g. CHD00/0135), NOT the login username
+    // Backend JwtService embeds this as claim 'ddoCode' from User.DDOCode
+    return this.authService.currentUserValue?.ddoCode
+        || this.authService.currentUserValue?.username
+        || '';
   }
 
   // Loaders
@@ -205,6 +216,10 @@ export class SendBillsToIfmsComponent implements OnInit {
       next: (res) => {
         if (res && res.success && res.data) {
           const parsed = JSON.parse(res.data);
+          // Check if DD payments are disabled for this DDO by Treasury
+          if (res.disableddpayments) {
+            this.isDDPaymentDisabled = true;
+          }
           this.ECSPayeeArray = parsed.data || [];
           this.ECSPayeeArrayCopy = [...this.ECSPayeeArray];
         }
@@ -411,13 +426,30 @@ export class SendBillsToIfmsComponent implements OnInit {
       });
       return;
     }
-    this.turnToPage(2);
+    this.processStateService.setSelectedBills(this.selectedBills);
+    this.router.navigate(['/bill-integration/process-selected-bills']);
   }
 
   turnToPage(pageNo: number): void {
     if (pageNo === 1) {
       this.showPage1 = true;
       this.showPage2 = false;
+
+      // Reset all Page 2 state so stale entries don't persist across selection changes
+      this.btDetailsArray = [];
+      this.ecsDetailsArray = [];
+      this.ddDetailsArray = [];
+      this.selectedGrantRow = null;
+      this.schemeCode = '';
+      this.billTypeLocked = false;
+      this.budgetForm.reset({
+        budget_subsoecode: '00',
+        budget_sharecode: '1',
+        budget_recurcode: '1',
+        budget_deptcode: '29'
+      });
+      this.btForm.reset();
+      this.ecsForm.reset({ payment_type: 'NEFT' });
     } else {
       this.showPage1 = false;
       this.showPage2 = true;
@@ -597,6 +629,9 @@ export class SendBillsToIfmsComponent implements OnInit {
       Swal.fire({ icon: 'warning', title: 'Warning', text: 'Please select a Grant Head.' });
       return;
     }
+    // Capture scheme_code - required in IFMS submission payload
+    this.schemeCode = this.selectedGrantRow.scheme_code || '';
+
     this.budgetForm.patchValue({
       budget_demand: this.selectedGrantRow.demand,
       budget_majorhead: this.selectedGrantRow.majorHead,
@@ -610,6 +645,8 @@ export class SendBillsToIfmsComponent implements OnInit {
       budget_recurcode: this.selectedGrantRow.recur_code,
       budget_deptcode: this.selectedGrantRow.dept_code
     });
+    // Lock bill type after budget head selection to prevent state corruption
+    this.billTypeLocked = true;
     this.showDdoGrantFlag = false;
   }
 
@@ -628,16 +665,33 @@ export class SendBillsToIfmsComponent implements OnInit {
       return;
     }
 
-    if (!this.isGrossMatch) {
-      Swal.fire({ icon: 'error', title: 'Gross Match Error', text: `Gross Amount entered (₹${this.grossAmount}) must match selected bills total amount (₹${this.totalAmount}).` });
-      return;
-    }
+    // --- VALIDATION 1: IT Amounts must match ---
     if (!this.isITMatch) {
-      Swal.fire({ icon: 'error', title: 'Income Tax Error', text: `Entered Income Tax in Book Transfer (₹${this.totalIncomeTaxAmountEntered}) must match selected bills Income Tax total (₹${this.totalIncomeTaxAmountSelected}).` });
+      Swal.fire({ icon: 'error', title: 'Income Tax Mismatch',
+        html: `Income Tax in Book Transfer (<strong>₹${this.totalIncomeTaxAmountEntered.toLocaleString('en-IN')}</strong>) must equal selected bills IT total (<strong>₹${this.totalIncomeTaxAmountSelected.toLocaleString('en-IN')}</strong>).` });
       return;
     }
+
+    // --- VALIDATION 2: Gross must match Total Bills amount ---
+    if (!this.isGrossMatch) {
+      Swal.fire({ icon: 'error', title: 'Gross Amount Mismatch',
+        html: `Gross entered in allocations (<strong>₹${this.grossAmount.toLocaleString('en-IN')}</strong>) must equal total selected bill amount (<strong>₹${this.totalAmount.toLocaleString('en-IN')}</strong>).` });
+      return;
+    }
+
+    // --- VALIDATION 3: Net payable must match ECS + DD total ---
+    const ecsDdTotal = this.ecsDetailsArray.reduce((s: number, x: any) => s + (+x.payment_amount || 0), 0)
+                     + this.ddDetailsArray.reduce((s: number, x: any) => s + (+x.payment_amount || 0), 0);
+    if (this.totalPayableAmount !== ecsDdTotal) {
+      Swal.fire({ icon: 'error', title: 'Net Payable Mismatch',
+        html: `Net Payable amount (<strong>₹${this.totalPayableAmount.toLocaleString('en-IN')}</strong>) must equal total ECS + DD disbursals (<strong>₹${ecsDdTotal.toLocaleString('en-IN')}</strong>).` });
+      return;
+    }
+
+    // --- VALIDATION 4: Net = gross - BT (the 4th check legacy had) ---
     if (!this.isNetMatch) {
-      Swal.fire({ icon: 'error', title: 'Net Amount Error', text: `Entered Net Amount (₹${this.netAmount}) must match selected bills Net Payable amount (₹${this.totalPayableAmount}).` });
+      Swal.fire({ icon: 'error', title: 'Net Amount Error',
+        html: `Net Amount (<strong>₹${this.netAmount.toLocaleString('en-IN')}</strong>) must equal selected bills Net Payable (<strong>₹${this.totalPayableAmount.toLocaleString('en-IN')}</strong>).` });
       return;
     }
 
@@ -646,12 +700,13 @@ export class SendBillsToIfmsComponent implements OnInit {
       form: {
         integration_src: 'VMS',
         bill_no: 0,
-        ddo_code: this.getDdoCode(),
-        bill_month: +this.month,
+        ddo_code: this.getDdoCode(),          // Fix 3: reads DDO code from JWT, not login username
+        bill_month: +this.month,               // Fix 1: user-selected month, NOT hardcoded current month
         sub_soe: this.budgetForm.value.budget_subsoecode,
         hoa_id: +this.budgetForm.value.budget_ddowalletid || 0,
-        bill_code: +this.billType,
-        gross_amount: this.grossAmount,
+        bill_code: +this.billType,             // Fix 2: user-selected bill type, NOT hardcoded 10
+        scheme_code: this.schemeCode,          // Fix 4: captured from grant head selection
+        gross_amount: this.totalAmount,
         net_amount: this.netAmount,
         tobt: this.btDetailsArray.map((bt) => ({
           btCode: bt.btCode,
@@ -744,14 +799,20 @@ export class SendBillsToIfmsComponent implements OnInit {
                 html: `Successfully submitted to IFMS.<br>Note down your Bill Number for tracking:<br><h4 class="text-primary mt-2"><strong>${billNo}</strong></h4>`,
                 confirmButtonText: 'OK'
               }).then(() => {
-                this.router.navigate(['/ifms-integration/ifms-claims']);
+                this.router.navigate(['/ifms-claims']);
               });
             } else {
-              Swal.fire({
-                icon: 'error',
-                title: 'Submission Failed',
-                text: res.msg || 'An error occurred during Treasury submission.'
-              });
+              // Fix 5: Parse structured IFMS error response (array of {error_code, error_desc})
+              let errorMsg = 'An unknown error occurred during Treasury submission.';
+              if (Array.isArray(res.msg) && res.msg[0]?.error_desc) {
+                errorMsg = res.msg[0].error_desc;
+              } else if (typeof res.msg === 'string') {
+                try {
+                  const parsedErr = JSON.parse(res.msg);
+                  errorMsg = parsedErr?.Error?.[0]?.error_desc || res.msg;
+                } catch { errorMsg = res.msg; }
+              }
+              Swal.fire({ icon: 'error', title: 'Submission Failed', text: errorMsg });
             }
           },
           error: (err) => {

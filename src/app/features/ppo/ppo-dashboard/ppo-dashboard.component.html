@@ -1,0 +1,79 @@
+<div class="dashboard-container">
+  <app-card customClass="no-padding">
+    <!-- Header Section -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pb-2 mb-4 border-bottom">
+      <div>
+        <h1 class="fs-28 fw-bold text-dark mb-1">Petrol Pump Dashboard</h1>
+      </div>
+      <div class="mt-2 mt-md-0 d-flex gap-2">
+        <app-btn label="Home" routerLink="/home" variant="outline-secondary" size="sm"></app-btn>
+      </div>
+    </div>
+
+    <div *ngIf="isLoading" class="text-center my-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <div *ngIf="!isLoading">
+      <!-- Stats Widgets -->
+      <div class="row mb-4" *ngIf="stats">
+        <div class="col-md-4 mb-3 mb-md-0">
+          <div class="card border-0 shadow-sm rounded-3">
+            <div class="card-body p-4 d-flex align-items-center justify-content-between">
+              <div>
+                <p class="text-muted mb-1 fs-6 fw-semibold">Total Fuel (Litres)</p>
+                <h2 class="text-primary fw-bold mb-0">{{ stats.totalLitresFilled | number:'1.2-2' }}</h2>
+              </div>
+              <div class="bg-primary bg-opacity-10 p-3 rounded-circle text-primary">
+                <i class="fas fa-gas-pump fs-3"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3 mb-md-0">
+          <div class="card border-0 shadow-sm rounded-3">
+            <div class="card-body p-4 d-flex align-items-center justify-content-between">
+              <div>
+                <p class="text-muted mb-1 fs-6 fw-semibold">Total Cost (₹)</p>
+                <h2 class="text-success fw-bold mb-0">₹{{ stats.totalAmount | number:'1.2-2' }}</h2>
+              </div>
+              <div class="bg-success bg-opacity-10 p-3 rounded-circle text-success">
+                <i class="fas fa-rupee-sign fs-3"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm rounded-3">
+            <div class="card-body p-4 d-flex align-items-center justify-content-between">
+              <div>
+                <p class="text-muted mb-1 fs-6 fw-semibold">Vehicles Served</p>
+                <h2 class="text-info fw-bold mb-0">{{ stats.totalVehiclesServed }}</h2>
+              </div>
+              <div class="bg-info bg-opacity-10 p-3 rounded-circle text-info">
+                <i class="fas fa-truck fs-3"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="d-flex justify-content-end mb-4">
+        <app-btn label="Log New Fuel Entry" routerLink="/ppo/fill-fuel" variant="dark-blue" size="sm" icon="pi pi-plus-circle"></app-btn>
+      </div>
+
+      <!-- Data Grid -->
+      <div class="mb-4">
+        <h6 class="text-dark-blue fw-bold mb-3 px-2">Recent Fuel Logs</h6>
+        <app-data-table
+          [columns]="tableColumns"
+          [data]="logs"
+          [emptyMessage]="'No fuel logs found.'"
+        ></app-data-table>
+      </div>
+    </div>
+  </app-card>
+</div>

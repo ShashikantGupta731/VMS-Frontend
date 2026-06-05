@@ -15,9 +15,10 @@ export const ROLE_BASED_ROUTES: RoleRouteConfig[] = [
   { role: 'SEC', redirectUrl: '/vehicle' },
   { role: 'HOD', redirectUrl: '/vehicle' },
   { role: 'DCL', redirectUrl: '/vehicle' },
-  { role: 'FD', redirectUrl: '/vehicle' },
-  { role: 'PPOF', redirectUrl: '/vehicle' },
-  { role: 'GUEST', redirectUrl: '/vehicle' }
+  { role: 'FD', redirectUrl: '/vehicles/condemned/fd-approval' },
+  { role: 'PPOF', redirectUrl: '/ppo' },
+  { role: 'GUEST', redirectUrl: '/vehicle' },
+  { role: 'ROFC', redirectUrl: '/vehicle' }
 ];
 
 /**

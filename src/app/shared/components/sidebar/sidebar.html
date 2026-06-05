@@ -71,7 +71,7 @@
             <button
               class="menu-link menu-button"
               [class.disabled]="item.disabled"
-              [class.active]="isExpanded(item)"
+              [class.expanded]="isExpanded(item)"
               [attr.title]="!isSidebarExpanded ? item.label : null"
               (click)="handleItemClick(item, $event)"
             >

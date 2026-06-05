@@ -1,0 +1,73 @@
+<div class="update-vehicle-details-container">
+  <app-card>
+    <div class="page-header mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="page-title h4 fw-bold mb-0">Update Vehicle Details</h1>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a [routerLink]="['/vehicle']">Admin</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Update Vehicle Details</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Search Section -->
+    <div class="search-section mb-4 p-4 bg-light rounded border border-light-subtle">
+      <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+        <div class="row align-items-end">
+          <div class="col-md-5">
+            <div class="form-group mb-0">
+              <label class="form-label text-muted small fw-semibold text-uppercase">Vehicle Number</label>
+              <input type="text" class="form-control" formControlName="vehicleNumber" placeholder="e.g. HR26XX1234" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <app-btn label="Search Vehicle" variant="primary" type="submit" icon="pi pi-search" [disabled]="searchForm.invalid || isLoading"></app-btn>
+            <app-btn label="Clear" variant="outline-secondary" class="ms-2" (click)="clearSearch()"></app-btn>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Vehicle Summary Card -->
+    <div *ngIf="isLoading" class="text-center p-4">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <div *ngIf="hasSearched && !isLoading && !vehicle" class="alert alert-warning">
+      <i class="pi pi-exclamation-triangle me-2"></i> No vehicle found matching "<strong>{{ searchForm.value.vehicleNumber }}</strong>".
+    </div>
+
+    <div *ngIf="!isLoading && vehicle" class="vehicle-card mt-4 p-4 border rounded shadow-sm">
+      <div class="d-flex justify-content-between align-items-start mb-4 border-bottom pb-3">
+        <div>
+          <h4 class="mb-1 text-primary">{{ vehicle.vehicleNumber }}</h4>
+          <span class="badge" [ngClass]="{'bg-success': vehicle.status === 'Verified', 'bg-warning': vehicle.status !== 'Verified'}">{{ vehicle.status }}</span>
+        </div>
+        <app-btn label="Edit Full Details" variant="primary" icon="pi pi-pencil" [routerLink]="'/vehicles/edit/' + vehicle.id"></app-btn>
+      </div>
+      
+      <div class="row g-4">
+        <div class="col-md-3">
+          <div class="text-muted small text-uppercase fw-semibold mb-1">Make & Model</div>
+          <div class="fw-medium">{{ vehicle.makeModel }}</div>
+        </div>
+        <div class="col-md-3">
+          <div class="text-muted small text-uppercase fw-semibold mb-1">Department</div>
+          <div class="fw-medium">{{ vehicle.department }}</div>
+        </div>
+        <div class="col-md-3">
+          <div class="text-muted small text-uppercase fw-semibold mb-1">Allotted To</div>
+          <div class="fw-medium">{{ vehicle.officerAllotted }}</div>
+        </div>
+        <div class="col-md-3">
+          <div class="text-muted small text-uppercase fw-semibold mb-1">Fuel Type</div>
+          <div class="fw-medium">{{ vehicle.fuelType }}</div>
+        </div>
+      </div>
+    </div>
+  </app-card>
+</div>

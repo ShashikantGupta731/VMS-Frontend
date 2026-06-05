@@ -221,6 +221,23 @@ export class MasterService {
         return this.api.delete(`/masters/projects/${id}`);
     }
 
+    // --- Generic CRUD for Secondary Masters ---
+    getGenericMaster<T>(endpoint: string): Observable<T[]> {
+        return this.api.get<T[]>(`/masters/${endpoint}`);
+    }
+
+    saveGenericMaster<T>(endpoint: string, data: any): Observable<T> {
+        return this.api.post<T>(`/masters/${endpoint}`, data);
+    }
+
+    updateGenericMaster<T>(endpoint: string, id: number, data: any): Observable<T> {
+        return this.api.put<T>(`/masters/${endpoint}/${id}`, data);
+    }
+
+    deleteGenericMaster(endpoint: string, id: number): Observable<any> {
+        return this.api.delete(`/masters/${endpoint}/${id}`);
+    }
+
     getInventoryItems(): Observable<InventoryItem[]> {
         return this.api.get<InventoryItem[]>('/masters/inventory');
     }

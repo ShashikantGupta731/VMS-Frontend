@@ -1,0 +1,55 @@
+<div class="odometer-correction-container">
+  <app-card>
+    <div class="page-header mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="page-title h4 fw-bold mb-0">Bill Date & Odometer Reading Correction</h1>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a [routerLink]="['/vehicle']">Vehicle</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Odometer Correction</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Search Section -->
+    <div class="search-section mb-4 p-4 bg-light rounded border border-light-subtle">
+      <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+        <div class="row align-items-end">
+          <div class="col-md-3">
+            <div class="form-group mb-0">
+              <label class="form-label text-muted small fw-semibold text-uppercase">Search Type</label>
+              <select class="form-select" formControlName="searchType">
+                <option value="claim">Claim ID / Claim Number</option>
+                <option value="record">Bill Record ID</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group mb-0">
+              <label class="form-label text-muted small fw-semibold text-uppercase">ID Number</label>
+              <input type="text" class="form-control" formControlName="searchValue" placeholder="Enter ID..." />
+            </div>
+          </div>
+          <div class="col-md-3">
+            <app-btn label="Search" variant="primary" type="submit" icon="pi pi-search" [disabled]="searchForm.invalid || isLoading"></app-btn>
+            <app-btn label="Clear" variant="outline-secondary" class="ms-2" (click)="clearSearch()"></app-btn>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Data Table -->
+    <div class="table-responsive">
+      <h5 class="mb-3" *ngIf="hasSearched">Found Bills</h5>
+      <app-data-table 
+        *ngIf="hasSearched"
+        [columns]="tableColumns" 
+        [data]="bills" 
+        [actions]="tableActions" 
+        [isLoading]="isLoading"
+        emptyMessage="No matching bills found. Please check the ID and try again."
+      ></app-data-table>
+    </div>
+  </app-card>
+</div>

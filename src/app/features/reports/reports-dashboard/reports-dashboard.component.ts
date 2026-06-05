@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '@core/services/api';
 import { AppButtonComponent } from '@shared/components/ui/app-button/button.component';
+import { AppCardComponent } from '@shared/components/ui/app-card/card.component';
 
 @Component({
   selector: 'app-reports-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, AppCardComponent],
   templateUrl: './reports-dashboard.component.html',
   styleUrl: './reports-dashboard.component.scss'
 })

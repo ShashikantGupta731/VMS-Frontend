@@ -11,6 +11,8 @@ import { AppDropdownComponent, DropdownItem } from '@shared/components/ui/app-dr
 import { VehicleDetailsModalComponent } from '@shared/components/vehicle-details-modal';
 import { AppDataTableComponent, TableAction, TableColumn } from '@shared/components/ui/app-data-table/data-table.component';
 import { VehicleService } from '@shared/services/vehicle.service';
+import { AuthService } from '@core/services/auth';
+import { AppRole } from '@core/config/roles.enum';
 import Swal from 'sweetalert2';
 
 export interface VehicleResponse {
@@ -41,6 +43,8 @@ export interface VehicleResponse {
   styleUrl: './dashboard.scss',
 })
 export class Dashboard {
+  public authService = inject(AuthService);
+  public AppRole = AppRole;
   private vehicleService = inject(VehicleService);
   private router = inject(Router);
 
@@ -96,12 +100,22 @@ export class Dashboard {
     { key: 'fuelFitness', label: 'Fuel / Fitness / Status', allowHtml: true },
   ];
 
-  tableActions: TableAction[] = [
-    { label: 'Details', icon: '<i class="pi pi-eye"></i>', action: (row: any) => this.onAction('Details', row) },
-    { label: 'Edit', icon: '<i class="pi pi-pencil"></i>', action: (row: any) => this.onAction('Edit', row) },
-    { label: 'Transfer', icon: '<i class="pi pi-sync"></i>', action: (row: any) => this.onAction('Transfer', row) },
-    { label: 'Delete', icon: '<i class="pi pi-trash"></i>', variant: 'danger', action: (row: any) => this.onAction('Delete', row) },
-  ];
+  tableActions = computed(() => {
+    const actions: TableAction[] = [
+      { label: 'Details', icon: '<i class="pi pi-eye"></i>', action: (row: any) => this.onAction('Details', row) }
+    ];
+
+    if (this.authService.hasRole(AppRole.DDO) || this.authService.hasRole(AppRole.Administrator)) {
+      actions.push({ label: 'Edit', icon: '<i class="pi pi-pencil"></i>', action: (row: any) => this.onAction('Edit', row) });
+      actions.push({ label: 'Transfer', icon: '<i class="pi pi-sync"></i>', action: (row: any) => this.onAction('Transfer', row) });
+    }
+
+    if (this.authService.hasRole(AppRole.Administrator)) {
+      actions.push({ label: 'Delete', icon: '<i class="pi pi-trash"></i>', variant: 'danger', action: (row: any) => this.onAction('Delete', row) });
+    }
+
+    return actions;
+  });
 
   // Table data
   tableData = computed(() => {

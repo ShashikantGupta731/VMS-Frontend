@@ -106,6 +106,7 @@ export class NonTreasuryClaimsComponent implements OnInit, OnDestroy {
   tableActions: TableAction[] = [
     {
       label: 'View',
+      icon: '<i class="pi pi-eye"></i>',
       action: (row: NonTreasuryClaim) => this.viewClaim(row),
     }
   ];
@@ -272,7 +273,7 @@ export class NonTreasuryClaimsComponent implements OnInit, OnDestroy {
 
   viewClaim(claim: NonTreasuryClaim): void {
     if (claim.billClaimId) {
-      this.router.navigate(['/bill-voucher/claim-details', claim.billClaimId]);
+      this.router.navigate(['/bill-voucher/claim', claim.billClaimId]);
     } else {
       this.toastr.warning('Claim details not available for this record.', 'Warning');
     }

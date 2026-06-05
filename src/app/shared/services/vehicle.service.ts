@@ -27,6 +27,12 @@ export class VehicleService {
     );
   }
 
+  getVehiclesByDdo(ddoCode: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/by-ddo/${ddoCode}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   getVehicleById(id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
       catchError(this.handleError)
@@ -51,8 +57,26 @@ export class VehicleService {
     );
   }
 
-  condemnVehicle(formData: FormData): Observable<any> {
-    return this.http.post(`${this.apiUrl}/condemn`, formData).pipe(
+  registerReplacementVehicle(data: FormData): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register-replacement`, data);
+  }
+
+  // --- Condemnation Workflow by FD ---
+
+  markForCondemned(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/mark-for-condemned`, data);
+  }
+
+  rejectCondemnation(data: { vehicleNumber: string, reason: string }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/reject-condemnation`, data);
+  }
+
+  addVehicleGrnDetails(data: FormData): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register-replacement`, data);
+  }
+
+  addGrnDetails(data: FormData): Observable<any> {
+    return this.http.post(`${this.apiUrl}/add-grn-details`, data).pipe(
       catchError(this.handleError)
     );
   }

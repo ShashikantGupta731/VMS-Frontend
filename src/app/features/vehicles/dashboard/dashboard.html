@@ -14,18 +14,20 @@
 
     <!-- Action Buttons Section -->
     <div class="d-flex flex-column flex-md-row flex-wrap gap-2 mb-4">
-      <app-btn label="Add Vehicle" routerLink="/vehicles/add" variant="dark-blue" size="sm"
-        icon="pi pi-plus-circle"></app-btn>
-      <app-dropdown label="Bill Vouchers" [items]="billVoucherItems" (select)="onBillVoucherSelect($event)" size="sm"
-        icon="pi pi-plus-circle"></app-dropdown>
-      <app-btn label="Send Bills to IFMS" routerLink="/bill-integration" variant="dark-blue" size="sm"
-        icon="pi pi-send"></app-btn>
-      <app-btn label="Treasury (IFMS) Claims" routerLink="/ifms-claims" variant="dark-blue" size="sm"
-        icon="pi pi-indian-rupee"></app-btn>
-      <app-btn label="Verify Vehicle" routerLink="/verify-vehicles" variant="dark-blue" size="sm"
-        icon="pi pi-check-square"></app-btn>
-      <app-dropdown label="Download Vehicle list" [items]="downloadItems" (select)="onDownloadSelect($event)" size="sm"
-        icon="pi pi-download"></app-dropdown>
+      @if (authService.hasRole(AppRole.DDO)) {
+        <app-btn label="Add Vehicle" routerLink="/vehicles/add" variant="dark-blue" size="sm" icon="pi pi-plus-circle"></app-btn>
+        <app-dropdown label="Bill Vouchers" [items]="billVoucherItems" (select)="onBillVoucherSelect($event)" size="sm" icon="pi pi-plus-circle"></app-dropdown>
+      }
+      
+      @if (authService.hasAnyRole([AppRole.DDO, AppRole.Administrator])) {
+        <app-btn label="Send Bills to IFMS" routerLink="/bill-integration" variant="dark-blue" size="sm" icon="pi pi-send"></app-btn>
+        <app-btn label="Treasury (IFMS) Claims" routerLink="/ifms-claims" variant="dark-blue" size="sm" icon="pi pi-indian-rupee"></app-btn>
+        <app-btn label="Verify Vehicle" routerLink="/verify-vehicles" variant="dark-blue" size="sm" icon="pi pi-check-square"></app-btn>
+      }
+
+      @if (authService.hasAnyRole([AppRole.DDO, AppRole.Administrator, AppRole.HOD, AppRole.DeputyCommissioner, AppRole.FD])) {
+        <app-dropdown label="Download Vehicle list" [items]="downloadItems" (select)="onDownloadSelect($event)" size="sm" icon="pi pi-download"></app-dropdown>
+      }
     </div>
 
     <!-- Vehicle List Table -->
@@ -37,7 +39,7 @@
         </div>
       </div>
       }
-      <app-data-table [columns]="tableColumns" [data]="tableData()" [actions]="tableActions">
+      <app-data-table [columns]="tableColumns" [data]="tableData()" [actions]="tableActions()">
       </app-data-table>
     </div>
 
