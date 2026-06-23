@@ -108,7 +108,7 @@
           </div>
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-btn label="Validate" variant="primary" type="button" (click)="validatePurchaseInfo()"></app-btn>
+              <app-btn label="Validate" variant="dark-blue" type="button" (click)="validatePurchaseInfo()"></app-btn>
             </div>
           </div>
         </div>
@@ -157,7 +157,7 @@
 
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-btn label="Validate" variant="primary" type="button" (click)="validatePurchaseInfo()"></app-btn>
+              <app-btn label="Validate" variant="dark-blue" type="button" (click)="validatePurchaseInfo()"></app-btn>
             </div>
           </div>
         </div>
@@ -195,7 +195,7 @@
 
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-btn label="Validate" variant="primary" type="button" (click)="validatePurchaseInfo()"></app-btn>
+              <app-btn label="Validate" variant="dark-blue" type="button" (click)="validatePurchaseInfo()"></app-btn>
             </div>
           </div>
         </div>
@@ -219,7 +219,7 @@
           </div>
           <div class="col-md-6 col-lg-4">
             <div class="mb-3 mt-4">
-              <app-btn label="Validate" variant="primary" type="button" (click)="validatePurchaseInfo()"></app-btn>
+              <app-btn label="Validate" variant="dark-blue" type="button" (click)="validatePurchaseInfo()"></app-btn>
             </div>
           </div>
       </div>
@@ -331,7 +331,7 @@
                 </div>
                 <app-btn 
                   label="Verify" 
-                  variant="primary" 
+                  variant="dark-blue" 
                   type="button" 
                   [isLoading]="isVerifyingHrms()"
                   (click)="verifyHrms()"
@@ -915,7 +915,13 @@
       <!-- Action Buttons -->
       <div class="d-flex justify-content-between align-items-center mb-4">
         <app-btn label="← Back" variant="dark-blue" size="sm" (click)="goBack()"></app-btn>
-        <app-btn [label]="isEditMode ? 'Update Vehicle' : 'Save Vehicle'" variant="dark-blue" size="sm" type="submit" [disabled]="vehicleForm.invalid || isSubmitting()" icon="pi pi-save"></app-btn>
+        <div class="d-flex align-items-center gap-2">
+          <!-- Dev helper: shows which fields are invalid -->
+          <small *ngIf="vehicleForm.invalid" class="text-danger me-2">
+            Invalid: {{ getInvalidFields() }}
+          </small>
+          <app-btn [label]="isEditMode ? 'Update Vehicle' : 'Save Vehicle'" variant="dark-blue" size="sm" type="submit" [disabled]="vehicleForm.invalid || isSubmitting()" icon="pi pi-save"></app-btn>
+        </div>
       </div>
     </form>
 </div>

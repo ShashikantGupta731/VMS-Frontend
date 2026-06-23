@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, ViewEncapsulation, DoCheck } fr
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
+import { ExportService } from '../../../../core/services/export.service';
 
 export interface TableColumn {
   key: string;
@@ -18,7 +19,7 @@ export interface TableAction {
   icon?: string | ((row: any) => string);
   action: (row: any) => void;
   disabled?: (row: any) => boolean;
-  variant?: 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | ((row: any) => string);
+  variant?: 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'outline-primary' | 'outline-secondary' | 'dark-blue' | 'outline-danger' | ((row: any) => string);
 }
 
 @Component({
@@ -42,6 +43,8 @@ export class AppDataTableComponent implements DoCheck {
   @Input() customClass?: string;
   @Input() rowDisabled?: (row: any) => boolean;
   @Input() rowSelected?: (row: any) => boolean;
+  @Input() exportable: boolean = false;
+  @Input() exportFileName: string = 'data_export';
 
   @Output() sort = new EventEmitter<{ column: string; direction: 'asc' | 'desc' }>();
   @Output() select = new EventEmitter<{ row: any; selected: boolean }>();
@@ -49,6 +52,8 @@ export class AppDataTableComponent implements DoCheck {
 
   // For PrimeNG selection
   selectedRows: any[] = [];
+
+  constructor(private exportService: ExportService) {}
 
   ngDoCheck(): void {
     if (this.selectable && this.rowSelected) {
@@ -116,5 +121,28 @@ export class AppDataTableComponent implements DoCheck {
 
   getActionVariant(action: TableAction, row: any): string {
     return typeof action.variant === 'function' ? action.variant(row) : (action.variant || 'default');
+  }
+
+  exportExcel(): void {
+    if (!this.data || this.data.length === 0) return;
+
+    // Extract headers from columns definition
+    const headers = this.columns.map(col => col.label);
+
+    // Map data to match column definition order
+    const exportData = this.data.map(row => {
+      const rowData: any = {};
+      this.columns.forEach(col => {
+        // If column has a custom render function, we might want to export the raw value or the rendered value.
+        // For simplicity and to avoid HTML tags in Excel, we'll try to export the raw value if possible.
+        // But if render is provided and we want the rendered text (if it's not HTML), we'd call it.
+        // Let's just map by col.key.
+        const val = col.key.split('.').reduce((o, i) => (o ? o[i] : null), row);
+        rowData[col.label] = val;
+      });
+      return rowData;
+    });
+
+    this.exportService.exportAsExcelFile(exportData, this.exportFileName);
   }
 }

@@ -14,128 +14,158 @@
       <!-- Row 1: Is Non-Treasury DDO (Only in add mode) and Username -->
       @if (!isEditMode()) {
         <div class="col-md-6">
-          <label class="form-label">Is Non-Treasury DDO ?</label>
-          <select class="form-select" id="isNonTreasuryDDO" formControlName="isNonTreasuryDDO">
-            <option [ngValue]="true">Yes</option>
-            <option [ngValue]="false">No</option>
-          </select>
+          <app-input
+            type="select"
+            label="Is Non-Treasury DDO ?"
+            formControlName="isNonTreasuryDDO"
+            [options]="isNonTreasuryDdoOptions"
+            [required]="true">
+          </app-input>
         </div>
       }
 
-      <div class="col-md-6">
-        <label class="form-label">Username</label>
-        <input type="text" id="username" class="form-control" formControlName="username" placeholder="Set New Username" maxlength="25" [attr.readonly]="isEditMode() ? true : null" (blur)="checkUsernameAvailability()">
-        @if (userForm.get('username')?.touched && userForm.get('username')?.invalid) {
-          <div class="text-danger small mt-1">Username is required (5-25 chars).</div>
-        }
-        @if (usernameChecked() && !usernameAvailable() && !isEditMode()) {
-          <div class="text-danger small mt-1">Username already exists.</div>
-        }
+      <div class="col-md-6" (focusout)="checkUsernameAvailability()">
+        <app-input
+          label="Username"
+          formControlName="username"
+          placeholder="Set New Username"
+          [maxLength]="25"
+          [required]="true"
+          [error]="(userForm.get('username')?.touched && userForm.get('username')?.invalid ? 'Username is required (5-25 chars).' : '') || (usernameChecked() && !usernameAvailable() && !isEditMode() ? 'Username already exists.' : '')">
+        </app-input>
       </div>
 
       <!-- Row 2: Names -->
       <div class="col-md-4">
-        <label class="form-label">First Name</label>
-        <input type="text" id="firstName" class="form-control" formControlName="firstName" placeholder="First Name" maxlength="50">
-        @if (userForm.get('firstName')?.touched && userForm.get('firstName')?.invalid) {
-          <div class="text-danger small mt-1">First name is required.</div>
-        }
+        <app-input
+          label="First Name"
+          formControlName="firstName"
+          placeholder="First Name"
+          [maxLength]="50"
+          [required]="true"
+          [error]="userForm.get('firstName')?.touched && userForm.get('firstName')?.invalid ? 'First name is required.' : ''">
+        </app-input>
       </div>
 
       <div class="col-md-4">
-        <label class="form-label">Middle Name</label>
-        <input type="text" class="form-control" formControlName="middleName" placeholder="Middle Name" maxlength="50">
+        <app-input
+          label="Middle Name"
+          formControlName="middleName"
+          placeholder="Middle Name"
+          [maxLength]="50">
+        </app-input>
       </div>
 
       <div class="col-md-4">
-        <label class="form-label">Last Name</label>
-        <input type="text" id="lastName" class="form-control" formControlName="lastName" placeholder="Last Name" maxlength="50">
-        @if (userForm.get('lastName')?.touched && userForm.get('lastName')?.invalid) {
-          <div class="text-danger small mt-1">Last name is required.</div>
-        }
+        <app-input
+          label="Last Name"
+          formControlName="lastName"
+          placeholder="Last Name"
+          [maxLength]="50"
+          [required]="true"
+          [error]="userForm.get('lastName')?.touched && userForm.get('lastName')?.invalid ? 'Last name is required.' : ''">
+        </app-input>
       </div>
 
       <!-- Row 3: Phone and Email -->
       <div class="col-md-6">
-        <label class="form-label">Phone Number</label>
-        <input type="text" id="phone" class="form-control" formControlName="phone" placeholder="Phone Number" maxlength="10">
-        @if (userForm.get('phone')?.touched && userForm.get('phone')?.invalid) {
-          <div class="text-danger small mt-1">Valid 10-digit phone number is required.</div>
-        }
+        <app-input
+          label="Phone Number"
+          formControlName="phone"
+          placeholder="Phone Number"
+          [maxLength]="10"
+          [required]="true"
+          [error]="userForm.get('phone')?.touched && userForm.get('phone')?.invalid ? 'Valid 10-digit phone number is required.' : ''">
+        </app-input>
       </div>
 
       <div class="col-md-6">
-        <label class="form-label">Email</label>
-        <input type="email" id="email" class="form-control" formControlName="email" placeholder="Email" autocomplete="off">
-        @if (userForm.get('email')?.touched && userForm.get('email')?.invalid) {
-          <div class="text-danger small mt-1">Please enter a valid email.</div>
-        }
+        <app-input
+          type="email"
+          label="Email"
+          formControlName="email"
+          placeholder="Email"
+          [required]="true"
+          [error]="userForm.get('email')?.touched && userForm.get('email')?.invalid ? 'Please enter a valid email.' : ''">
+        </app-input>
       </div>
 
       <!-- Row 4: Password (Only in Add mode) -->
       @if (!isEditMode()) {
         <div class="col-md-6">
-          <label class="form-label">Password</label>
-          <input type="password" id="password" class="form-control" formControlName="password" placeholder="Password" autocomplete="off">
-          @if (userForm.get('password')?.touched && userForm.get('password')?.invalid) {
-            <div class="text-danger small mt-1">
-              @if (userForm.get('password')?.errors?.['required']) { Password is required.<br> }
-              @if (userForm.get('password')?.errors?.['minlength']) { At least 6 characters.<br> }
-              @if (userForm.get('password')?.errors?.['pattern']) { Must contain uppercase, lowercase, and a digit. }
-            </div>
-          }
+          <app-input
+            type="password"
+            label="Password"
+            formControlName="password"
+            placeholder="Password"
+            [required]="true"
+            [error]="passwordError">
+          </app-input>
         </div>
 
         <div class="col-md-6">
-          <label class="form-label">Confirm Password</label>
-          <input type="password" id="confirmPassword" class="form-control" formControlName="confirmPassword" placeholder="Confirm Password">
-          @if (userForm.errors?.['mismatch'] && userForm.get('confirmPassword')?.touched) {
-            <div class="text-danger small mt-1">Passwords do not match.</div>
-          }
+          <app-input
+            type="password"
+            label="Confirm Password"
+            formControlName="confirmPassword"
+            placeholder="Confirm Password"
+            [required]="true"
+            [error]="confirmPasswordError">
+          </app-input>
         </div>
       }
 
       <!-- Row 5: Permission Level, Blocked, and Level -->
       <div class="col-md-6">
-        <label class="form-label" for="roles">Permission Level</label>
-        <select class="form-select" id="roles" formControlName="roles" (change)="nullcalling()">
-          <option [value]="''" disabled>Select Role</option>
-          @for (role of roles; track role.value) {
-            <option [value]="role.value">{{ role.label }}</option>
-          }
-        </select>
+        <app-input
+          type="select"
+          label="Permission Level"
+          formControlName="roles"
+          [options]="roleOptions"
+          placeholder="Select Role"
+          [required]="true"
+          (change)="nullcalling()">
+        </app-input>
       </div>
 
       <div class="col-md-3">
-        <label class="form-label" for="isActive">Blocked ?</label>
-        <select class="form-select" id="isActive" formControlName="isActive">
-          <option [ngValue]="true">No</option>
-          <option [ngValue]="false">Yes</option>
-        </select>
-        <div class="text-muted small">"Yes" means user will be blocked from login</div>
+        <app-input
+          type="select"
+          label="Blocked ?"
+          formControlName="isActive"
+          [options]="isActiveOptions"
+          [required]="true">
+        </app-input>
+        <div class="text-muted small mt-1">"Yes" means user will be blocked from login</div>
       </div>
 
       <!-- Level (Visible for NDOF, PPOF, ROFC) -->
       @if (isRoleSelected('NDOF') || isRoleSelected('PPOF') || isRoleSelected('ROFC')) {
         <div class="col-md-3">
-          <label class="form-label" for="level">Level</label>
-          <select class="form-select" id="level" formControlName="level" (change)="nullcalling()">
-            <option [ngValue]="1">District Level</option>
-            <option [ngValue]="2">State Level</option>
-          </select>
+          <app-input
+            type="select"
+            label="Level"
+            formControlName="level"
+            [options]="levelOptions"
+            [required]="true"
+            (change)="nullcalling()">
+          </app-input>
         </div>
       }
 
       <!-- Jurisdiction Filters (Dynamic) -->
       @if (isRoleSelected('HOD') || isRoleSelected('ROFC') || isRoleSelected('PPOF') || isRoleSelected('DDO') || isRoleSelected('NDOF')) {
         <div class="col-md-6">
-          <label class="form-label" for="departmentId">Department</label>
-          <select class="form-select" id="departmentId" formControlName="departmentId" (change)="fetchDdos()">
-            <option [ngValue]="null" disabled>Select Department</option>
-            @for (dept of departments(); track dept.id) {
-              <option [ngValue]="dept.id">{{ dept.name }}</option>
-            }
-          </select>
+          <app-input
+            type="select"
+            label="Department"
+            formControlName="departmentId"
+            [options]="departmentOptions"
+            placeholder="Select Department"
+            [required]="true"
+            (change)="fetchDdos()"
+            [error]="userForm.get('departmentId')?.touched && userForm.get('departmentId')?.invalid ? 'Department is required.' : ''">
+          </app-input>
         </div>
       }
 
@@ -143,13 +173,16 @@
       @if (isRoleSelected('DDO') || isRoleSelected('DCL') || 
            ((isRoleSelected('NDOF') || isRoleSelected('PPOF') || isRoleSelected('ROFC')) && userForm.get('level')?.value == 1)) {
         <div class="col-md-6">
-          <label class="form-label" for="districtId">District</label>
-          <select class="form-select" id="districtId" formControlName="districtId" (change)="fetchDdos()">
-            <option [ngValue]="null" disabled>Select District</option>
-            @for (dist of districts(); track dist.id) {
-              <option [ngValue]="dist.id">{{ dist.name }}</option>
-            }
-          </select>
+          <app-input
+            type="select"
+            label="District"
+            formControlName="districtId"
+            [options]="districtOptions"
+            placeholder="Select District"
+            [required]="true"
+            (change)="fetchDdos()"
+            [error]="userForm.get('districtId')?.touched && userForm.get('districtId')?.invalid ? 'District is required.' : ''">
+          </app-input>
         </div>
       }
 
@@ -157,9 +190,7 @@
       @if (isRoleSelected('NDOF') || isRoleSelected('PPOF') || isRoleSelected('ROFC')) {
         <div class="col-md-6">
           <label class="form-label d-block">Please Select DDO(s) from the list</label>
-          <button type="button" class="btn btn-primary w-100" (click)="showDdoModal.set(true)">
-            Select DDO(s)
-          </button>
+          <app-btn variant="dark-blue" size="sm" customClass="w-100" (click)="showDdoModal.set(true)" label="Select DDO(s)"></app-btn>
           <span class="text-muted small mt-1 d-block">You have selected <b>{{selectedDdoCount()}}</b> DDO(s).</span>
         </div>
       }
@@ -167,19 +198,29 @@
       <!-- DDO Specific Fields (Only for regular DDO, not non-treasury) -->
       @if (isRoleSelected('DDO') && !userForm.get('isNonTreasuryDDO')?.value) {
         <div class="col-md-6">
-          <label class="form-label" for="ddoCode">DDO Code</label>
-          <input type="text" class="form-control" id="ddoCode" formControlName="ddoCode" placeholder="DDO Code" maxlength="20">
+          <app-input
+            label="DDO Code"
+            formControlName="ddoCode"
+            placeholder="DDO Code"
+            [maxLength]="20"
+            [required]="true"
+            [error]="userForm.get('ddoCode')?.touched && userForm.get('ddoCode')?.invalid ? 'DDO Code is required.' : ''">
+          </app-input>
         </div>
         <div class="col-md-6">
-          <label class="form-label" for="ddoRegistrationNo">DDO Registration No.</label>
-          <input type="text" class="form-control" id="ddoRegistrationNo" formControlName="ddoRegistrationNo" placeholder="DDO Registration No." maxlength="20">
+          <app-input
+            label="DDO Registration No."
+            formControlName="ddoRegistrationNo"
+            placeholder="DDO Registration No."
+            [maxLength]="20">
+          </app-input>
         </div>
       }
 
       <!-- Footer Buttons -->
       <div class="col-12 d-flex justify-content-center gap-3 mt-5">
-        <app-btn label="Cancel" variant="secondary" routerLink="/user-management" customClass="px-5 py-2"></app-btn>
-        <app-btn [label]="isEditMode() ? 'Submit' : 'Submit'" variant="primary" type="submit" [loading]="isLoading()" customClass="px-5 py-2"></app-btn>
+        <app-btn label="Cancel" variant="outline-secondary" size="sm" routerLink="/user-management"></app-btn>
+        <app-btn [label]="isEditMode() ? 'Submit' : 'Submit'" variant="dark-blue" size="sm" type="submit" [loading]="isLoading()"></app-btn>
       </div>
     </form>
   </app-card>
@@ -196,8 +237,8 @@
     <div class="d-flex justify-content-between mb-3">
       <div class="text-muted small">Available DDOs: {{ddoList().length}}</div>
       <div class="d-flex gap-2">
-        <button type="button" class="btn btn-sm btn-primary" (click)="selectAllDdos(true)">Select All</button>
-        <button type="button" class="btn btn-sm btn-danger" (click)="selectAllDdos(false)">Unselect All</button>
+        <app-btn size="sm" variant="dark-blue" (click)="selectAllDdos(true)" label="Select All"></app-btn>
+        <app-btn size="sm" variant="danger" (click)="selectAllDdos(false)" label="Unselect All"></app-btn>
       </div>
     </div>
 
@@ -216,13 +257,11 @@
               <td>{{i + 1}}</td>
               <td>{{ddo.ddoCode}}</td>
               <td class="text-center">
-                <button type="button" 
-                        class="btn btn-sm" 
-                        [class.btn-primary]="isDdoSelected(ddo.id)" 
-                        [class.btn-dark]="!isDdoSelected(ddo.id)"
-                        (click)="toggleDdoSelection(i)">
-                  {{isDdoSelected(ddo.id) ? 'Selected' : 'Select'}}
-                </button>
+                <app-btn size="sm"
+                         [variant]="isDdoSelected(ddo.id) ? 'success' : 'dark-blue'"
+                         (click)="toggleDdoSelection(i)"
+                         [label]="isDdoSelected(ddo.id) ? 'Selected' : 'Select'">
+                </app-btn>
               </td>
             </tr>
           }
@@ -236,6 +275,6 @@
     </div>
   </div>
   <ng-template pTemplate="footer">
-    <button type="button" class="btn btn-primary" (click)="showDdoModal.set(false)">Done</button>
+    <app-btn variant="dark-blue" size="sm" (click)="showDdoModal.set(false)" label="Done"></app-btn>
   </ng-template>
 </p-dialog>

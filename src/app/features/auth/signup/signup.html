@@ -1,97 +1,127 @@
-<div class="d-flex min-vh-100 align-items-center justify-content-between login-container position-relative" style="background-image: url('login_background1.png'); background-size: cover; background-position: center; overflow: hidden;">
-  
-  <!-- Background Elements -->
-  <img src="login_element1.png" alt="VMS Illustration" class="position-absolute d-none d-lg-block" style="left: 1%; top: 50%; transform: translateY(-50%); max-height: 85vh; max-width: 80vw; object-fit: contain; z-index: 1;" />
-  <img src="login_element2.png" alt="Truck" class="position-absolute d-none d-lg-block" style="right: 1%; bottom: 30%; max-height: 60vh; max-width: 35vw; object-fit: contain; z-index: 1;" />
+<div class="d-flex min-vh-100 align-items-center justify-content-between login-container position-relative"
+  style="background-image: url('login_background1.png'); background-size: cover; background-position: center; overflow: hidden;">
 
   <!-- Top Left Logo -->
-  <div class="position-absolute top-0 start-0 p-4" style="z-index: 10;">
-    <img src="vms_logo.png" alt="VMS Logo" class="top-left-logo" style="max-height: 50px; width: auto;" />
+  <div class="position-absolute" style="z-index: 10; top: -15px; left: -10px;">
+    <img src="vms_logo.png" alt="VMS Logo" class="top-left-logo" style="max-height: 120px; width: auto;" />
   </div>
 
-  <!-- Right Section - Signup Form Anchored to Right -->
-  <div class="w-100 d-flex align-items-center justify-content-end pe-md-5" style="z-index: 2;">
-    <div class="login-form-container position-relative">
-      <!-- Header -->
-      <div class="login-header text-center">
-        <h2 class="text-uppercase m-0 pt-4 pb-4" style="letter-spacing: 2px; font-weight: 300; font-size: 18px; color: #000000; border-bottom: 1px solid rgba(0,0,0,0.1);">SIGNUP</h2>
+  <!-- Main Card Container -->
+  <div class="w-100 d-flex align-items-center justify-content-center p-3 p-md-5" style="z-index: 2;">
+
+    <div class="login-form-container d-flex flex-row position-relative"
+      style="max-width: 1200px; width: 100%; min-height: 550px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+
+      <!-- Left Section (Image) -->
+      <div class="d-none d-lg-flex align-items-center justify-content-center flex-grow-1 overflow-hidden"
+        style="border-right: 2px solid rgba(255, 255, 255, 0.4);">
+        <img src="login_element1.png" alt="VMS Illustration"
+          style="width: 100%; height: 100%; object-fit: cover; object-position: center;" />
       </div>
 
-      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="form-content pt-4">
-        <!-- Username Field -->
-        <div class="mb-4 position-relative">
-          <label class="d-none" style="color: #000000;">Username (Email)</label>
-          <i class="fas fa-envelope position-absolute" style="left: 0; top: 12px; color: #000000;"></i>
-          <input type="email" id="username" class="form-control minimal-input" formControlName="username" placeholder="Email ID" />
-          <div *ngIf="signupForm.get('username')?.errors?.['required'] && signupForm.get('username')?.touched" class="text-danger mt-1" style="font-size: 12px;">
-            Username is required
-          </div>
-          <div *ngIf="signupForm.get('username')?.errors?.['email'] && signupForm.get('username')?.touched" class="text-danger mt-1" style="font-size: 12px;">
-            Please enter a valid email
-          </div>
+      <!-- Right Section (Form) -->
+      <div class="d-flex flex-column position-relative"
+        style="width: 100%; max-width: 400px; flex-shrink: 0; margin: 0 auto;">
+        <!-- Header -->
+        <div class="login-header text-center">
+          <h2 class="text-uppercase m-0 pt-4 pb-4"
+            style="letter-spacing: 2px; font-weight: 300; font-size: 18px; color: #000000; border-bottom: 1px solid rgba(0,0,0,0.1);">
+            SIGNUP</h2>
         </div>
 
-        <!-- Name Field -->
-        <div class="mb-4 position-relative">
-          <label class="d-none" style="color: #000000;">Full Name</label>
-          <i class="fas fa-user position-absolute" style="left: 0; top: 12px; color: #000000;"></i>
-          <input type="text" id="name" class="form-control minimal-input" formControlName="name" placeholder="Full Name" />
-          <div *ngIf="signupForm.get('name')?.errors?.['required'] && signupForm.get('name')?.touched" class="text-danger mt-1" style="font-size: 12px;">
-            Name is required
+        <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="form-content pt-4">
+          <!-- Username Field -->
+          <div class="mb-4 position-relative">
+            <label class="d-none" style="color: #000000;">Username (Email)</label>
+            <i class="fas fa-envelope position-absolute" style="left: 0; top: 12px; color: #000000;"></i>
+            <input type="email" id="username" class="form-control minimal-input" formControlName="username"
+              placeholder="Email ID" />
+            <div *ngIf="signupForm.get('username')?.errors?.['required'] && signupForm.get('username')?.touched"
+              class="text-danger mt-1" style="font-size: 12px;">
+              Username is required
+            </div>
+            <div *ngIf="signupForm.get('username')?.errors?.['email'] && signupForm.get('username')?.touched"
+              class="text-danger mt-1" style="font-size: 12px;">
+              Please enter a valid email
+            </div>
           </div>
-        </div>
 
-        <!-- Phone Field -->
-        <div class="mb-4 position-relative">
-          <label class="d-none" style="color: #000000;">Phone Number</label>
-          <i class="fas fa-phone position-absolute" style="left: 0; top: 12px; color: #000000;"></i>
-          <input type="tel" id="phone" class="form-control minimal-input" formControlName="phone" placeholder="Phone Number" />
-          <div *ngIf="signupForm.get('phone')?.errors?.['required'] && signupForm.get('phone')?.touched" class="text-danger mt-1" style="font-size: 12px;">
-            Phone number is required
+          <!-- Name Field -->
+          <div class="mb-4 position-relative">
+            <label class="d-none" style="color: #000000;">Full Name</label>
+            <i class="fas fa-user position-absolute" style="left: 0; top: 12px; color: #000000;"></i>
+            <input type="text" id="name" class="form-control minimal-input" formControlName="name"
+              placeholder="Full Name" />
+            <div *ngIf="signupForm.get('name')?.errors?.['required'] && signupForm.get('name')?.touched"
+              class="text-danger mt-1" style="font-size: 12px;">
+              Name is required
+            </div>
           </div>
-          <div *ngIf="signupForm.get('phone')?.errors?.['pattern'] && signupForm.get('phone')?.touched" class="text-danger mt-1" style="font-size: 12px;">
-            Please enter a valid 10-digit phone number
-          </div>
-        </div>
 
-        <!-- Password Field -->
-        <div class="mb-4 position-relative">
-          <label class="d-none" style="color: #000000;">Password</label>
-          <i class="fas fa-lock position-absolute" style="left: 0; top: 12px; color: #000000;"></i>
-          <input type="password" id="password" class="form-control minimal-input" formControlName="password" placeholder="Password" />
-          <div *ngIf="signupForm.get('password')?.errors?.['required'] && signupForm.get('password')?.touched" class="text-danger mt-1" style="font-size: 12px;">
-            Password is required
+          <!-- Phone Field -->
+          <div class="mb-4 position-relative">
+            <label class="d-none" style="color: #000000;">Phone Number</label>
+            <i class="fas fa-phone position-absolute" style="left: 0; top: 12px; color: #000000;"></i>
+            <input type="tel" id="phone" class="form-control minimal-input" formControlName="phone"
+              placeholder="Phone Number" />
+            <div *ngIf="signupForm.get('phone')?.errors?.['required'] && signupForm.get('phone')?.touched"
+              class="text-danger mt-1" style="font-size: 12px;">
+              Phone number is required
+            </div>
+            <div *ngIf="signupForm.get('phone')?.errors?.['pattern'] && signupForm.get('phone')?.touched"
+              class="text-danger mt-1" style="font-size: 12px;">
+              Please enter a valid 10-digit phone number
+            </div>
           </div>
-          <div *ngIf="signupForm.get('password')?.errors?.['minlength'] && signupForm.get('password')?.touched" class="text-danger mt-1" style="font-size: 12px;">
-            Password must be at least 6 characters
-          </div>
-        </div>
 
-        <!-- Confirm Password Field -->
-        <div class="mb-4 position-relative">
-          <label class="d-none" style="color: #000000;">Confirm Password</label>
-          <i class="fas fa-check-circle position-absolute" style="left: 0; top: 12px; color: #000000;"></i>
-          <input type="password" id="confirmPassword" class="form-control minimal-input" formControlName="confirmPassword" placeholder="Confirm Password" />
-          <div *ngIf="signupForm.get('confirmPassword')?.errors?.['required'] && signupForm.get('confirmPassword')?.touched" class="text-danger mt-1" style="font-size: 12px;">
-            Please confirm your password
+          <!-- Password Field -->
+          <div class="mb-4 position-relative">
+            <label class="d-none" style="color: #000000;">Password</label>
+            <i class="fas fa-lock position-absolute" style="left: 0; top: 12px; color: #000000;"></i>
+            <input type="password" id="password" class="form-control minimal-input" formControlName="password"
+              placeholder="Password" />
+            <div *ngIf="signupForm.get('password')?.errors?.['required'] && signupForm.get('password')?.touched"
+              class="text-danger mt-1" style="font-size: 12px;">
+              Password is required
+            </div>
+            <div *ngIf="signupForm.get('password')?.errors?.['minlength'] && signupForm.get('password')?.touched"
+              class="text-danger mt-1" style="font-size: 12px;">
+              Password must be at least 6 characters
+            </div>
           </div>
-          <div *ngIf="signupForm.get('confirmPassword')?.errors?.['mismatch'] && signupForm.get('confirmPassword')?.touched" class="text-danger mt-1" style="font-size: 12px;">
-            Passwords do not match
+
+          <!-- Confirm Password Field -->
+          <div class="mb-4 position-relative">
+            <label class="d-none" style="color: #000000;">Confirm Password</label>
+            <i class="fas fa-check-circle position-absolute" style="left: 0; top: 12px; color: #000000;"></i>
+            <input type="password" id="confirmPassword" class="form-control minimal-input"
+              formControlName="confirmPassword" placeholder="Confirm Password" />
+            <div
+              *ngIf="signupForm.get('confirmPassword')?.errors?.['required'] && signupForm.get('confirmPassword')?.touched"
+              class="text-danger mt-1" style="font-size: 12px;">
+              Please confirm your password
+            </div>
+            <div
+              *ngIf="signupForm.get('confirmPassword')?.errors?.['mismatch'] && signupForm.get('confirmPassword')?.touched"
+              class="text-danger mt-1" style="font-size: 12px;">
+              Passwords do not match
+            </div>
           </div>
-        </div>
 
-        <!-- Sign Up Button -->
-        <div class="mt-4 mb-4 text-center">
-          <button type="submit" class="light-pill-btn w-100">
-            SIGNUP
-          </button>
-        </div>
+          <!-- Sign Up Button -->
+          <div class="mt-4 mb-4 text-center">
+            <button type="submit" class="light-pill-btn w-100">
+              SIGNUP
+            </button>
+          </div>
 
-        <!-- Footer Links -->
-        <div class="text-center pb-2">
-          <a href="javascript:void(0)" (click)="goToLogin()" class="text-decoration-none" style="color: #000000; font-size: 13px; font-weight: 400;">Already have an account? Login</a>
-        </div>
-      </form>
+          <!-- Footer Links -->
+          <div class="text-center pb-2">
+            <a href="javascript:void(0)" (click)="goToLogin()" class="text-decoration-none"
+              style="color: #000000; font-size: 13px; font-weight: 400;">Already have an account? Login</a>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </div>

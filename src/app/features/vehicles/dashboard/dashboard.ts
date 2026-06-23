@@ -107,6 +107,7 @@ export class Dashboard {
 
     if (this.authService.hasRole(AppRole.DDO) || this.authService.hasRole(AppRole.Administrator)) {
       actions.push({ label: 'Edit', icon: '<i class="pi pi-pencil"></i>', action: (row: any) => this.onAction('Edit', row) });
+      actions.push({ label: 'Edit Driver', icon: '<i class="pi pi-user-edit"></i>', action: (row: any) => this.onAction('Edit Driver', row), disabled: (row: any) => row.original.verificationStatus !== 1 });
       actions.push({ label: 'Transfer', icon: '<i class="pi pi-sync"></i>', action: (row: any) => this.onAction('Transfer', row) });
     }
 
@@ -177,6 +178,8 @@ export class Dashboard {
       this.showVehicleDetailsModal = true;
     } else if (action === 'Edit') {
       this.router.navigate(['/vehicles/edit', row.original.id]);
+    } else if (action === 'Edit Driver') {
+      this.router.navigate(['/vehicles/edit-driver', row.original.id]);
     } else if (action === 'Transfer') {
       this.router.navigate(['/vehicles/transfer', row.original.id]);
     } else if (action === 'Delete') {

@@ -302,5 +302,13 @@ export const REPORT_CONFIGS: Record<string, ReportConfig> = {
       showSearchTypeDropdown: false, showManufacturerDropdown: false,
       showSearchValueInput: false, showVehicleNumber: false
     }
+  },
+
+  // ─── REPORT 23 ─────────────────────────────────────────────────────────────
+  '23-allocation-wise-billing': {
+    title: 'No. of Bills & Amount - Allocation Type Wise',
+    subtitle: 'Consolidated fuel and maintenance billing grouped by allocation type',
+    backendStrategy: 'AllocationWiseBilling',
+    filters: DEPT_DISTRICT
   }
 };

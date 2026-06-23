@@ -2,12 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class VehicleService {
-  private apiUrl = 'http://localhost:5261/api/vehicles';
+  private apiBaseUrl = environment.apiUrl;
+  private apiUrl = `${this.apiBaseUrl}/vehicles`;
 
   constructor(private http: HttpClient) {}
 
@@ -59,6 +61,20 @@ export class VehicleService {
 
   registerReplacementVehicle(data: FormData): Observable<any> {
     return this.http.post(`${this.apiUrl}/register-replacement`, data);
+  }
+
+  // --- Driver Details Management ---
+  
+  getVehicleEntry(data: any): Observable<any> {
+    return this.http.get(`${this.apiBaseUrl}/Vehicles/${data.vehicleEntryId}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  updateDriverInfo(data: any): Observable<any> {
+    return this.http.put(`${this.apiBaseUrl}/Vehicles/${data.VehicleInfoId}/driver`, data).pipe(
+      catchError(this.handleError)
+    );
   }
 
   // --- Condemnation Workflow by FD ---

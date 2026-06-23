@@ -4,7 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { AppCardComponent } from '@shared/components/ui/app-card/card.component';
 import { AppButtonComponent } from '@shared/components/ui/app-button/button.component';
 import { AppPaginationComponent } from '@shared/components/ui/app-pagination/pagination.component';
-import { AppDataTableComponent } from '@shared/components/ui/app-data-table/data-table.component';
+import { AppDataTableComponent, TableAction } from '@shared/components/ui/app-data-table/data-table.component';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MasterService, Project } from '@core/services/master';
 
@@ -44,17 +44,18 @@ export class ViewProjectsComponent {
     { key: 'petrolMaintenanceLimit', label: 'Maint. Limit (₹)' }
   ];
 
-  tableActions = [
+  tableActions: TableAction[] = [
     {
       label: 'Edit',
+      icon: '<i class="pi pi-pencil"></i>',
       action: (row: Project) => this.onEditProject(row),
-      class: 'btn-sm btn-primary',
     },
     {
-        label: 'Delete',
-        action: (row: Project) => this.onDeleteProject(row),
-        class: 'btn-sm btn-danger',
-      },
+      label: 'Delete',
+      icon: '<i class="pi pi-trash"></i>',
+      action: (row: Project) => this.onDeleteProject(row),
+      variant: 'danger',
+    },
   ];
 
   onPageChange(page: number): void {

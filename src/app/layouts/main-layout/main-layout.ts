@@ -22,10 +22,6 @@ export class MainLayout {
   });
 
   private buildMenuForRole(role: string): SidebarMenuItem[] {
-    const commonItems = [
-      { label: 'Vehicles', route: '/vehicle', icon: 'fas fa-truck' }
-    ];
-
     switch (role) {
       case 'DDO': // IFMS Bill Clerk / Data Entry User
         return [
@@ -84,16 +80,7 @@ export class MainLayout {
             children: [
               { label: 'Officers', route: '/master/officer', icon: 'fas fa-user-tie' },
               { label: 'Models', route: '/models', icon: 'fas fa-car' },
-              { label: 'Designations', route: '/designations', icon: 'fas fa-user-tie' },
-              { label: 'Departments', route: '/master/departments', icon: 'fas fa-building' },
-              { label: 'Districts', route: '/master/districts', icon: 'fas fa-map-marker-alt' },
-              { label: 'Tehsils', route: '/master/tehsils', icon: 'fas fa-map' },
-              { label: 'Vehicle Types', route: '/master/vehicle-types', icon: 'fas fa-truck-pickup' },
-              { label: 'Manufacturers', route: '/master/manufacturers', icon: 'fas fa-industry' },
-              { label: 'Office Types', route: '/master/office-types', icon: 'fas fa-building' },
-              { label: 'Allocations', route: '/master/allocations', icon: 'fas fa-tasks' },
-              { label: 'Fleet Strength', route: '/master/fleet-strength', icon: 'fas fa-truck-monster' },
-              { label: 'Store Items', route: '/master/store-items', icon: 'fas fa-boxes' }
+              { label: 'Designations', route: '/designations', icon: 'fas fa-user-tie' }
             ]
           },
           { label: 'Vehicle Verification', route: '/verify-vehicles', icon: 'fas fa-check-double' },
@@ -109,11 +96,9 @@ export class MainLayout {
               { label: 'Error Logs', route: '/user-management/error-log', icon: 'fas fa-exclamation-triangle' }
             ]
           },
-          { label: 'Reports', route: '/reports', icon: 'fas fa-chart-bar' },
-          ...commonItems,
+          { label: 'Reports', route: '/reports', icon: 'fas fa-chart-bar' }
         ];
       case 'HOD':
-      case 'DCL':
         return [
           {
             label: 'Masters',
@@ -124,41 +109,47 @@ export class MainLayout {
             ]
           },
           { label: 'User Management', route: '/user-management', icon: 'fas fa-users' },
-          { label: 'Reports', route: '/reports', icon: 'fas fa-chart-line' },
-          ...commonItems,
+          { label: 'Reports', route: '/reports', icon: 'fas fa-chart-line' }
+        ];
+      case 'DCL':
+        return [
+          {
+            label: 'Masters',
+            icon: 'fas fa-database',
+            children: [
+              { label: 'Models', route: '/models', icon: 'fas fa-car' }
+            ]
+          },
+          { label: 'User Management', route: '/user-management', icon: 'fas fa-users' },
+          { label: 'Reports', route: '/reports', icon: 'fas fa-chart-line' }
         ];
       case 'SEC':
         return [
           { label: 'Vehicle Status Update', route: '/vehicle/status-update', icon: 'fas fa-sync' },
           { label: 'User Management', route: '/user-management', icon: 'fas fa-users' },
-          { label: 'Reports', route: '/reports', icon: 'fas fa-chart-line' },
-          ...commonItems,
+          { label: 'Reports', route: '/reports', icon: 'fas fa-chart-line' }
         ];
       case 'FD':
         return [
           { label: 'Reports', route: '/reports', icon: 'fas fa-chart-bar' },
-          { label: 'Vehicle Status Update by FD', route: '/vehicles/condemned/fd-approval', icon: 'fas fa-sync' },
-          ...commonItems,
+          { label: 'Vehicle Status Update by FD', route: '/vehicles/condemned/fd-approval', icon: 'fas fa-sync' }
         ];
       case 'NDOF':
         return [
           { label: 'Claim Verification', route: '/claim-verification', icon: 'fas fa-clipboard-check' },
-          { label: 'Reports', route: '/reports', icon: 'fas fa-chart-bar' },
-          ...commonItems,
+          { label: 'Reports', route: '/reports', icon: 'fas fa-chart-bar' }
         ];
       case 'PPOF':
         return [
           { label: 'Filled Fuel Details', route: '/ppo', icon: 'fas fa-gas-pump' },
-          { label: 'Record Filling', route: '/ppo/fill-fuel', icon: 'fas fa-plus-circle' },
-          ...commonItems,
+          { label: 'Record Filling', route: '/ppo/fill-fuel', icon: 'fas fa-plus-circle' }
         ];
       case 'GUEST':
         return [
-          { label: 'Fuel Consumption Detail', route: '/guest-report', icon: 'fas fa-search' },
-          ...commonItems,
+          { label: 'Fuel Consumption Detail', route: '/guest-report', icon: 'fas fa-search' }
         ];
       default:
-        return commonItems;
+        return [];
     }
   }
 

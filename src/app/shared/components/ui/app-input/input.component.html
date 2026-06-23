@@ -12,7 +12,7 @@
     <div class="input-wrapper">
       <i [class]="icon" class="input-icon" style="z-index: 10;"></i>
       
-      @if (!isSelect && type !== 'file') {
+      @if (!isSelect && !isAutocomplete && !isDatePicker && type !== 'file') {
         <input
           pInputText
           [type]="type"
@@ -60,12 +60,44 @@
           (change)="onFileChange($event)"
         />
       }
+
+      @if (isAutocomplete) {
+        <p-autocomplete
+          [suggestions]="suggestions || []"
+          (completeMethod)="onCompleteMethod($event)"
+          [optionLabel]="optionLabel"
+          [placeholder]="placeholder || ''"
+          [dropdown]="dropdown"
+          [forceSelection]="forceSelection"
+          [disabled]="disabled || isLoading"
+          [style]="{'width': width}"
+          [inputStyleClass]="inputClass"
+          [ngModel]="value"
+          (ngModelChange)="onPrimeModelChange($event)"
+          appendTo="body">
+        </p-autocomplete>
+      }
+
+      @if (isDatePicker) {
+        <p-datepicker
+          [dateFormat]="dateFormat"
+          [showIcon]="showIcon"
+          [maxDate]="maxDate"
+          [placeholder]="placeholder || ''"
+          [disabled]="disabled || isLoading"
+          [style]="{'width': width}"
+          [inputStyleClass]="inputClass"
+          [ngModel]="value"
+          (ngModelChange)="onPrimeModelChange($event)"
+          appendTo="body">
+        </p-datepicker>
+      }
     </div>
   }
 
   @if (!icon) {
     <ng-container>
-      @if (!isSelect && type !== 'file' && !isTextarea) {
+      @if (!isSelect && !isAutocomplete && !isDatePicker && type !== 'file' && !isTextarea) {
         <input
           pInputText
           [type]="type"
@@ -119,6 +151,38 @@
           [style.width]="width"
           (change)="onFileChange($event)"
         />
+      }
+
+      @if (isAutocomplete) {
+        <p-autocomplete
+          [suggestions]="suggestions || []"
+          (completeMethod)="onCompleteMethod($event)"
+          [optionLabel]="optionLabel"
+          [placeholder]="placeholder || ''"
+          [dropdown]="dropdown"
+          [forceSelection]="forceSelection"
+          [disabled]="disabled || isLoading"
+          [style]="{'width': width}"
+          [inputStyleClass]="inputClass"
+          [ngModel]="value"
+          (ngModelChange)="onPrimeModelChange($event)"
+          appendTo="body">
+        </p-autocomplete>
+      }
+
+      @if (isDatePicker) {
+        <p-datepicker
+          [dateFormat]="dateFormat"
+          [showIcon]="showIcon"
+          [maxDate]="maxDate"
+          [placeholder]="placeholder || ''"
+          [disabled]="disabled || isLoading"
+          [style]="{'width': width}"
+          [inputStyleClass]="inputClass"
+          [ngModel]="value"
+          (ngModelChange)="onPrimeModelChange($event)"
+          appendTo="body">
+        </p-datepicker>
       }
     </ng-container>
   }

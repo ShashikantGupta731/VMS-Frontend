@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { UpdateVehicleDetailsService, VehicleSummary } from './update-vehicle-details.service';
 import { AppCardComponent } from '@shared/components/ui/app-card/card.component';
 import { AppButtonComponent } from '@shared/components/ui/app-button/button.component';
+import { AppInputComponent } from '@shared/components/ui/app-input/input.component';
 
 @Component({
   selector: 'app-update-vehicle-details',
@@ -15,7 +16,8 @@ import { AppButtonComponent } from '@shared/components/ui/app-button/button.comp
     ReactiveFormsModule,
     RouterModule,
     AppCardComponent,
-    AppButtonComponent
+    AppButtonComponent,
+    AppInputComponent,
   ],
   templateUrl: './update-vehicle-details.html',
   styleUrls: ['./update-vehicle-details.scss']

@@ -4,7 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { AppCardComponent } from '@shared/components/ui/app-card/card.component';
 import { AppButtonComponent } from '@shared/components/ui/app-button/button.component';
 import { AppPaginationComponent } from '@shared/components/ui/app-pagination/pagination.component';
-import { AppDataTableComponent } from '@shared/components/ui/app-data-table/data-table.component';
+import { AppDataTableComponent, TableAction } from '@shared/components/ui/app-data-table/data-table.component';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MasterService, Officer } from '@core/services/master';
 
@@ -57,17 +57,18 @@ export class ViewOfficersComponent {
     }
   ];
 
-  tableActions = [
+  tableActions: TableAction[] = [
     {
       label: 'Edit',
+      icon: '<i class="pi pi-pencil"></i>',
       action: (row: Officer) => this.onEditOfficer(row),
-      class: 'btn-sm btn-primary',
     },
     {
-        label: 'Delete',
-        action: (row: Officer) => this.onDeleteOfficer(row),
-        class: 'btn-sm btn-danger',
-      },
+      label: 'Delete',
+      icon: '<i class="pi pi-trash"></i>',
+      action: (row: Officer) => this.onDeleteOfficer(row),
+      variant: 'danger',
+    },
   ];
 
   onPageChange(page: number): void {

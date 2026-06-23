@@ -172,6 +172,7 @@ export class SendBillsToIfmsComponent implements OnInit {
   tableActions: TableAction[] = [
     {
       label: (row: Bill) => row.selected ? 'Discard' : 'Select',
+      icon: (row: Bill) => row.selected ? '<i class="pi pi-times"></i>' : '<i class="pi pi-check"></i>',
       variant: (row: Bill) => row.selected ? 'danger' : 'default',
       action: (row: Bill) => this.toggleBillSelection(row),
       disabled: (row: Bill) => this.isBillDisabled(row),

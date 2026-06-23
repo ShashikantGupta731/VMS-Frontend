@@ -1,0 +1,100 @@
+<div class="guest-report-container">
+  <app-card>
+    <!-- Page Header -->
+    <div class="page-header mb-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="page-title h4 fw-bold mb-0">Fuel Consumption Detail</h1>
+          <p class="text-muted mb-0 mt-1">Public guest access for Transport Department vehicles</p>
+        </div>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Guest Report</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Section Title -->
+    <h5 class="section-title mb-3">Filter Criteria</h5>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="row align-items-end g-3 mb-4">
+        <!-- Vehicle AutoComplete -->
+        <div class="col-md-4">
+          <app-input
+            type="autocomplete"
+            label="Vehicle No."
+            [required]="true"
+            formControlName="selectedVehicle"
+            [suggestions]="filteredVehicles()" 
+            (completeMethod)="filterVehicles($event)" 
+            optionLabel="vehiclenumber"
+            placeholder="Search vehicle number..."
+            [dropdown]="true"
+            [forceSelection]="true"
+            [error]="form.get('selectedVehicle')?.touched && form.get('selectedVehicle')?.invalid ? 'Vehicle is required.' : ''">
+          </app-input>
+        </div>
+
+        <!-- Date From -->
+        <div class="col-md-3">
+          <app-input
+            type="datepicker"
+            label="From Date"
+            [required]="true"
+            formControlName="dateFrom" 
+            [maxDate]="today"
+            dateFormat="dd/mm/yy" 
+            [showIcon]="true"
+            [error]="form.get('dateFrom')?.touched && form.get('dateFrom')?.invalid ? 'Valid from date is required.' : ''">
+          </app-input>
+        </div>
+
+        <!-- Date To -->
+        <div class="col-md-3">
+          <app-input
+            type="datepicker"
+            label="To Date"
+            [required]="true"
+            formControlName="dateTo" 
+            [maxDate]="today"
+            dateFormat="dd/mm/yy" 
+            [showIcon]="true"
+            [error]="form.get('dateTo')?.touched && form.get('dateTo')?.invalid ? 'Valid to date is required.' : ''">
+          </app-input>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="col-md-2">
+          <app-btn 
+            type="submit" 
+            variant="dark-blue" 
+            icon="pi pi-search" 
+            label="Show Report" 
+            [isLoading]="isLoading()"
+            customClass="w-100">
+          </app-btn>
+        </div>
+      </div>
+    </form>
+
+    <ng-container *ngIf="reportData().length > 0">
+      <hr class="my-4">
+      <!-- Section Title -->
+      <h5 class="section-title mb-3">Results</h5>
+      
+      <!-- Table Section -->
+      <div class="table-responsive">
+        <app-data-table
+          [columns]="tableColumns"
+          [data]="reportData()"
+          [isLoading]="isLoading()"
+          [exportable]="true"
+          exportFileName="Fuel_Consumption_Detail">
+        </app-data-table>
+      </div>
+    </ng-container>
+  </app-card>
+</div>

@@ -6,6 +6,7 @@ import { UserService } from '../user.service';
 import { User, UserFormData } from '../user.interfaces';
 import { AppCardComponent } from '@shared/components/ui/app-card/card.component';
 import { AppButtonComponent } from '@shared/components/ui/app-button/button.component';
+import { AppInputComponent } from '@shared/components/ui/app-input/input.component';
 import { ToastrService } from 'ngx-toastr';
 import { MasterService, DropdownItem, Department } from '@core/services/master';
 import { DialogModule } from 'primeng/dialog';
@@ -13,7 +14,7 @@ import { DialogModule } from 'primeng/dialog';
 @Component({
   selector: 'app-user-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule, AppCardComponent, AppButtonComponent, DialogModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule, AppCardComponent, AppButtonComponent, AppInputComponent, DialogModule],
   templateUrl: './user-form.component.html',
   styleUrl: './user-form.component.scss'
 })
@@ -63,6 +64,7 @@ export class UserFormComponent implements OnInit {
     if (id) {
       this.isEditMode.set(true);
       this.userId.set(+id);
+      this.userForm.get('username')?.disable();
       this.loadUserDetails(+id);
     }
 
@@ -359,5 +361,60 @@ export class UserFormComponent implements OnInit {
     this.ddoListCopy.set([]);
     this.selectedDdos.set([]);
     this.selectedDdoCount.set(0);
+  }
+
+  get districtOptions() {
+    return this.districts().map(d => ({ label: d.name, value: d.id }));
+  }
+
+  get departmentOptions() {
+    return this.departments().map(d => ({ label: d.name, value: d.id }));
+  }
+
+  get roleOptions() {
+    return this.roles;
+  }
+
+  get isActiveOptions() {
+    return [
+      { label: 'No', value: true },
+      { label: 'Yes', value: false }
+    ];
+  }
+
+  get levelOptions() {
+    return [
+      { label: 'District Level', value: 1 },
+      { label: 'State Level', value: 2 }
+    ];
+  }
+
+  get isNonTreasuryDdoOptions() {
+    return [
+      { label: 'Yes', value: true },
+      { label: 'No', value: false }
+    ];
+  }
+
+  get passwordError(): string {
+    const control = this.userForm.get('password');
+    if (!control || !control.touched || !control.invalid) return '';
+    let err = '';
+    if (control.errors?.['required']) err += 'Password is required. ';
+    if (control.errors?.['minlength']) err += 'At least 6 characters. ';
+    if (control.errors?.['pattern']) err += 'Must contain uppercase, lowercase, and a digit.';
+    return err.trim();
+  }
+
+  get confirmPasswordError(): string {
+    const control = this.userForm.get('confirmPassword');
+    if (!control || !control.touched) return '';
+    if (this.userForm.errors?.['mismatch']) {
+      return 'Passwords do not match.';
+    }
+    if (control.invalid && control.errors?.['required']) {
+      return 'Confirm password is required.';
+    }
+    return '';
   }
 }

@@ -4,12 +4,14 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { Router, RouterModule } from '@angular/router';
 import { ApiService } from '@core/services/api';
 import { AppButtonComponent } from '@shared/components/ui/app-button/button.component';
+import { AppCardComponent } from '@shared/components/ui/app-card/card.component';
+import { AppInputComponent } from '@shared/components/ui/app-input/input.component';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-add-stock',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, AppButtonComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, AppButtonComponent, AppCardComponent, AppInputComponent],
   templateUrl: './add-stock.component.html',
   styleUrl: './add-stock.component.scss'
 })
@@ -58,5 +60,12 @@ export class AddStockComponent implements OnInit {
         }
       });
     }
+  }
+
+  get itemOptions() {
+    return this.items().map(item => ({
+      label: item.name,
+      value: item.id
+    }));
   }
 }

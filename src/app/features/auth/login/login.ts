@@ -61,12 +61,12 @@ export class Login {
     });
 
     this.otpForm = this.fb.group({
-      otp: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(4)]]
+      otp: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]]
     });
 
     this.resetForm = this.fb.group({
       phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
-      otp: ['', [Validators.required, Validators.minLength(4)]],
+      otp: ['', [Validators.required, Validators.minLength(6)]],
       newPassword: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]]
     }, { validators: this.passwordMatchValidator });

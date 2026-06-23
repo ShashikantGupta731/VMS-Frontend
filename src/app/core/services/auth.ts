@@ -100,6 +100,10 @@ export class AuthService {
   resetPassword(phone: string, otp: string, newPassword: string): Observable<any> {
     return this.apiService.post<any>('/auth/reset-password', { phone, otp, newPassword });
   }
+  // Change password
+  changePassword(oldPassword: string, newPassword: string): Observable<any> {
+    return this.apiService.post<any>('/auth/change-password', { oldPassword, newPassword });
+  }
 
   // Handle successful login
   loginSuccess(token: string, user: User): void {

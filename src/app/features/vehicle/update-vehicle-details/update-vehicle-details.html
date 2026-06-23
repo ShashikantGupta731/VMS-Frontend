@@ -17,14 +17,17 @@
       <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
         <div class="row align-items-end">
           <div class="col-md-5">
-            <div class="form-group mb-0">
-              <label class="form-label text-muted small fw-semibold text-uppercase">Vehicle Number</label>
-              <input type="text" class="form-control" formControlName="vehicleNumber" placeholder="e.g. HR26XX1234" />
-            </div>
+            <app-input
+              label="Vehicle Number"
+              formControlName="vehicleNumber"
+              placeholder="e.g. HR26XX1234"
+              [required]="true"
+              [error]="searchForm.get('vehicleNumber')?.touched && searchForm.get('vehicleNumber')?.invalid ? 'Enter at least 3 characters' : ''">
+            </app-input>
           </div>
           <div class="col-md-4">
-            <app-btn label="Search Vehicle" variant="primary" type="submit" icon="pi pi-search" [disabled]="searchForm.invalid || isLoading"></app-btn>
-            <app-btn label="Clear" variant="outline-secondary" class="ms-2" (click)="clearSearch()"></app-btn>
+            <app-btn label="Search Vehicle" variant="dark-blue" size="sm" type="submit" icon="pi pi-search" [disabled]="searchForm.invalid || isLoading"></app-btn>
+            <app-btn label="Clear" variant="outline-secondary" size="sm" customClass="ms-2" (click)="clearSearch()"></app-btn>
           </div>
         </div>
       </form>
@@ -47,7 +50,7 @@
           <h4 class="mb-1 text-primary">{{ vehicle.vehicleNumber }}</h4>
           <span class="badge" [ngClass]="{'bg-success': vehicle.status === 'Verified', 'bg-warning': vehicle.status !== 'Verified'}">{{ vehicle.status }}</span>
         </div>
-        <app-btn label="Edit Full Details" variant="primary" icon="pi pi-pencil" [routerLink]="'/vehicles/edit/' + vehicle.id"></app-btn>
+        <app-btn label="Edit Full Details" variant="dark-blue" size="sm" icon="pi pi-pencil" [routerLink]="'/vehicles/edit/' + vehicle.id"></app-btn>
       </div>
       
       <div class="row g-4">

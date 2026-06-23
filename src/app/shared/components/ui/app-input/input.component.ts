@@ -3,13 +3,15 @@ import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { DatePickerModule } from 'primeng/datepicker';
 
-type InputType = 'text' | 'number' | 'date' | 'select' | 'file' | 'password' | 'textarea';
+type InputType = 'text' | 'number' | 'date' | 'select' | 'file' | 'password' | 'textarea' | 'email' | 'autocomplete' | 'datepicker';
 
 @Component({
   selector: 'app-input',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, SelectModule],
+  imports: [CommonModule, FormsModule, InputTextModule, SelectModule, AutoCompleteModule, DatePickerModule],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -35,14 +37,30 @@ export class AppInputComponent implements ControlValueAccessor, OnInit {
   @Input() error?: string;
   @Input() isLoading: boolean = false;
   @Input() searchable: boolean = false;
+  
+  // Autocomplete props
+  @Input() suggestions: any[] = [];
+  @Input() optionLabel?: string;
+  @Input() dropdown: boolean = false;
+  @Input() forceSelection: boolean = false;
+  
+  // DatePicker props
+  @Input() dateFormat: string = 'dd/mm/yy';
+  @Input() showIcon: boolean = false;
+  @Input() maxDate?: Date;
 
   @Output() change = new EventEmitter<any>();
+  @Output() completeMethod = new EventEmitter<any>();
 
   value: any = '';
   isSelect = false;
+  isAutocomplete = false;
+  isDatePicker = false;
 
   ngOnInit(): void {
     this.isSelect = this.type === 'select';
+    this.isAutocomplete = this.type === 'autocomplete';
+    this.isDatePicker = this.type === 'datepicker';
   }
 
   get isTextarea(): boolean {
@@ -79,6 +97,16 @@ export class AppInputComponent implements ControlValueAccessor, OnInit {
     this.value = event.value !== undefined ? event.value : event.target?.value;
     this.onChange(this.value);
     this.change.emit(this.value);
+  }
+
+  onPrimeModelChange(value: any): void {
+    this.value = value;
+    this.onChange(this.value);
+    this.change.emit(this.value);
+  }
+
+  onCompleteMethod(event: any): void {
+    this.completeMethod.emit(event);
   }
 
   onFileChange(event: any): void {

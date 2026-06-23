@@ -8,6 +8,7 @@ import { OdometerCorrectionService, CorrectableBill } from './odometer-correctio
 import { AppCardComponent } from '@shared/components/ui/app-card/card.component';
 import { AppButtonComponent } from '@shared/components/ui/app-button/button.component';
 import { AppDataTableComponent, TableColumn, TableAction } from '@shared/components/ui/app-data-table/data-table.component';
+import { AppInputComponent } from '@shared/components/ui/app-input/input.component';
 
 @Component({
   selector: 'app-odometer-correction',
@@ -18,7 +19,8 @@ import { AppDataTableComponent, TableColumn, TableAction } from '@shared/compone
     RouterModule,
     AppCardComponent,
     AppButtonComponent,
-    AppDataTableComponent
+    AppDataTableComponent,
+    AppInputComponent
   ],
   providers: [DatePipe],
   templateUrl: './odometer-correction.html',
@@ -29,6 +31,11 @@ export class OdometerCorrectionComponent implements OnInit {
   isLoading = false;
   hasSearched = false;
   searchForm!: FormGroup;
+
+  searchTypeOptions = [
+    { label: 'Claim ID / Claim Number', value: 'claim' },
+    { label: 'Bill Record ID', value: 'record' }
+  ];
 
   private odometerService = inject(OdometerCorrectionService);
   private toastr = inject(ToastrService);

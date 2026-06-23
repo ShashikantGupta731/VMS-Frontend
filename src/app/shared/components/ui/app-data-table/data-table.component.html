@@ -12,6 +12,17 @@
     (onHeaderCheckboxToggle)="onHeaderCheckboxToggle($event)"
     [tableStyleClass]="'app-table'"
   >
+    <!-- Caption Template for Export -->
+    @if (exportable) {
+      <ng-template pTemplate="caption">
+        <div class="d-flex justify-content-end mb-2">
+          <button type="button" class="btn btn-outline-success btn-sm d-flex align-items-center" (click)="exportExcel()">
+            <i class="pi pi-file-excel me-2"></i> Export to Excel
+          </button>
+        </div>
+      </ng-template>
+    }
+
     <!-- Header Template -->
     <ng-template pTemplate="header" let-columns>
       <tr>

@@ -361,7 +361,7 @@ export class AddVehicleComponent implements OnInit {
 
       condemnedVehicleChassisNo: [{ value: '', disabled: true }],
 
-      vehicleSource: ['', [Validators.minLength(40)]],
+      vehicleSource: ['', [Validators.minLength(10)]],
 
 
 
@@ -401,7 +401,7 @@ export class AddVehicleComponent implements OnInit {
 
       registrationType: [''],
 
-      registrationNumber: ['', [Validators.required, Validators.pattern(/^[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}$/)]],
+      registrationNumber: ['', [Validators.required, Validators.pattern(/^(?:[A-Z]{2}\d{1,2}[A-Z]{0,3}\d{4,5}|[0-9]{1,2}[B][H][-]?[0-9]{4}[A-Z]{1,2})$/)]],
 
       manufactureYear: [''],
 
@@ -429,7 +429,7 @@ export class AddVehicleComponent implements OnInit {
 
       // Technical Details
 
-      chassisNumber: ['', [Validators.pattern(/^[A-Z0-9]{17}$/)]],
+      chassisNumber: ['', [Validators.minLength(5), Validators.maxLength(20), Validators.pattern(/^[A-Z0-9a-z-]+$/)]],
 
       vehicleCost: ['', [Validators.min(0), Validators.pattern(/^[0-9]*$/)]],
 
@@ -672,22 +672,33 @@ export class AddVehicleComponent implements OnInit {
 
 
         // Trigger manual updates for dependent dropdowns
-
         if (data.manufacturer) {
-
-          // The valueChanges subscription in setupManufacturerModelDependency will handle loading model options
-
-          // Small delay to ensure model options are loaded before patching model
-
-          setTimeout(() => {
-
-            this.vehicleForm.patchValue({ model: data.model });
-
-          }, 500);
-
+          this.masterService.getManufacturers().subscribe(manufacturers => {
+            const manufacturer = manufacturers.find(m => m.name === data.manufacturer);
+            if (manufacturer) {
+              this.masterService.getModels(manufacturer.id).subscribe(models => {
+                this.allModels = models;
+                this.modelOptions = models.map(m => ({ label: m.name, value: m.name }));
+                this.vehicleForm.get('model')?.enable();
+                this.vehicleForm.get('model')?.setValue(data.model, { emitEvent: false });
+              });
+            }
+          });
         }
         
+        // isPatching = false BEFORE explicitly setting disabled controls
+        // patchValue() silently skips disabled controls.
+        // After patchValue(), we need to manually set the VALUES of disabled controls
+        // without triggering their valueChanges clean-up logic.
         this.isPatching = false;
+        
+        // Now explicitly set values that were skipped because controls were disabled
+        if (data.vehiclePurchaseType) {
+          this.vehicleForm.get('vehiclePurchaseType')?.setValue(data.vehiclePurchaseType, { emitEvent: false });
+        }
+        if (data.vehicleSource) {
+          this.vehicleForm.get('vehicleSource')?.setValue(data.vehicleSource, { emitEvent: false });
+        }
 
       },
 
@@ -885,12 +896,16 @@ export class AddVehicleComponent implements OnInit {
       if (value === 'Yes') {
 
         fdApprovalControl?.enable();
-
-        fdApprovalControl?.setValidators([Validators.required]);
+        // We don't set Validators.required on fdApproval because the file upload
+        // control value is a File object - validated manually via the Validate button
+        fdApprovalControl?.clearValidators();
+        fdApprovalControl?.updateValueAndValidity();
 
         vehiclePurchaseTypeControl?.enable();
 
-        vehiclePurchaseTypeControl?.setValidators([Validators.required]);
+        // vehiclePurchaseType is validated manually via the Validate button
+        vehiclePurchaseTypeControl?.clearValidators();
+        vehiclePurchaseTypeControl?.updateValueAndValidity();
 
         vehicleSourceControl?.disable();
 
@@ -910,7 +925,7 @@ export class AddVehicleComponent implements OnInit {
 
         vehicleSourceControl?.enable();
 
-        vehicleSourceControl?.setValidators([Validators.required, Validators.minLength(30)]);
+        vehicleSourceControl?.setValidators([Validators.required, Validators.minLength(10)]);
 
       }
 
@@ -922,13 +937,24 @@ export class AddVehicleComponent implements OnInit {
 
 
 
-    // Initially disable conditional fields
-
-    this.vehicleForm.get('fdApproval')?.disable();
-
-    this.vehicleForm.get('vehiclePurchaseType')?.disable();
-
-    this.vehicleForm.get('vehicleSource')?.disable();
+    // Set correct initial state based on current value (not just always-disable)
+    // This fixes the bug where all controls are disabled on first page load
+    // even though purchasedNewVehicle defaults to 'Yes'
+    const initialValue = this.vehicleForm.get('purchasedNewVehicle')?.value;
+    if (initialValue === 'Yes') {
+      this.vehicleForm.get('fdApproval')?.enable();
+      this.vehicleForm.get('vehiclePurchaseType')?.enable();
+      this.vehicleForm.get('vehicleSource')?.disable();
+    } else if (initialValue === 'No') {
+      this.vehicleForm.get('fdApproval')?.disable();
+      this.vehicleForm.get('vehiclePurchaseType')?.disable();
+      this.vehicleForm.get('vehicleSource')?.enable();
+    } else {
+      // No value yet — disable all
+      this.vehicleForm.get('fdApproval')?.disable();
+      this.vehicleForm.get('vehiclePurchaseType')?.disable();
+      this.vehicleForm.get('vehicleSource')?.disable();
+    }
 
   }
 
@@ -2100,11 +2126,11 @@ export class AddVehicleComponent implements OnInit {
       ContractorName: formValue.contractorName,
       ContractorContactNo: formValue.contractorContactNumber,
       HRMSCode: formValue.hrmsCode,
-      OfficerId: this.allOfficers.find(o => o.officerName === formValue.officerName)?.id || null,
+      OfficerId: this.allOfficers.find(o => o.officerName === formValue.officerName)?.id,
       VehiclePurchaseType: formValue.vehiclePurchaseType || '',
-      Remarks: formValue.purchasedNewVehicle === 'No' ? formValue.vehicleSource : 
-               (formValue.vehiclePurchaseType === 'Fleet Strength Increased' ? formValue.newFleetStrength?.toString() : 
-               formValue.otherPurchaseTypeDetails),
+      VehicleSource: formValue.vehicleSource || '',
+      NewFleetStrength: formValue.newFleetStrength ? +formValue.newFleetStrength : null,
+      OtherPurchaseTypeDetails: formValue.otherPurchaseTypeDetails || '',
       CondemnedVehicleRegNo: formValue.condemnedVehicleRegNo || '',
       CondemnedVehicleChassisNo: formValue.condemnedVehicleChassisNo || ''
     };
@@ -2148,13 +2174,10 @@ export class AddVehicleComponent implements OnInit {
       },
 
       error: (error) => {
-
-        console.error('Error creating vehicle:', error);
-
-        this.toastr.error('Failed to create vehicle. Please try again.', 'Error');
-
+        console.error('Error creating/updating vehicle:', error);
+        const errMsg = this.isEditMode ? 'Failed to update vehicle. Please try again.' : 'Failed to create vehicle. Please try again.';
+        this.toastr.error(errMsg, 'Error');
         this.isSubmitting.set(false);
-
       }
 
     });
@@ -2169,6 +2192,17 @@ export class AddVehicleComponent implements OnInit {
 
   }
 
+  /** Dev helper: returns comma-separated list of invalid field names for debugging */
+  getInvalidFields(): string {
+    const invalidFields: string[] = [];
+    Object.keys(this.vehicleForm.controls).forEach(key => {
+      const ctrl = this.vehicleForm.get(key);
+      if (ctrl && ctrl.invalid && ctrl.enabled) {
+        invalidFields.push(key);
+      }
+    });
+    return invalidFields.join(', ');
+  }
 
 
   private markFormGroupTouched(formGroup: FormGroup): void {

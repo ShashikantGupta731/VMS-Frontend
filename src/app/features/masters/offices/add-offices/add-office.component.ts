@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { AppCardComponent } from '@shared/components/ui/app-card/card.component';
 import { AppButtonComponent } from '@shared/components/ui/app-button/button.component';
+import { AppInputComponent } from '@shared/components/ui/app-input/input.component';
 import { AddOfficeService, OfficeFormData } from './add-office.service';
 import { AuthService } from '@core/services/auth';
 import { ToastrService } from 'ngx-toastr';
@@ -18,6 +19,7 @@ import { DropdownItem } from '@core/services/master';
     ReactiveFormsModule,
     AppCardComponent,
     AppButtonComponent,
+    AppInputComponent,
   ],
   templateUrl: './add-office.component.html',
   styleUrl: './add-office.component.scss',
@@ -252,4 +254,17 @@ export class AddOfficeComponent implements OnInit {
   get officeAbbreviation() { return this.officeForm.get('officeAbbreviation'); }
   get officeType() { return this.officeForm.get('officeType'); }
   get officeTypeOther() { return this.officeForm.get('officeTypeOther'); }
+
+  get departmentOptions() {
+    return this.departments.map(d => ({ label: d.name, value: d.id }));
+  }
+  get districtOptions() {
+    return this.districts.map(d => ({ label: d.name, value: d.id }));
+  }
+  get tehsilOptions() {
+    return this.tehsils.map(d => ({ label: d.name, value: d.id }));
+  }
+  get officeTypeOptions() {
+    return this.officeTypes.map(d => ({ label: d.name, value: d.id }));
+  }
 }

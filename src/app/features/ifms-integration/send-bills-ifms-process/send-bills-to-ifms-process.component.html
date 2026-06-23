@@ -343,7 +343,7 @@
 
       <!-- Actions -->
       <div class="d-flex justify-content-center gap-3 mt-4 pt-3 border-top">
-        <app-btn label="Back to Selection" variant="secondary" size="sm" (click)="goBackToSelection()"></app-btn>
+        <app-btn label="Back to Selection" variant="outline-secondary" size="sm" (click)="goBackToSelection()"></app-btn>
         <app-btn label="Confirm & Send to IFMS" variant="dark-blue" size="sm" icon="pi pi-send"
           [disabled]="!isFormValid || isLoading" (click)="onSubmit()"></app-btn>
       </div>
@@ -454,7 +454,7 @@
           </div>
         </div>
         <div class="modal-footer bg-white border-0 pt-0 pb-3 px-4">
-          <button type="button" class="btn btn-outline-secondary btn-sm" (click)="showDdoGrantFlag = false">Cancel</button>
+          <app-btn variant="outline-secondary" size="sm" label="Cancel" (click)="showDdoGrantFlag = false"></app-btn>
           <app-btn label="Confirm Grant Head" variant="dark-blue" size="sm" [disabled]="!selectedGrantRow" (click)="confirmGrantHead()"></app-btn>
         </div>
       </div>
@@ -512,7 +512,7 @@
           </div>
         </div>
         <div class="modal-footer bg-white border-0 pt-0 pb-3 px-4">
-          <button type="button" class="btn btn-outline-secondary btn-sm" (click)="showPayeeFlag = false">Cancel</button>
+          <app-btn variant="outline-secondary" size="sm" label="Cancel" (click)="showPayeeFlag = false"></app-btn>
         </div>
       </div>
     </div>

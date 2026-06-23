@@ -27,16 +27,14 @@ export class AppButtonComponent {
   @Input() customClass?: string;
   @Input() icon?: string;
 
-  @Output() click = new EventEmitter<void>();
-
   constructor(private router: Router) { }
 
   handleClick(event: Event): void {
     if (this.routerLink) {
       this.router.navigate([this.routerLink]);
-    } else {
-      this.click.emit();
     }
+    // Native DOM 'click' events automatically bubble up to the <app-btn> host element.
+    // Emitting a custom @Output() named 'click' causes parent handlers to fire twice!
   }
 
   // Maps your custom variants to PrimeNG's official severities

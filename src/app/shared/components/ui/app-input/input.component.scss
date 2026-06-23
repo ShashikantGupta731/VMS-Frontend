@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  position: relative;
 }
 
 .app-input-label {
@@ -146,7 +147,9 @@ input[type="file"] {
 
 /* Global Font Size Control for Inputs and PrimeNG Selects */
 ::ng-deep .app-input,
-::ng-deep .p-select-label {
+::ng-deep .p-select-label,
+::ng-deep .p-autocomplete-input,
+::ng-deep .p-datepicker-input {
   font-size: 14px !important;
 }
 
@@ -156,4 +159,67 @@ input[type="file"] {
   height: 100%;
   display: flex;
   align-items: center;
+}
+
+/* PrimeNG Component Overrides to match .app-input */
+::ng-deep .p-autocomplete,
+::ng-deep .p-datepicker {
+  width: 100%;
+}
+
+::ng-deep .app-input.p-inputtext {
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 50px;
+  padding: 0 20px;
+  height: 35px;
+  box-sizing: border-box;
+  color: $text-dark;
+  width: 100%;
+  box-shadow: none;
+  
+  &:enabled:focus {
+    background: #fff;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+}
+
+/* p-select wrapper overrides */
+::ng-deep .p-select.app-input {
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 50px;
+  padding: 0 20px;
+  height: 35px;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+
+  &:not(.p-disabled).p-focus {
+    background: #fff;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+  
+  .p-select-dropdown {
+    width: auto;
+    padding-left: 10px;
+  }
+}
+
+/* Remove border inside datepicker/autocomplete wrappers if they double up */
+::ng-deep p-autocomplete.ng-valid.ng-touched .p-inputtext {
+  border-color: #e0e0e0;
+}
+
+/* Error Text - Absolute positioned to prevent layout jumps */
+.error-text {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 2px !important;
+  font-size: 11.5px;
+  white-space: nowrap;
+  z-index: 5;
 }

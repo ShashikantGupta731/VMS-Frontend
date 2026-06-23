@@ -48,9 +48,7 @@
                   [disabled]="true"
                 ></app-input>
               </div>
-              <button type="button" class="btn btn-dark mb-1" (click)="openModal()" style="height: 42px;">
-                <i class="fas fa-search me-1"></i> Select
-              </button>
+              <app-btn variant="dark-blue" customClass="mb-1" (click)="openModal()" icon="fas fa-search" label="Select"></app-btn>
             </div>
             <div *ngIf="getErrorMessage('vehicleNumber')" class="text-danger error-message">
               {{getErrorMessage('vehicleNumber')}}
@@ -148,10 +146,7 @@
             <input type="text" placeholder="Enter Vehicle Number to search" class="form-control" [(ngModel)]="searchQuery" [ngModelOptions]="{standalone: true}">
           </div>
           <div class="col-md-3">
-            <button class="btn btn-primary w-100" type="button" (click)="searchVehicles()">
-              <span *ngIf="isSearching" class="spinner-border spinner-border-sm me-1"></span>
-              Search
-            </button>
+            <app-btn variant="dark-blue" customClass="w-100" (click)="searchVehicles()" [isLoading]="isSearching" label="Search"></app-btn>
           </div>
         </div>
         
@@ -169,7 +164,7 @@
                 <th scope="row" class="align-middle">{{ i + 1 }}</th>
                 <td class="align-middle fw-bold">{{data.vehicleNumber}}</td>
                 <td class="text-center">
-                  <button class="btn btn-sm btn-dark px-4" (click)="selectVehicle(data)" type="button">Select</button>
+                  <app-btn size="sm" variant="dark-blue" customClass="px-4" (click)="selectVehicle(data)" label="Select"></app-btn>
                 </td>
               </tr>
               <tr *ngIf="vehicleList.length === 0 && !isSearching" class="text-center text-muted">

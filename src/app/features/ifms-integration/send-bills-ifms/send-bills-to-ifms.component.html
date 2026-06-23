@@ -122,10 +122,7 @@
               <div class="my-4">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                   <label class="form-label mb-0">Grant / Budget Head Allocation *</label>
-                  <button type="button" class="btn btn-primary btn-sm rounded-pill shadow-sm"
-                    (click)="openGrantSearch()">
-                    <i class="pi pi-search me-1"></i> Search Budget Head
-                  </button>
+                  <app-btn label="Search Budget Head" variant="dark-blue" size="sm" icon="pi pi-search" (click)="openGrantSearch()" customClass="rounded-pill shadow-sm"></app-btn>
                 </div>
 
                 <form [formGroup]="budgetForm">
@@ -223,9 +220,7 @@
                         placeholder="0">
                     </div>
                     <div class="col-md-3">
-                      <button type="submit" class="btn btn-outline-primary w-100" [disabled]="btForm.invalid">
-                        <i class="pi pi-plus"></i> Add
-                      </button>
+                      <app-btn type="submit" variant="outline-primary" customClass="w-100" [disabled]="btForm.invalid" icon="pi pi-plus" label="Add"></app-btn>
                     </div>
                   </div>
                 </form>
@@ -264,10 +259,7 @@
                   <h5 class="section-title mb-0">
                     <i class="pi pi-users text-primary me-2"></i>3. Payee Details (ECS)
                   </h5>
-                  <button type="button" class="btn btn-outline-primary btn-sm rounded-pill shadow-sm"
-                    (click)="openPayeeSearch()">
-                    <i class="pi pi-search me-1"></i> Search Payee
-                  </button>
+                  <app-btn label="Search Payee" variant="outline-primary" size="sm" icon="pi pi-search" (click)="openPayeeSearch()" customClass="rounded-pill shadow-sm"></app-btn>
                 </div>
 
                 <form [formGroup]="ecsForm" (ngSubmit)="addECSDetail()">
@@ -308,9 +300,7 @@
                         formControlName="payment_amount" placeholder="0">
                     </div>
                     <div class="col-md-3">
-                      <button type="submit" class="btn btn-outline-success w-100" [disabled]="ecsForm.invalid">
-                        <i class="pi pi-plus"></i> Disburse
-                      </button>
+                      <app-btn type="submit" variant="success" customClass="w-100" [disabled]="ecsForm.invalid" icon="pi pi-plus" label="Disburse"></app-btn>
                     </div>
                   </div>
                 </form>
@@ -387,9 +377,7 @@
                             placeholder="0"></app-input>
                         </div>
                         <div class="col-md-3">
-                          <button type="submit" class="btn btn-outline-primary w-100" [disabled]="ddForm.invalid">
-                            <i class="pi pi-plus"></i> Add DD
-                          </button>
+                          <app-btn type="submit" variant="outline-primary" customClass="w-100" [disabled]="ddForm.invalid" icon="pi pi-plus" label="Add DD"></app-btn>
                         </div>
                       </div>
                     </form>
@@ -458,7 +446,7 @@
             </div>
             <div class="col-md-5 text-end">
               <div class="d-flex gap-2 justify-content-end">
-                <app-btn label="Back to Selection" variant="secondary" size="sm" (click)="turnToPage(1)"></app-btn>
+                <app-btn label="Back to Selection" variant="outline-secondary" size="sm" (click)="turnToPage(1)"></app-btn>
                 <app-btn label="Confirm & Send to IFMS" variant="dark-blue" size="sm" icon="pi pi-send"
                   [disabled]="!isFormValid || isLoading" (click)="onSubmit()"></app-btn>
               </div>
@@ -511,9 +499,7 @@
             </select>
           </div>
           <div class="col-md-3 d-flex align-items-end">
-            <button class="btn btn-primary w-100 small" (click)="fetchGrants()">
-              <i class="pi pi-refresh"></i> Fetch Heads
-            </button>
+            <app-btn variant="dark-blue" customClass="w-100 small" (click)="fetchGrants()" icon="pi pi-refresh" label="Fetch Heads"></app-btn>
           </div>
         </div>
 
@@ -557,9 +543,8 @@
       </div>
 
       <div class="modal-footer bg-light border-0 p-3 rounded-bottom-4">
-        <button type="button" class="btn btn-outline-secondary" (click)="showDdoGrantFlag = false">Cancel</button>
-        <button type="button" class="btn btn-success" [disabled]="!selectedGrantRow"
-          (click)="confirmGrantHead()">Confirm Grant Head</button>
+        <app-btn variant="outline-secondary" label="Cancel" (click)="showDdoGrantFlag = false"></app-btn>
+        <app-btn variant="success" [disabled]="!selectedGrantRow" (click)="confirmGrantHead()" label="Confirm Grant Head"></app-btn>
       </div>
     </div>
   </div>
@@ -622,7 +607,7 @@
       </div>
 
       <div class="modal-footer bg-light border-0 p-3 rounded-bottom-4">
-        <button type="button" class="btn btn-outline-secondary w-100" (click)="showPayeeFlag = false">Cancel</button>
+        <app-btn variant="outline-secondary" customClass="w-100" label="Cancel" (click)="showPayeeFlag = false"></app-btn>
       </div>
     </div>
   </div>
