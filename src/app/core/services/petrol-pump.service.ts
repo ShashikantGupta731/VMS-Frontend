@@ -24,6 +24,10 @@ export interface FuelLogDto {
   amount: number;
   date: string;
   fuelType: string;
+  ddoCode: string;
+  officeName: string;
+  district: string;
+  departmentName: string;
 }
 
 export interface FuelEntryRequestDto {

@@ -1,4 +1,4 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { BillingService, BillClaim, BillStatus, BillType } from '@shared/services/billing.service';
@@ -16,15 +16,31 @@ import { rxResource } from '@angular/core/rxjs-interop';
 export class BillingDashboardComponent {
   private router = inject(Router);
   private billingService = inject(BillingService);
+  // Expose BillStatus to template
+  protected readonly BillStatus = BillStatus;
 
   claimsResource = rxResource<BillClaim[], unknown>({
     stream: () => this.billingService.getClaims()
   });
 
+  // Active filter state
+  activeFilter = signal<BillStatus | 'all'>('all');
+
   // Summary Metrics
+  totalCount = computed(() => (this.claimsResource.value() ?? []).length);
   pendingCount = computed(() => (this.claimsResource.value() ?? []).filter(c => c.status === BillStatus.Pending).length);
   verifiedCount = computed(() => (this.claimsResource.value() ?? []).filter(c => c.status === BillStatus.Verified).length);
   rejectedCount = computed(() => (this.claimsResource.value() ?? []).filter(c => c.status === BillStatus.Rejected).length);
+
+  // Filtered Claims computed source
+  filteredClaims = computed(() => {
+    const claims = this.claimsResource.value() ?? [];
+    const filter = this.activeFilter();
+    if (filter === 'all') {
+      return claims;
+    }
+    return claims.filter(c => c.status === filter);
+  });
 
   tableColumns: TableColumn[] = [
     { key: 'claimNumber', label: 'Claim No.', sortable: true },

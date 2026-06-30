@@ -42,4 +42,8 @@ html, body, app-root {
   color: #1a237e !important;
 }
 
+/* Ensure the main page card takes up the full available height */
+.main-content > :not(router-outlet) > div > app-card:first-child > .app-card {
+  min-height: calc(100vh - 120px) !important;
+}
 

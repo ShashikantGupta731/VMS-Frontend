@@ -13,21 +13,20 @@
     </div>
 
     <!-- Search Section -->
-    <div class="search-section mb-4 p-4 bg-light rounded border border-light-subtle">
+    <div class="search-section mb-4 p-4 ">
       <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
         <div class="row align-items-end">
           <div class="col-md-5">
-            <app-input
-              label="Vehicle Number"
-              formControlName="vehicleNumber"
-              placeholder="e.g. HR26XX1234"
+            <app-input label="Vehicle Number" formControlName="vehicleNumber" placeholder="e.g. HR26XX1234"
               [required]="true"
               [error]="searchForm.get('vehicleNumber')?.touched && searchForm.get('vehicleNumber')?.invalid ? 'Enter at least 3 characters' : ''">
             </app-input>
           </div>
           <div class="col-md-4">
-            <app-btn label="Search Vehicle" variant="dark-blue" size="sm" type="submit" icon="pi pi-search" [disabled]="searchForm.invalid || isLoading"></app-btn>
-            <app-btn label="Clear" variant="outline-secondary" size="sm" customClass="ms-2" (click)="clearSearch()"></app-btn>
+            <app-btn label="Search Vehicle" variant="dark-blue" size="sm" type="submit" icon="pi pi-search"
+              [disabled]="searchForm.invalid || isLoading"></app-btn>
+            <app-btn label="Clear" variant="outline-secondary" size="sm" customClass="ms-2"
+              (click)="clearSearch()"></app-btn>
           </div>
         </div>
       </form>
@@ -41,18 +40,22 @@
     </div>
 
     <div *ngIf="hasSearched && !isLoading && !vehicle" class="alert alert-warning">
-      <i class="pi pi-exclamation-triangle me-2"></i> No vehicle found matching "<strong>{{ searchForm.value.vehicleNumber }}</strong>".
+      <i class="pi pi-exclamation-triangle me-2"></i> No vehicle found matching "<strong>{{
+        searchForm.value.vehicleNumber }}</strong>".
     </div>
 
     <div *ngIf="!isLoading && vehicle" class="vehicle-card mt-4 p-4 border rounded shadow-sm">
       <div class="d-flex justify-content-between align-items-start mb-4 border-bottom pb-3">
         <div>
           <h4 class="mb-1 text-primary">{{ vehicle.vehicleNumber }}</h4>
-          <span class="badge" [ngClass]="{'bg-success': vehicle.status === 'Verified', 'bg-warning': vehicle.status !== 'Verified'}">{{ vehicle.status }}</span>
+          <span class="badge"
+            [ngClass]="{'bg-success': vehicle.status === 'Verified', 'bg-warning': vehicle.status !== 'Verified'}">{{
+            vehicle.status }}</span>
         </div>
-        <app-btn label="Edit Full Details" variant="dark-blue" size="sm" icon="pi pi-pencil" [routerLink]="'/vehicles/edit/' + vehicle.id"></app-btn>
+        <app-btn label="Edit Full Details" variant="dark-blue" size="sm" icon="pi pi-pencil"
+          [routerLink]="'/vehicles/edit/' + vehicle.id"></app-btn>
       </div>
-      
+
       <div class="row g-4">
         <div class="col-md-3">
           <div class="text-muted small text-uppercase fw-semibold mb-1">Make & Model</div>

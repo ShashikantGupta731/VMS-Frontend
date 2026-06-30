@@ -117,6 +117,8 @@ export class SendBillsToIfmsProcessComponent implements OnInit {
         amount: this.totalIncomeTaxAmountSelected
       });
       this.onBTCodeChange('IT');
+    } else {
+      this.btForm.controls['btCode']?.disable();
     }
   }
 
@@ -270,6 +272,30 @@ export class SendBillsToIfmsProcessComponent implements OnInit {
     if (!this.isNetMatch) return false;
     if (+this.billType === 6 && this.dcbillForm?.invalid) return false;
     return true;
+  }
+
+  onChangeBillType(): void {
+    const dcDetails = this.dcbillForm;
+    if (this.totalIncomeTaxAmountSelected === 0) {
+      this.btForm.reset();
+      this.btForm.controls['btCode']?.disable();
+    } else {
+      this.btForm.controls['btCode']?.enable();
+      this.btForm.patchValue({
+        amount: this.totalIncomeTaxAmountSelected
+      });
+    }
+
+    const onlyNumberPattern = '^[0-9]*$';
+    if (+this.billType === 10) {
+      dcDetails.get('vch_dt')?.setValidators(null);
+      dcDetails.get('vch_no')?.setValidators(null);
+    } else if (+this.billType === 6) {
+      dcDetails.get('vch_dt')?.setValidators([Validators.required]);
+      dcDetails.get('vch_no')?.setValidators([Validators.required, Validators.pattern(onlyNumberPattern)]);
+    }
+    dcDetails.get('vch_dt')?.updateValueAndValidity();
+    dcDetails.get('vch_no')?.updateValueAndValidity();
   }
 
   onBTCodeChange(btCode: string): void {

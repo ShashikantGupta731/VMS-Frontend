@@ -3,59 +3,72 @@
     <h1 class="h4 fw-bold mb-0">Billing & Vouchers Dashboard</h1>
   </div>
 
-  <!-- Stats Cards -->
-  <div class="row g-4 mb-4">
-    <div class="col-md-4">
-      <app-card class="h-100">
-        <div class="d-flex align-items-center">
-          <div class="stats-icon bg-warning-subtle text-warning me-3">
-            <i class="pi pi-clock fs-4"></i>
-          </div>
-          <div>
-            <h6 class="text-muted mb-1">Pending Verification</h6>
-            <h3 class="fw-bold mb-0">{{ pendingCount() }}</h3>
-          </div>
+  <!-- Stats Cards (Clickable Filters) -->
+  <div class="row g-3 mb-4">
+
+    <!-- All Claims -->
+    <div class="col-md-3">
+      <div class="stat-card stat-card--primary filter-card" [class.active]="activeFilter() === 'all'"
+        (click)="activeFilter.set('all')">
+        <div class="stat-card__icon-wrap">
+          <i class="pi pi-list"></i>
         </div>
-      </app-card>
+        <div class="stat-card__content">
+          <span class="stat-card__label">All Claims</span>
+          <span class="stat-card__value">{{ totalCount() }}</span>
+        </div>
+      </div>
     </div>
-    <div class="col-md-4">
-      <app-card class="h-100">
-        <div class="d-flex align-items-center">
-          <div class="stats-icon bg-success-subtle text-success me-3">
-            <i class="pi pi-check-circle fs-4"></i>
-          </div>
-          <div>
-            <h6 class="text-muted mb-1">Total Verified Claims</h6>
-            <h3 class="fw-bold mb-0">{{ verifiedCount() }}</h3>
-          </div>
+
+    <!-- Pending Verification -->
+    <div class="col-md-3">
+      <div class="stat-card stat-card--warning filter-card" [class.active]="activeFilter() === BillStatus.Pending"
+        (click)="activeFilter.set(BillStatus.Pending)">
+        <div class="stat-card__icon-wrap">
+          <i class="pi pi-clock"></i>
         </div>
-      </app-card>
+        <div class="stat-card__content">
+          <span class="stat-card__label">Pending Verification</span>
+          <span class="stat-card__value">{{ pendingCount() }}</span>
+        </div>
+      </div>
     </div>
-    <div class="col-md-4">
-      <app-card class="h-100">
-        <div class="d-flex align-items-center">
-          <div class="stats-icon bg-danger-subtle text-danger me-3">
-            <i class="pi pi-times-circle fs-4"></i>
-          </div>
-          <div>
-            <h6 class="text-muted mb-1">Rejected Claims</h6>
-            <h3 class="fw-bold mb-0">{{ rejectedCount() }}</h3>
-          </div>
+
+    <!-- Verified Claims -->
+    <div class="col-md-3">
+      <div class="stat-card stat-card--success filter-card" [class.active]="activeFilter() === BillStatus.Verified"
+        (click)="activeFilter.set(BillStatus.Verified)">
+        <div class="stat-card__icon-wrap">
+          <i class="pi pi-check-circle"></i>
         </div>
-      </app-card>
+        <div class="stat-card__content">
+          <span class="stat-card__label">Verified Claims</span>
+          <span class="stat-card__value">{{ verifiedCount() }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rejected Claims -->
+    <div class="col-md-3">
+      <div class="stat-card stat-card--danger filter-card" [class.active]="activeFilter() === BillStatus.Rejected"
+        (click)="activeFilter.set(BillStatus.Rejected)">
+        <div class="stat-card__icon-wrap">
+          <i class="pi pi-times-circle"></i>
+        </div>
+        <div class="stat-card__content">
+          <span class="stat-card__label">Rejected Claims</span>
+          <span class="stat-card__value">{{ rejectedCount() }}</span>
+        </div>
+      </div>
     </div>
   </div>
 
   <!-- Recent Claims Table -->
   <app-card title="Recent Bill Claims">
     <div class="table-container mt-2">
-      <app-data-table
-        [columns]="tableColumns"
-        [data]="claimsResource.value() ?? []"
-        [actions]="tableActions"
+      <app-data-table [columns]="tableColumns" [data]="filteredClaims()" [actions]="tableActions"
         [isLoading]="claimsResource.isLoading()"
-        [emptyMessage]="'No claims found. Start by creating a new bill.'"
-      ></app-data-table>
+        [emptyMessage]="'No claims found. Start by creating a new bill.'"></app-data-table>
     </div>
   </app-card>
 </div>

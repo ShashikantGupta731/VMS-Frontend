@@ -49,6 +49,7 @@ export class AppDataTableComponent implements DoCheck {
   @Output() sort = new EventEmitter<{ column: string; direction: 'asc' | 'desc' }>();
   @Output() select = new EventEmitter<{ row: any; selected: boolean }>();
   @Output() selectAllChange = new EventEmitter<boolean>();
+  @Output() rowClick = new EventEmitter<any>();
 
   // For PrimeNG selection
   selectedRows: any[] = [];
@@ -81,6 +82,10 @@ export class AppDataTableComponent implements DoCheck {
 
   onRowUnselect(event: any): void {
     this.select.emit({ row: event.data, selected: false });
+  }
+
+  onRowClick(row: any): void {
+    this.rowClick.emit(row);
   }
 
   onHeaderCheckboxToggle(event: any): void {

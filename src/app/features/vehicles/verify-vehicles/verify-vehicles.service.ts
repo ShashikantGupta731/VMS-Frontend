@@ -38,6 +38,8 @@ export interface VerifyVehicle {
   vahanBodyType?: string;
   
   vehicleProofs?: any;
+  registrationCertificate?: string;
+  vehiclePhoto?: string;
 }
 
 @Injectable({
@@ -155,6 +157,8 @@ export class VerifyVehiclesService {
       vahanVehicleClass: v.vehicleType, // fallback
       vahanBodyType: v.vehicleType, // fallback
       vehicleProofs: v.registrationCertificate ? [{ path: v.registrationCertificate, name: 'Registration Certificate' }] : [],
+      registrationCertificate: v.registrationCertificate,
+      vehiclePhoto: v.vehiclePhoto,
       verificationStatus: 'pending'
     };
   }

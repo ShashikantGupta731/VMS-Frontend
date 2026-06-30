@@ -8,6 +8,10 @@ import { AppCardComponent } from '@shared/components/ui/app-card/card.component'
 import { AppButtonComponent } from '@shared/components/ui/app-button/button.component';
 import { AppDataTableComponent, TableColumn } from '@shared/components/ui/app-data-table/data-table.component';
 import { REPORT_CONFIGS, ReportConfig } from '../config/report.config';
+import { VehicleDetailsModalComponent } from '@shared/components/vehicle-details-modal/vehicle-details-modal.component';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 /** Search type options for Report 4 */
 const SEARCH_TYPE_OPTIONS = [
@@ -74,7 +78,7 @@ function getFYEnd(): string {
 @Component({
   selector: 'app-report-viewer',
   standalone: true,
-  imports: [CommonModule, FormsModule, AppCardComponent, AppButtonComponent, AppDataTableComponent],
+  imports: [CommonModule, FormsModule, AppCardComponent, AppButtonComponent, AppDataTableComponent, VehicleDetailsModalComponent],
   template: `
     <div class="dashboard-container">
       <app-card customClass="no-padding">
@@ -82,19 +86,21 @@ function getFYEnd(): string {
         <!-- ── Header ─────────────────────────────────────────────────────── -->
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pb-2 mb-4 border-bottom">
           <div>
-            <h1 class="fs-28 fw-bold text-dark mb-1">Vehicle Management System</h1>
-            <h2 class="fs-18 fw-semibold text-custom-primary m-0">{{ title() }}</h2>
+            <h1 class="fs-28 fw-bold text-dark mb-1">{{ title() }}</h1>
             <p class="text-muted small m-0">{{ subtitle() }}</p>
           </div>
-          <div class="mt-2 mt-md-0">
-            <app-btn label="Export CSV" (click)="exportData()" variant="dark-blue" size="sm"
-              icon="pi pi-download" [disabled]="data().length === 0">
-            </app-btn>
+          <div class="mt-2 mt-md-0 d-flex gap-2">
+            <button class="custom-export-btn" (click)="exportExcel()" [disabled]="data().length === 0">
+              <i class="pi pi-file-excel"></i> Export Excel
+            </button>
+            <button class="custom-export-btn" (click)="exportPdf()" [disabled]="data().length === 0">
+              <i class="pi pi-file-pdf"></i> Export PDF
+            </button>
           </div>
         </div>
 
         <!-- ── Dynamic Filters ────────────────────────────────────────────── -->
-        @if (config()) {
+        @if (config() && hasAnyFilter()) {
           <div class="row mb-4 align-items-end g-3 bg-light p-3 rounded mx-1">
             <h5 class="w-100 fs-16 mb-2 text-secondary border-bottom pb-1">Report Filters</h5>
 
@@ -277,11 +283,21 @@ function getFYEnd(): string {
             [data]="filteredData()"
             [isLoading]="isLoading()"
             [sortable]="true"
+            (rowClick)="handleRowClick($event)"
             emptyMessage="No data found for this report with the selected filters.">
           </app-data-table>
         </div>
 
       </app-card>
+
+      <!-- Vehicle Drill Down Modal -->
+      @if (showVehicleModal()) {
+        <app-vehicle-details-modal
+          [vehicleId]="selectedVehicleId()!"
+          [registrationNumber]="selectedVehicleRegistration()"
+          (close)="showVehicleModal.set(false)">
+        </app-vehicle-details-modal>
+      }
     </div>
   `,
   styleUrl: './report-viewer.component.scss'
@@ -295,6 +311,11 @@ export class ReportViewerComponent implements OnInit {
   data      = signal<any[]>([]);
   columns   = signal<string[]>([]);
   isLoading = signal<boolean>(false);
+
+  // Modal State
+  selectedVehicleId = signal<number | null>(null);
+  selectedVehicleRegistration = signal<string>('');
+  showVehicleModal = signal<boolean>(false);
 
   // Client-side table filter
   clientSearchTerm = signal<string>('');
@@ -494,6 +515,18 @@ export class ReportViewerComponent implements OnInit {
     }
   }
 
+  handleRowClick(row: any): void {
+    // Determine which field holds the vehicle ID. Usually it is id, vehicleId, or fuelMaintenanceIFMSId
+    const vId = row.vehicleId || row.id || row.fuelMaintenanceIFMSId;
+    const regNo = row.registrationNumber || row.registration_number || row.vehicleNumber || row.vehicle_number || '';
+
+    if (vId) {
+      this.selectedVehicleId.set(vId);
+      this.selectedVehicleRegistration.set(regNo);
+      this.showVehicleModal.set(true);
+    }
+  }
+
   // ── Generate Report ───────────────────────────────────────────────────────
   generateReport(): void {
     const activeConfig = this.config();
@@ -559,34 +592,64 @@ export class ReportViewerComponent implements OnInit {
     });
   }
 
-  // ── Export CSV ────────────────────────────────────────────────────────────
-  exportData(): void {
-    const dataset = this.filteredData();   // already has SrNo injected
+  // ── Export PDF ────────────────────────────────────────────────────────────
+  exportPdf(): void {
+    const dataset = this.filteredData();
     if (!dataset || dataset.length === 0) return;
 
-    const cols    = this.tableColumns();   // includes Sr. No. column
+    const cols = this.tableColumns();
     const headers = cols.map(c => c.label);
-    let csv = headers.join(',') + '\n';
 
-    dataset.forEach(row => {
-      const rowData = cols.map(col => {
-        let cell = row[col.key] === null || row[col.key] === undefined
-          ? '' : String(row[col.key]);
-        if (cell.includes(',') || cell.includes('"') || cell.includes('\n')) {
-          cell = `"${cell.replace(/"/g, '""')}"`;
-        }
-        return cell;
-      });
-      csv += rowData.join(',') + '\n';
+    const doc = new jsPDF('landscape');
+    
+    // Add title
+    doc.setFontSize(16);
+    doc.text(this.title(), 14, 15);
+    
+    // Add subtitle if exists
+    if (this.subtitle()) {
+      doc.setFontSize(11);
+      doc.setTextColor(100);
+      doc.text(this.subtitle(), 14, 22);
+    }
+
+    const bodyData = dataset.map(row => 
+      cols.map(col => {
+        let cell = row[col.key];
+        return cell === null || cell === undefined ? '' : String(cell);
+      })
+    );
+
+    autoTable(doc, {
+      head: [headers],
+      body: bodyData,
+      startY: this.subtitle() ? 28 : 22,
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [4, 30, 73] } // Dark blue header
     });
 
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url  = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', `${this.title().replace(/\s+/g, '_')}_Export.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const fileName = `${this.title().replace(/\s+/g, '_')}_Export.pdf`;
+    doc.save(fileName);
+  }
+
+  // ── Export Excel ──────────────────────────────────────────────────────────
+  exportExcel(): void {
+    const dataset = this.filteredData();
+    if (!dataset || dataset.length === 0) return;
+
+    const cols = this.tableColumns();
+    
+    const excelData = dataset.map(row => {
+      const newRow: any = {};
+      cols.forEach(col => {
+        newRow[col.label] = row[col.key] === null || row[col.key] === undefined ? '' : row[col.key];
+      });
+      return newRow;
+    });
+
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(excelData);
+    const workbook: XLSX.WorkBook = { Sheets: { 'Report': worksheet }, SheetNames: ['Report'] };
+    
+    XLSX.writeFile(workbook, `${this.title().replace(/\s+/g, '_')}_Export.xlsx`);
   }
 }

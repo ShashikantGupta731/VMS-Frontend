@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { Login } from '@features/auth/login/login';
 import { Signup } from '@features/auth/signup/signup';
-import { Dashboard } from '@features/vehicles/dashboard/dashboard';
+import { VehicleDashboard } from '@features/vehicles/vehicle-dashboard/vehicle-dashboard';
 import { AddVehicleComponent } from '@features/vehicles/add-vehicle/add-vehicle.component';
 import { TransferVehicleComponent } from '@features/vehicles/transfer-vehicle/transfer-vehicle.component';
 import { IfmsClaimsComponent } from '@features/ifms-integration/ifms-claims/ifms-claims.component';
@@ -37,6 +37,7 @@ import { authGuard } from './core/guards/auth-guard';
 import { roleGuard } from './core/guards/role-guard';
 import { AppRole } from './core/config/roles.enum';
 import { HomeRedirectComponent } from '@features/home/home-redirect/home-redirect.component';
+import { MasterDashboardComponent } from '@features/dashboard/master-dashboard/master-dashboard.component';
 import { UserListComponent } from '@features/users/user-list/user-list.component';
 import { UserFormComponent } from '@features/users/user-form/user-form.component';
 import { UserActivityLogComponent } from '@features/users/user-activity-log/user-activity-log.component';
@@ -58,25 +59,32 @@ export const routes: Routes = [
   { path: '', component: HomeRedirectComponent },
   { path: 'login', component: Login },
   { path: 'signup', component: Signup },
+  {
+    path: 'auth/forgot-password',
+    loadComponent: () => import('@features/auth/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent)
+  },
 
   {
     path: '',
     component: MainLayout,
     canActivate: [authGuard],
     children: [
+      // Master Dashboard
+      { path: 'dashboard', component: MasterDashboardComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator, AppRole.DeputyCommissioner, AppRole.FD, AppRole.SEC, AppRole.RevenueOfficer])] },
+
       // Dashboard & Vehicles
-      { path: 'vehicle', component: Dashboard, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator, AppRole.HOD, AppRole.DeputyCommissioner, AppRole.FD, AppRole.SEC, AppRole.RevenueOfficer])] },
+      { path: 'vehicle', component: VehicleDashboard, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator, AppRole.DeputyCommissioner, AppRole.FD, AppRole.SEC, AppRole.RevenueOfficer])] },
       { path: 'vehicles/add', component: AddVehicleComponent, canActivate: [roleGuard([AppRole.DDO])] },
       { path: 'vehicles/edit/:id', component: AddVehicleComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator])] },
       { path: 'vehicles/transfer/:id', component: TransferVehicleComponent, canActivate: [roleGuard([AppRole.DDO])] },
       { path: 'verify-vehicles', component: VerifyVehiclesComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator])] },
-      { path: 'vehicle-details', component: VehicleDetailsComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator, AppRole.HOD, AppRole.DeputyCommissioner])] },
+      { path: 'vehicle-details', component: VehicleDetailsComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator, AppRole.DeputyCommissioner])] },
       { path: 'vehicles/edit-driver/:id', loadComponent: () => import('./features/vehicles/edit-driver-details/edit-driver-details.component').then(m => m.EditDriverDetailsComponent), canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator])] },
       { path: 'vehicle/update-vehicle-details', component: UpdateVehicleDetailsComponent, canActivate: [roleGuard([AppRole.Administrator])] },
-      { path: 'unverified-vehicles', component: UnverifiedVehiclesComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator, AppRole.HOD, AppRole.DeputyCommissioner])] },
+      { path: 'unverified-vehicles', component: UnverifiedVehiclesComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator, AppRole.DeputyCommissioner])] },
       { path: 'vehicles/condemned/mark-condemned', component: MarkCondemnedComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator, AppRole.FD])] },
       { path: 'vehicles/condemned/deposit', component: CondemnedDepositComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator, AppRole.FD])] },
-      { path: 'vehicles/condemned/fd-approval', component: FdApprovalComponent, canActivate: [roleGuard([AppRole.FD])] },
+      { path: 'vehicles/condemned/fd-approval', component: FdApprovalComponent, canActivate: [roleGuard([AppRole.FD, AppRole.SEC])] },
 
       // Admin specific legacy paths
       { path: 'odometer-correction', component: OdometerCorrectionComponent, canActivate: [roleGuard([AppRole.Administrator])] },
@@ -131,7 +139,7 @@ export const routes: Routes = [
       { path: 'master/project', component: ViewProjectsComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator, AppRole.HOD, AppRole.DeputyCommissioner])] },
       { path: 'master/project/add', component: AddProjectComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator])] },
       { path: 'master/project/edit/:id', component: AddProjectComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator])] },
-      { path: 'models', component: ModelsComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator])] },
+      { path: 'models', component: ModelsComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator, AppRole.HOD, AppRole.DeputyCommissioner])] },
       { path: 'designations', component: DesignationsComponent, canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator])] },
       { path: 'master/secretaries', loadComponent: () => import('./features/masters/secretaries/secretaries-list/secretaries-list').then(m => m.SecretariesListComponent), canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator, AppRole.HOD, AppRole.DeputyCommissioner])] },
       { path: 'master/secretaries/add', loadComponent: () => import('./features/masters/secretaries/add-secretary/add-secretary').then(m => m.AddSecretaryComponent), canActivate: [roleGuard([AppRole.DDO, AppRole.Administrator])] },

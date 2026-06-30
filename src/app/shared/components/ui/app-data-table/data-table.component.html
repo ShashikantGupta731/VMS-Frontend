@@ -38,7 +38,11 @@
             [style.text-align]="col.textAlign || 'left'"
           >
             <div class="d-flex align-items-center">
-              <span>{{ col.label }}</span>
+              @if (col.allowHtml) {
+                <span [innerHTML]="col.label"></span>
+              } @else {
+                <span>{{ col.label }}</span>
+              }
               @if (col.sortable && sortable) {
                 <p-sortIcon [field]="col.key"></p-sortIcon>
               }
@@ -53,7 +57,7 @@
 
     <!-- Body Template -->
     <ng-template pTemplate="body" let-rowData>
-      <tr [class]="getRowClass(rowData)">
+      <tr [class]="getRowClass(rowData)" (click)="onRowClick(rowData)" style="cursor: pointer;">
         @if (selectable) {
           <td class="checkbox-column">
             <p-tableCheckbox [value]="rowData" [disabled]="isRowDisabled(rowData)"></p-tableCheckbox>

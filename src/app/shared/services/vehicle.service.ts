@@ -35,6 +35,12 @@ export class VehicleService {
     );
   }
 
+  getVehiclesByNumber(vehicleNumber: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/by-number/${vehicleNumber}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   getVehicleById(id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
       catchError(this.handleError)

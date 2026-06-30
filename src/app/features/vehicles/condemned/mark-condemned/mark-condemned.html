@@ -16,37 +16,21 @@
     </div>
 
     <form [formGroup]="replacementForm" (ngSubmit)="onSubmit()" class="pt-0">
-      
+
       <p class="fw-bold mb-4 text-dark">PB11BU6810, PB65H9107, PB65H9056, PB65AA8319,</p>
 
       <div class="row g-4 mb-4">
         <div class="col-md-4">
-          <app-input
-            label="New Vehicle Registration No."
-            type="text"
-            formControlName="newVehicleRegNo"
-            placeholder="Search Vehicle Number..."
-            width="100%"
-          ></app-input>
+          <app-input label="New Vehicle Registration No." type="text" formControlName="newVehicleRegNo"
+            placeholder="Search Vehicle Number..." width="100%"></app-input>
         </div>
         <div class="col-md-4">
-          <app-input
-            label="New Vehicle Chassis No."
-            type="text"
-            formControlName="newVehicleChassisNo"
-            placeholder="New Vehicle Chassis No."
-            width="100%"
-            [disabled]="true"
-          ></app-input>
+          <app-input label="New Vehicle Chassis No." type="text" formControlName="newVehicleChassisNo"
+            placeholder="New Vehicle Chassis No." width="100%" [disabled]="true"></app-input>
         </div>
         <div class="col-md-4">
-          <app-input
-            label="Upload FD Approval (.jpg/.jpeg/.png/.pdf)"
-            type="file"
-            accept=".jpg,.jpeg,.png,.pdf"
-            (change)="onFileChange($event)"
-            width="100%"
-          ></app-input>
+          <app-input label="Upload FD Approval (.jpg/.jpeg/.png/.pdf)" type="file" accept=".jpg,.jpeg,.png,.pdf"
+            (change)="onFileChange($event)" width="100%"></app-input>
         </div>
       </div>
 
@@ -54,23 +38,12 @@
         <h6 class="text-dark-blue fw-bold mb-3">Condemned Vehicle Registration No. -</h6>
         <div class="row g-4">
           <div class="col-md-4">
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Condemned Vehicle Registration No.</label>
-              <select class="form-select form-control" formControlName="condemnedVehicleRegNo" (change)="onCondemnedVehicleChange()">
-                <option value="">Select</option>
-                <option *ngFor="let v of markedVehicles" [value]="v.registrationNumber">{{ v.registrationNumber }}</option>
-              </select>
-            </div>
+            <app-input label="Condemned Vehicle Registration No." type="select" formControlName="condemnedVehicleRegNo"
+              [options]="condemnedVehicleOptions" (change)="onCondemnedVehicleChange()" width="100%"></app-input>
           </div>
           <div class="col-md-4">
-            <app-input
-              label="Condemned Vehicle Chassis No."
-              type="text"
-              formControlName="condemnedVehicleChassisNo"
-              placeholder="CONDEMNED VEHICLE ENGINE CHASSIS NO."
-              width="100%"
-              [disabled]="true"
-            ></app-input>
+            <app-input label="Condemned Vehicle Chassis No." type="text" formControlName="condemnedVehicleChassisNo"
+              placeholder="CONDEMNED VEHICLE ENGINE CHASSIS NO." width="100%" [disabled]="true"></app-input>
           </div>
         </div>
       </div>

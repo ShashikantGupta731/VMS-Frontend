@@ -14,7 +14,21 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-add-fill-fuel',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule, AppInputComponent, AppButtonComponent, AppCardComponent],
-  templateUrl: './add-fill-fuel.component.html'
+  templateUrl: './add-fill-fuel.component.html',
+  styles: [`
+    ::ng-deep .search-vehicle-btn {
+      background-color: #d3e3fd !important;
+      color: #000 !important;
+      border: none !important;
+      height: 40px !important;
+      display: flex !important;
+      align-items: center !important;
+      margin-bottom: 2px !important;
+    }
+    ::ng-deep .search-vehicle-btn:hover {
+      background-color: #b9d0f9 !important;
+    }
+  `]
 })
 export class AddFillFuelComponent implements OnInit {
   private fb = inject(FormBuilder);
@@ -44,19 +58,40 @@ export class AddFillFuelComponent implements OnInit {
       vehicleNumber: ['', [Validators.required]],
       ddoCode: ['PPO-DEFAULT', [Validators.required]],
       inventoryType: ['', [Validators.required]],
+      availableFuel: [{ value: '', disabled: true }],
       litres: [null, [Validators.required, Validators.min(0.1)]],
-      amount: [null, [Validators.required, Validators.min(1)]],
+      amount: [0], // Defaulted to 0 as legacy doesn't ask for it
       dateOfAllowance: ['', [Validators.required]]
     });
 
     // Auto-calculate amount or validate limits when inventory/litres change
     this.form.get('inventoryType')?.valueChanges.subscribe(val => {
+      this.updateAvailableFuel(val);
       this.validateStockLimits();
     });
 
     this.form.get('litres')?.valueChanges.subscribe(val => {
       this.validateStockLimits();
     });
+  }
+
+  updateAvailableFuel(type: string): void {
+    if (!this.stockAmounts || !type) {
+      this.form.get('availableFuel')?.setValue('');
+      return;
+    }
+    
+    let available = 0;
+    switch (type) {
+      case 'Petrol': available = this.stockAmounts.petrol; break;
+      case 'Diesel': available = this.stockAmounts.diesel; break;
+      case 'Mobil Oil': available = this.stockAmounts.mobilOil; break;
+      case 'Engine Oil': available = this.stockAmounts.engineOil; break;
+      case 'Gear Oil': available = this.stockAmounts.gearOil; break;
+      case 'Break Oil': available = this.stockAmounts.breakOil; break;
+    }
+    
+    this.form.get('availableFuel')?.setValue(available);
   }
 
   fetchStock(): void {

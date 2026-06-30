@@ -40,273 +40,42 @@
       </div>
     </div>
 
-    <!-- ─── Section 1: Vehicle Overview ─────────────────────────────────────── -->
+    <!-- ─── Detailed Reports Accordion ─────────────────────────────────────── -->
     <h4 class="fw-bold mb-4">Detailed Reports</h4>
-    <div class="row g-4 mb-5">
-      <div class="col-12"><h5 class="text-secondary border-bottom pb-2">Vehicle Overview</h5></div>
-
-      <!-- 1. Department Wise -->
-      <div class="col-md-6 col-lg-3">
-        <div class="report-card-wrapper card-blue clickable" [routerLink]="'/reports/view/1-department-wise'">
-          <div class="report-icon-box"><i class="fas fa-building"></i></div>
-          <div class="report-content">
-            <span class="report-title">Vehicles - Department Wise</span>
-            <span class="report-desc">Aggregate vehicle status counts per department.</span>
+    
+    <div class="accordion" id="reportsAccordion">
+      @for (category of reportCategories(); track category.title; let i = $index) {
+        <div class="accordion-item mb-3 border rounded shadow-sm overflow-hidden">
+          <h2 class="accordion-header" [id]="'heading' + i">
+            <button 
+              class="accordion-button fs-16 fw-semibold bg-light text-dark" 
+              [ngClass]="{ 'collapsed': !category.isOpen }"
+              type="button" 
+              (click)="toggleCategory(i)"
+              [attr.aria-expanded]="category.isOpen" 
+              [attr.aria-controls]="'collapse' + i">
+              {{ category.title }}
+              <span class="badge bg-secondary ms-3 rounded-pill">{{ category.reports.length }} Reports</span>
+            </button>
+          </h2>
+          <div 
+            [id]="'collapse' + i" 
+            class="accordion-collapse collapse" 
+            [ngClass]="{ 'show': category.isOpen }"
+            [attr.aria-labelledby]="'heading' + i">
+            
+            <div class="accordion-body p-3">
+              <!-- Using the re-usable AppDataTableComponent just like in Officers -->
+              <app-data-table 
+                [columns]="tableColumns" 
+                [data]="category.reports" 
+                [actions]="tableActions"
+                emptyMessage="No reports found.">
+              </app-data-table>
+            </div>
           </div>
         </div>
-      </div>
-
-      <!-- 2. GRN Details -->
-      <div class="col-md-6 col-lg-3">
-        <div class="report-card-wrapper card-amber clickable" [routerLink]="'/reports/view/2-grn-details'">
-          <div class="report-icon-box"><i class="fas fa-file-invoice"></i></div>
-          <div class="report-content">
-            <span class="report-title">Vehicles - GRN Details</span>
-            <span class="report-desc">Detailed GRN records and amounts for vehicles.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 3. Designation Wise Fuel Limit -->
-      <div class="col-md-6 col-lg-3">
-        <div class="report-card-wrapper card-teal clickable" [routerLink]="'/reports/view/3-designation-fuel-limit'">
-          <div class="report-icon-box"><i class="fas fa-clipboard-list"></i></div>
-          <div class="report-content">
-            <span class="report-title">Designation Wise Fuel Limit</span>
-            <span class="report-desc">Approved fuel/maintenance limits per designation.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 4. Search by Vehicle No/Officer/Designation -->
-      <div class="col-md-6 col-lg-3">
-        <div class="report-card-wrapper card-grey clickable" [routerLink]="'/reports/view/4-search-vehicle'">
-          <div class="report-icon-box"><i class="fas fa-search"></i></div>
-          <div class="report-content">
-            <span class="report-title">Search by Vehicle No./Officer</span>
-            <span class="report-desc">Search for specific vehicles across dimensions.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 5. Search by Manufacturer/Model -->
-      <div class="col-md-6 col-lg-3">
-        <div class="report-card-wrapper card-red clickable" [routerLink]="'/reports/view/5-search-manufacturer'">
-          <div class="report-icon-box"><i class="fas fa-car-side"></i></div>
-          <div class="report-content">
-            <span class="report-title">Search by Manufacturer/Model</span>
-            <span class="report-desc">Search for vehicles by specific manufacturers.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 6. Model Category Wise -->
-      <div class="col-md-6 col-lg-3">
-        <div class="report-card-wrapper card-blue clickable" [routerLink]="'/reports/view/6-model-category-wise'">
-          <div class="report-icon-box"><i class="fas fa-layer-group"></i></div>
-          <div class="report-content">
-            <span class="report-title">Vehicles - Model Category Wise</span>
-            <span class="report-desc">Count of vehicles grouped by manufacturer and model.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 7. Allocation Type Wise -->
-      <div class="col-md-6 col-lg-3">
-        <div class="report-card-wrapper card-teal clickable" [routerLink]="'/reports/view/7-allocation-type-wise'">
-          <div class="report-icon-box"><i class="fas fa-chart-pie"></i></div>
-          <div class="report-content">
-            <span class="report-title">Vehicles - Allocation Type Wise</span>
-            <span class="report-desc">Distribution of vehicles by Earmarked/Pooled.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 8. Enrolled & Verified -->
-      <div class="col-md-6 col-lg-3">
-        <div class="report-card-wrapper card-grey clickable" [routerLink]="'/reports/view/8-enrolled-verified'">
-          <div class="report-icon-box"><i class="fas fa-user-shield"></i></div>
-          <div class="report-content">
-            <span class="report-title">Vehicles - Enrolled &amp; Verified</span>
-            <span class="report-desc">List of vehicles that are enrolled and verified.</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ─── Section 2: Compliance & Financials ──────────────────────────────── -->
-    <div class="row g-4 mb-5">
-      <div class="col-12"><h5 class="text-secondary border-bottom pb-2">Compliance &amp; Financials</h5></div>
-
-      <!-- 9. Unverified -->
-      <div class="col-md-6 col-lg-3">
-        <div class="report-card-wrapper card-red clickable" [routerLink]="'/reports/view/9-unverified'">
-          <div class="report-icon-box"><i class="fas fa-user-times"></i></div>
-          <div class="report-content">
-            <span class="report-title">Vehicles - Unverified</span>
-            <span class="report-desc">Audit of vehicles pending verification.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 10. Not In Use / Condemned -->
-      <div class="col-md-6 col-lg-3">
-        <div class="report-card-wrapper card-amber clickable" [routerLink]="'/reports/view/10-not-in-use-condemned'">
-          <div class="report-icon-box"><i class="fas fa-ban"></i></div>
-          <div class="report-content">
-            <span class="report-title">Vehicles - Not In Use / Condemned</span>
-            <span class="report-desc">List of vehicles not in use or condemned.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 11. Bills Submitted - Voucher Type Wise -->
-      <div class="col-md-6 col-lg-3">
-        <div class="report-card-wrapper card-blue clickable" [routerLink]="'/reports/view/11-voucher-type-wise'">
-          <div class="report-icon-box"><i class="fas fa-receipt"></i></div>
-          <div class="report-content">
-            <span class="report-title">Bills Submitted - Voucher Type Wise</span>
-            <span class="report-desc">Consolidated view of financial vouchers submitted.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 12. Expenditure - Financial Year Wise -->
-      <div class="col-md-6 col-lg-3">
-        <div class="report-card-wrapper card-teal clickable" [routerLink]="'/reports/view/12-expenditure-fy'">
-          <div class="report-icon-box"><i class="fas fa-calendar-alt"></i></div>
-          <div class="report-content">
-            <span class="report-title">Expenditure - Financial Year Wise</span>
-            <span class="report-desc">Month-by-month financial year comparison.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 23. Allocation Wise Billing -->
-      <div class="col-md-6 col-lg-3">
-        <div class="report-card-wrapper card-blue clickable" [routerLink]="'/reports/view/23-allocation-wise-billing'">
-          <div class="report-icon-box"><i class="fas fa-money-bill-wave"></i></div>
-          <div class="report-content">
-            <span class="report-title">No. of Bills &amp; Amount - Allocation Type</span>
-            <span class="report-desc">Consolidated billing grouped by allocation type.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 13. Fuel Limit Exceeded -->
-      <div class="col-md-6 col-lg-4">
-        <div class="report-card-wrapper card-red clickable" [routerLink]="'/reports/view/13-fuel-limit-exceeded'">
-          <div class="report-icon-box"><i class="fas fa-gas-pump"></i></div>
-          <div class="report-content">
-            <span class="report-title">Vehicles Exceeded Fuel Limits</span>
-            <span class="report-desc">Vehicles exceeding their allotted fuel limits.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 14. Not Posting POL -->
-      <div class="col-md-6 col-lg-4">
-        <div class="report-card-wrapper card-amber clickable" [routerLink]="'/reports/view/14-not-posting-pol'">
-          <div class="report-icon-box"><i class="fas fa-times-circle"></i></div>
-          <div class="report-content">
-            <span class="report-title">Vehicles Not Posting Bills Under POL</span>
-            <span class="report-desc">Active vehicles missing recent fuel entries.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 15. Incorrect Odometer -->
-      <div class="col-md-6 col-lg-4">
-        <div class="report-card-wrapper card-grey clickable" [routerLink]="'/reports/view/15-incorrect-odometer'">
-          <div class="report-icon-box"><i class="fas fa-tachometer-alt"></i></div>
-          <div class="report-content">
-            <span class="report-title">Incorrect Odometer Reading/Bill Date</span>
-            <span class="report-desc">Vehicles with potential reading discrepancies.</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ─── Section 3: Administrative & Geographical ─────────────────────────── -->
-    <div class="row g-4">
-      <div class="col-12"><h5 class="text-secondary border-bottom pb-2">Administrative &amp; Geographical</h5></div>
-
-      <!-- 16. Officers with Multiple Vehicles -->
-      <div class="col-md-6 col-lg-4">
-        <div class="report-card-wrapper card-blue clickable" [routerLink]="'/reports/view/16-officer-multiple-vehicles'">
-          <div class="report-icon-box"><i class="fas fa-user-plus"></i></div>
-          <div class="report-content">
-            <span class="report-title">Officers Having Multiple Vehicles</span>
-            <span class="report-desc">Audit of personnel assigned more than one vehicle.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 17. DDOs Not Mapped -->
-      <div class="col-md-6 col-lg-4">
-        <div class="report-card-wrapper card-red clickable" [routerLink]="'/reports/view/17-ddos-not-mapped'">
-          <div class="report-icon-box"><i class="fas fa-sitemap"></i></div>
-          <div class="report-content">
-            <span class="report-title">DDOs Not Mapped To Any Nodal Officer</span>
-            <span class="report-desc">DDOs missing nodal officer mappings.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 18. Tehsils Not Provided -->
-      <div class="col-md-6 col-lg-4">
-        <div class="report-card-wrapper card-amber clickable" [routerLink]="'/reports/view/18-tehsils-not-provided'">
-          <div class="report-icon-box"><i class="fas fa-map-marker-alt"></i></div>
-          <div class="report-content">
-            <span class="report-title">Tehsils Not Provided Vehicle Data</span>
-            <span class="report-desc">Administrative regions without any assigned vehicles.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 19. District Wise -->
-      <div class="col-md-6 col-lg-3">
-        <div class="report-card-wrapper card-teal clickable" [routerLink]="'/reports/view/19-district-wise'">
-          <div class="report-icon-box"><i class="fas fa-map"></i></div>
-          <div class="report-content">
-            <span class="report-title">Vehicles - District Wise</span>
-            <span class="report-desc">Total vehicle counts per district.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 20. Office Wise -->
-      <div class="col-md-6 col-lg-3">
-        <div class="report-card-wrapper card-grey clickable" [routerLink]="'/reports/view/20-office-wise'">
-          <div class="report-icon-box"><i class="fas fa-briefcase"></i></div>
-          <div class="report-content">
-            <span class="report-title">Vehicles - Office Wise</span>
-            <span class="report-desc">Total vehicle counts per office.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 21. Designation Wise -->
-      <div class="col-md-6 col-lg-3">
-        <div class="report-card-wrapper card-blue clickable" [routerLink]="'/reports/view/21-designation-wise'">
-          <div class="report-icon-box"><i class="fas fa-id-badge"></i></div>
-          <div class="report-content">
-            <span class="report-title">Vehicles - Designation Wise</span>
-            <span class="report-desc">Total vehicle counts per designation.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 22. Condemned -->
-      <div class="col-md-6 col-lg-3">
-        <div class="report-card-wrapper card-red clickable" [routerLink]="'/reports/view/22-condemned'">
-          <div class="report-icon-box"><i class="fas fa-trash-alt"></i></div>
-          <div class="report-content">
-            <span class="report-title">Vehicles - Condemned</span>
-            <span class="report-desc">List of vehicles strictly marked as condemned.</span>
-          </div>
-        </div>
-      </div>
+      }
     </div>
 
   </app-card>

@@ -59,4 +59,11 @@ export class UserService {
     params.append('pageSize', pageSize.toString());
     return this.http.get<any>(`${this.apiUrl}/error-logs?${params.toString()}`);
   }
+
+  resetPassword(id: number, newPassword: string): Observable<any> {
+    // Send newPassword as a raw string body, adding double quotes for JSON parsing
+    return this.http.post(`${this.apiUrl}/${id}/reset-password`, `"${newPassword}"`, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
 }

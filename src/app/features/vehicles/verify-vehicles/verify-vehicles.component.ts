@@ -11,6 +11,9 @@ import { ToastrService } from 'ngx-toastr';
 import { VehicleDetailsModalComponent } from '@shared/components/vehicle-details-modal/vehicle-details-modal.component';
 import { AuthService } from '@core/services/auth';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../../environments/environment';
+import { DialogModule } from 'primeng/dialog';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-verify-vehicles',
@@ -23,7 +26,8 @@ import { FormsModule } from '@angular/forms';
     AppButtonComponent,
     AppDataTableComponent,
     VehicleDetailsModalComponent,
-    AppPaginationComponent
+    AppPaginationComponent,
+    DialogModule
   ],
   templateUrl: './verify-vehicles.component.html',
   styleUrl: './verify-vehicles.component.scss'
@@ -33,6 +37,12 @@ export class VerifyVehiclesComponent {
   isDetailsModalVisible = false;
   selectedVehicleId: number | null = null;
   selectedVehicleRegNo = '';
+
+  // Document Viewer State
+  isDocumentViewerVisible = signal(false);
+  currentDocumentUrl = signal<SafeResourceUrl | null>(null);
+  currentDocumentType = signal<'pdf' | 'image'>('image');
+  imageZoomLevel = signal(1);
 
   statusOptions = [
     { value: 'pending' as const, label: 'Pending' },
@@ -104,7 +114,8 @@ export class VerifyVehiclesComponent {
   constructor(
     private verifyVehiclesService: VerifyVehiclesService,
     private toastr: ToastrService,
-    private authService: AuthService
+    private authService: AuthService,
+    private sanitizer: DomSanitizer
   ) {}
 
   get userRole(): string {
@@ -140,6 +151,43 @@ export class VerifyVehiclesComponent {
   viewObjection(vehicle: VerifyVehicle): void {
     console.log('View objection:', vehicle);
     // TODO: Implement view objection modal
+  }
+
+  viewDocument(path: string | undefined): void {
+    if (!path || path === 'N/A' || path === 'null') {
+      this.toastr.warning('Document is not available for this vehicle.');
+      return;
+    }
+
+    const isPdf = path.toLowerCase().endsWith('.pdf');
+    this.currentDocumentType.set(isPdf ? 'pdf' : 'image');
+    this.imageZoomLevel.set(1); // Reset zoom
+    
+    // If it's an absolute URL, use directly
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      this.currentDocumentUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(path));
+      this.isDocumentViewerVisible.set(true);
+      return;
+    }
+
+    // Otherwise, assume it's relative to the backend static files path
+    // Remove /api from the apiUrl to get the base domain (e.g. http://localhost:5261)
+    const baseUrl = environment.apiUrl.replace('/api', '');
+    const cleanPath = path.startsWith('/') ? path : '/' + path;
+    this.currentDocumentUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(baseUrl + cleanPath));
+    this.isDocumentViewerVisible.set(true);
+  }
+
+  zoomIn() {
+    this.imageZoomLevel.update(z => Math.min(z + 0.5, 5));
+  }
+
+  zoomOut() {
+    this.imageZoomLevel.update(z => Math.max(z - 0.5, 0.5));
+  }
+
+  zoomReset() {
+    this.imageZoomLevel.set(1);
   }
 
   getActionsForStatus(status: 'pending' | 'objection' | 'verified'): TableAction[] {

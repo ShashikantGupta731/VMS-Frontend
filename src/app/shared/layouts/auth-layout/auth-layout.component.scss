@@ -1,0 +1,645 @@
+/* ================================================================
+   AUTH LAYOUT - Floating Card Two-Column Layout
+   Matches: expected look.png - floating card with rounded corners,
+   road background, vehicles on road, footer spanning full width
+   ================================================================ */
+
+/* ---- Page Wrapper (outer gradient background) ---- */
+.auth-page-wrapper {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #a8e0c4 0%, #b8e8d2 30%, #c8eedb 60%, #b0e4ca 100%);
+  background-image: url('../../../../assets/login_background2.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 120%;
+  background-position: 20% 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow: hidden;
+}
+
+/* ---- Auth Card (floating, rounded) ---- */
+.auth-card {
+  width: 100%;
+  max-width: 1400px;
+  height: calc(100vh - 48px);
+  border-radius: 24px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.10), 0 2px 12px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  border: 2px solid #ffffff;
+}
+
+/* Card body holds left + right sections side by side */
+.auth-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* ================================================================
+   LEFT SECTION - Road background + branding + vehicles + icons
+   ================================================================ */
+.left-section {
+  flex: 0 0 62%;
+  max-width: 80%;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+
+  /* Road/city background fills entire left section */
+  background-image: url('../../../../assets/login_background2.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 130%;
+  background-position: 25% 80%;
+}
+
+/* VMS Logo - top-left inside card (image) */
+.vms-logo-top-left {
+  position: absolute;
+  top: -20px;
+  left: -15px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+
+  .vms-custom-logo {
+    height: 150px;
+    /* Adjust height as needed based on the aspect ratio of vms_logo4.png */
+    width: auto;
+    object-fit: contain;
+  }
+}
+
+/* Branding Header - National Emblem + VMS Title */
+.branding-header {
+  padding: 14px 40px 0 40px;
+  margin-top: 4px;
+  z-index: 5;
+  position: relative;
+
+  .national-emblem {
+    height: 65px;
+    width: auto;
+    object-fit: contain;
+    margin-bottom: 2px;
+  }
+
+  .gov-text {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    color: #334155;
+    margin: 2px 0 0 0;
+  }
+
+  .branding-underline {
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(to right, #1c7cd5, #1dc39a);
+    margin: 6px auto 8px;
+    border-radius: 2px;
+  }
+
+  .vms-main-title {
+    font-size: 42px;
+    font-weight: 900;
+    color: #0b2238;
+    margin: 0;
+    letter-spacing: 5px;
+    line-height: 1;
+    text-shadow: 0 2px 6px rgba(255, 255, 255, 0.6);
+  }
+
+  .vms-sub-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: #1dc39a;
+    margin: 2px 0 0 0;
+    letter-spacing: 1.5px;
+    line-height: 1.2;
+    text-shadow: 0 2px 6px rgba(255, 255, 255, 0.5);
+  }
+
+  .vms-slogan {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1e3a5f;
+    margin-top: 6px;
+    letter-spacing: 0.5px;
+    opacity: 0.85;
+  }
+}
+
+/* ================================================================
+   CIRCULAR INFOGRAPHIC SECTION
+   The circle overlaps the vehicle section below it using negative
+   margin-bottom so the vehicles peek up from behind.
+   ================================================================ */
+/* ================================================================
+   HORIZONTAL INFOGRAPHIC SECTION
+   ================================================================ */
+.features-horizontal-container {
+  position: relative;
+  width: 100%;
+  max-width: 700px;
+  margin: 40px auto -40px auto;
+  /* negative bottom margin creates overlap with vehicles */
+  padding: 0 40px;
+  z-index: 8;
+  display: flex;
+  justify-content: center;
+}
+
+.connecting-line-wrapper {
+  position: absolute;
+  top: 48px;
+  /* Aligns exactly with the vertical center of the colored hexagons */
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  z-index: 1;
+
+  .connecting-line {
+    width: 100%;
+    height: 100%;
+    /* Use a dashed border to mimic the dots and dashes in the image */
+    border-bottom: 2px dashed #93c5fd;
+    position: relative;
+
+    /* Small dots on the line */
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      top: -4px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #3b82f6;
+    }
+
+    &::before {
+      left: 25%;
+    }
+
+    &::after {
+      right: 25%;
+    }
+  }
+}
+
+.badges-wrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.feature-badge {
+  position: relative;
+  width: 120px;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Add subtle transition for hover effects */
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+  }
+}
+
+.badge-bg-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  /* This wrapper handles the drop shadow since clip-path cuts off shadows */
+  filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.08));
+}
+
+.badge-bg-white {
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+  /* Hexagon pointing top and bottom. Modified slightly for longer straight edges */
+  clip-path: polygon(50% 0%, 100% 15%, 100% 85%, 50% 100%, 0% 85%, 0% 15%);
+}
+
+.hexagon-icon {
+  position: relative;
+  z-index: 2;
+  margin-top: 10px;
+  width: 65px;
+  height: 75px;
+  /* Inner colored hexagon */
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+  font-size: 24px;
+
+  /* Rupee specific adjustments */
+  .rupee-icon {
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1;
+  }
+}
+
+/* Gradients for the icons */
+.color-blue {
+  background: linear-gradient(180deg, #60a5fa, #1d4ed8);
+}
+
+.color-teal {
+  background: linear-gradient(180deg, #2dd4bf, #0f766e);
+}
+
+.badge-text {
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #1e3a5f;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.5px;
+}
+
+/* Vehicle Image - sits at the bottom, overlapping behind the circle */
+.vehicles-image-wrapper {
+  flex: 1 1 auto;
+  width: 80%;
+  margin: 0 auto;
+  left: 2%;
+  top: 23%;
+  position: relative;
+  z-index: 6;
+  /* lower than circle (z-index 8) so circle overlaps on top */
+  display: flex;
+  align-items: flex-end;
+  min-height: 0;
+
+  .vehicles-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    object-position: bottom;
+  }
+}
+
+/* ================================================================
+   FOOTER BAR - Inside card, spanning full width at the bottom
+   ================================================================ */
+.card-footer-bar {
+  flex-shrink: 0;
+  height: 46px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  background: #f8fbff;
+  border-top: 1px solid #e8eef5;
+  border-radius: 0 0 24px 24px;
+
+  .footer-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+
+    i {
+      font-size: 14px;
+      color: #1c7cd5;
+    }
+  }
+}
+
+/* ================================================================
+   RIGHT SECTION - Clean white/light form panel
+   ================================================================ */
+.right-section {
+  flex: 0 0 38%;
+  max-width: 38%;
+  background: rgba(255, 255, 255, 0);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(16px);
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Dot pattern decoration - top right corner */
+.dot-pattern {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 90px;
+  height: 90px;
+  z-index: 1;
+  opacity: 0.35;
+  background-image: radial-gradient(circle, #94b8d8 1.5px, transparent 1.5px);
+  background-size: 10px 10px;
+}
+
+.right-section-content {
+  position: relative;
+  z-index: 2;
+  padding: 0;
+}
+
+/* ================================================================
+   FORM CONTENT AREA (projected from login component)
+   ================================================================ */
+.form-content {
+  padding: 16px 44px 20px;
+}
+
+/* Circular Avatar Header */
+.avatar-header-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 40px 4px;
+
+  .avatar-circle {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e8f0fc, #f0faf7);
+    border: 1.5px solid #dbeafe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.10);
+
+    i {
+      font-size: 30px;
+      color: #2563eb;
+    }
+  }
+
+  .welcome-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #0b2238;
+    margin: 0;
+  }
+
+  .welcome-subtitle {
+    font-size: 13px;
+    color: #64748b;
+    margin-top: 4px;
+    margin-bottom: 8px;
+  }
+
+  .accent-bar {
+    width: 40px;
+    height: 3px;
+    background: linear-gradient(to right, #1c7cd5, #1dc39a);
+    border-radius: 2px;
+  }
+}
+
+/* ================================================================
+   INPUT FIELDS
+   ================================================================ */
+.rounded-input-container {
+  position: relative;
+  margin-bottom: 12px;
+
+  i.input-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 15px;
+    transition: color 0.3s ease;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .form-control {
+    width: 100%;
+    height: 42px;
+    background: #f8fafc !important;
+    border: 1px solid #dde8f5 !important;
+    border-radius: 30px !important;
+    padding: 0 16px 0 44px !important;
+    color: #1e293b !important;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: none !important;
+    transition: all 0.3s ease;
+
+    &:focus {
+      outline: none;
+      background: #ffffff !important;
+      border-color: #3b82f6 !important;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12) !important;
+    }
+
+    &::placeholder {
+      color: #94a3b8 !important;
+      font-weight: 400;
+    }
+  }
+
+  .password-toggle-btn {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #94a3b8;
+    padding: 0;
+    transition: color 0.3s ease;
+    z-index: 3;
+
+    &:hover {
+      color: #1c7cd5;
+    }
+  }
+}
+
+/* ================================================================
+   GRADIENT LOGIN BUTTON
+   ================================================================ */
+.light-pill-btn {
+  background: linear-gradient(135deg, #1c7cd5, #1dc39a) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 50px !important;
+  height: 42px !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  letter-spacing: 1.5px !important;
+  box-shadow: 0 6px 20px rgba(28, 124, 213, 0.3) !important;
+  transition: all 0.3s ease;
+  width: 100% !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, #1569bc, #18ae87) !important;
+    box-shadow: 0 8px 24px rgba(28, 124, 213, 0.4) !important;
+    cursor: pointer;
+  }
+
+  &:active {
+    transform: translateY(1px);
+    box-shadow: 0 3px 8px rgba(28, 124, 213, 0.2) !important;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    transform: none;
+    box-shadow: none !important;
+  }
+}
+
+/* ================================================================
+   CONTINUE AS GUEST BUTTON
+   ================================================================ */
+.guest-btn {
+  background-color: #f1f5f9;
+  color: #1e293b;
+  border: 1px solid #e2e8f0;
+  border-radius: 30px;
+  height: 36px;
+  width: auto;
+  padding: 0 32px;
+  font-weight: 600;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.2s ease;
+
+  i {
+    font-size: 15px;
+    margin-right: 8px;
+    color: #475569;
+  }
+
+  &:hover {
+    background-color: #e2e8f0;
+    color: #0f172a;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+/* ================================================================
+   SEPARATOR (OR)
+   ================================================================ */
+.auth-separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 600;
+  margin: 10px 0;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #e9eef5;
+  }
+
+  span {
+    padding: 0 12px;
+  }
+}
+
+/* ================================================================
+   CUSTOM CHECKBOX
+   ================================================================ */
+.custom-check {
+  background-color: transparent !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 3px !important;
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
+}
+
+.custom-check:checked {
+  background-color: #1c7cd5 !important;
+  border-color: #1c7cd5 !important;
+}
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+@media (max-width: 992px) {
+  .auth-page-wrapper {
+    padding: 0;
+  }
+
+  .auth-card {
+    border-radius: 0;
+    height: 100vh;
+  }
+
+  .auth-card-body {
+    flex-direction: column;
+  }
+
+  .left-section {
+    display: none !important;
+  }
+
+  .right-section {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #cde9ff 0%, #f0faf7 100%);
+  }
+
+  .card-footer-bar {
+    border-radius: 0;
+  }
+}

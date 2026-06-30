@@ -9,16 +9,16 @@ export interface RoleRouteConfig {
 }
 
 export const ROLE_BASED_ROUTES: RoleRouteConfig[] = [
-  { role: 'DDO', redirectUrl: '/vehicle' },
-  { role: 'ADMN', redirectUrl: '/verify-vehicles' },
+  { role: 'DDO', redirectUrl: '/dashboard' },
+  { role: 'ADMN', redirectUrl: '/dashboard' },
   { role: 'NDOF', redirectUrl: '/claim-verification' },
-  { role: 'SEC', redirectUrl: '/vehicle' },
-  { role: 'HOD', redirectUrl: '/vehicle' },
-  { role: 'DCL', redirectUrl: '/vehicle' },
-  { role: 'FD', redirectUrl: '/vehicles/condemned/fd-approval' },
+  { role: 'SEC', redirectUrl: '/reports' },
+  { role: 'HOD', redirectUrl: '/user-management' },
+  { role: 'DCL', redirectUrl: '/dashboard' },
+  { role: 'FD', redirectUrl: '/dashboard' },
   { role: 'PPOF', redirectUrl: '/ppo' },
   { role: 'GUEST', redirectUrl: '/guest-report' },
-  { role: 'ROFC', redirectUrl: '/vehicle' }
+  { role: 'ROFC', redirectUrl: '/dashboard' }
 ];
 
 /**

@@ -13,6 +13,45 @@
 
   <div class="header-right">
     <span class="user-greeting" *ngIf="currentUser()">Hi, {{ currentUser()?.name }}</span>
+    
+    <!-- Notification Bell -->
+    <div class="notification-container" *ngIf="currentUser()">
+      <button class="notification-button" (click)="toggleNotification(); $event.stopPropagation()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+        <span class="notification-badge" *ngIf="notifications().length > 0">{{ notifications().length }}</span>
+      </button>
+      
+      <div class="dropdown-menu notification-menu" [class.open]="isNotificationOpen()">
+        <div class="notification-header">
+          <h6 style="margin: 0; font-size: 0.95rem; font-weight: 600; color: #1e293b;">Notifications</h6>
+        </div>
+        
+        <div class="notification-list" *ngIf="notifications().length > 0">
+          <a *ngFor="let notification of notifications()" [routerLink]="notification.route" class="notification-item" (click)="isNotificationOpen.set(false)" style="text-decoration: none; color: inherit;">
+            <div class="notification-icon" style="background-color: rgba(255, 193, 7, 0.15); color: #b48600; padding: 10px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+            </div>
+            <div class="notification-content">
+              <p class="notification-title" style="margin: 0; font-size: 0.85rem; font-weight: 600; color: #334155;">Action Required</p>
+              <p class="notification-desc" style="margin: 0; font-size: 0.8rem; color: #64748b;">You have <strong>{{ notification.count }}</strong> pending {{ notification.type }}.</p>
+            </div>
+          </a>
+        </div>
+        
+        <div class="notification-empty" *ngIf="notifications().length === 0" style="padding: 2rem 1rem; text-align: center;">
+          <p style="margin: 0; color: #94a3b8; font-size: 0.85rem;">No new notifications</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Profile -->
     <div class="user-profile" *ngIf="currentUser()">
       <button class="profile-button" (click)="toggleDropdown(); $event.stopPropagation()">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"

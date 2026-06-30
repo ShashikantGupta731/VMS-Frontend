@@ -1,0 +1,121 @@
+<div class="dashboard-container">
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading()" class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
+    <app-loading-spinner text="Loading Dashboard..."></app-loading-spinner>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error()" class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+    <i class="pi pi-exclamation-triangle me-2 fs-4"></i>
+    <div>
+      <h5 class="alert-heading mb-1">Failed to load dashboard</h5>
+      <p class="mb-0">{{ error() }}</p>
+      <button class="btn btn-sm btn-outline-danger mt-2" (click)="ngOnInit()">Try Again</button>
+    </div>
+  </div>
+
+  <ng-container *ngIf="!isLoading() && !error() && summaryData()">
+
+    <!-- Welcome Banner -->
+    <div class="welcome-banner mb-4">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+          <h2 class="welcome-title">Welcome back, {{ currentUser()?.name || 'User' }}!</h2>
+          <p class="welcome-subtitle text-muted mb-0">
+            <span class="badge bg-primary-subtle text-primary me-2">{{ userRole() }}</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- Stats Cards Row (Role Dependent) -->
+    <div class="row g-4 mb-4">
+
+      <!-- VEHICLE STATS (For almost all roles) -->
+      <ng-container *ngIf="userRole() !== AppRole.NDOF">
+        <div class="col-12 col-sm-6 col-xl-3">
+          <app-dashboard-stats-card title="Total Vehicles" [value]="summaryData()!.vehicleSummary.totalVehicles"
+            icon="pi pi-car" variant="primary" route="/vehicle">
+          </app-dashboard-stats-card>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3" *ngIf="userRole() === AppRole.Administrator">
+          <app-dashboard-stats-card title="Pending Verification"
+            [value]="summaryData()!.vehicleSummary.unverifiedVehicles" icon="pi pi-clock" variant="warning"
+            route="/verify-vehicles">
+          </app-dashboard-stats-card>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3"
+          *ngIf="userRole() === AppRole.DDO || userRole() === AppRole.Administrator">
+          <app-dashboard-stats-card title="Verified Vehicles" [value]="summaryData()!.vehicleSummary.verifiedVehicles"
+            icon="pi pi-check-circle" variant="success">
+          </app-dashboard-stats-card>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3"
+          *ngIf="userRole() === AppRole.FD || userRole() === AppRole.DDO || userRole() === AppRole.Administrator">
+          <app-dashboard-stats-card title="Condemned Vehicles" [value]="summaryData()!.vehicleSummary.condemnedVehicles"
+            icon="pi pi-ban" variant="danger" route="/vehicles/condemned/deposit">
+          </app-dashboard-stats-card>
+        </div>
+      </ng-container>
+
+      <!-- BILLING STATS (DDO, NDOF) -->
+      <ng-container *ngIf="userRole() === AppRole.DDO || userRole() === AppRole.NDOF">
+        <div class="col-12 col-sm-6 col-xl-3" *ngIf="userRole() === AppRole.NDOF">
+          <app-dashboard-stats-card title="Pending Claims"
+            [value]="summaryData()!.billingSummary.pendingClaimVerifications" icon="pi pi-file-edit" variant="warning"
+            route="/claim-verification">
+          </app-dashboard-stats-card>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3" *ngIf="userRole() === AppRole.DDO">
+          <app-dashboard-stats-card title="Pending Bills" [value]="summaryData()!.billingSummary.pendingBills"
+            icon="pi pi-receipt" variant="warning" route="/bill-voucher">
+          </app-dashboard-stats-card>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3" *ngIf="userRole() === AppRole.DDO">
+          <app-dashboard-stats-card title="Ready for IFMS" [value]="summaryData()!.billingSummary.billsReadyForIfms"
+            icon="pi pi-send" variant="success" route="/bill-integration">
+          </app-dashboard-stats-card>
+        </div>
+      </ng-container>
+
+      <!-- ADMIN STATS -->
+      <ng-container *ngIf="userRole() === AppRole.Administrator">
+        <div class="col-12 col-sm-6 col-xl-3">
+          <app-dashboard-stats-card title="Total Users" [value]="summaryData()!.userSummary.totalUsers"
+            icon="pi pi-users" variant="info" route="/user-management">
+          </app-dashboard-stats-card>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-3">
+          <app-dashboard-stats-card title="Error Logs (Today)" [value]="summaryData()!.userSummary.errorCountToday"
+            icon="pi pi-exclamation-triangle" variant="danger" route="/user-management/error-log">
+          </app-dashboard-stats-card>
+        </div>
+      </ng-container>
+
+    </div>
+
+    <!-- Main Content Area: Quick Actions & Activity -->
+    <div class="row g-4 mt-4">
+
+      <!-- Quick Actions -->
+      <div class="col-12" *ngIf="quickActions().length > 0">
+
+        <h5 class="card-title mb-4 pb-2 border-bottom fw-bold text-dark"><i
+            class="pi pi-bolt text-warning me-2"></i>Quick Actions</h5>
+        <app-dashboard-quick-actions [actions]="quickActions()"></app-dashboard-quick-actions>
+
+      </div>
+    </div>
+
+
+
+  </ng-container>
+</div>

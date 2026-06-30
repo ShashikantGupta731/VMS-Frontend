@@ -25,6 +25,7 @@ export class MainLayout {
     switch (role) {
       case 'DDO': // IFMS Bill Clerk / Data Entry User
         return [
+          { label: 'Dashboard', route: '/dashboard', icon: 'fas fa-home' },
           { label: 'Vehicles', route: '/vehicle', icon: 'fas fa-car' },
           {
             label: 'Masters',
@@ -74,6 +75,7 @@ export class MainLayout {
         ];
       case 'ADMN': // System Administrator
         return [
+          { label: 'Dashboard', route: '/dashboard', icon: 'fas fa-home' },
           {
             label: 'Masters',
             icon: 'fas fa-database',
@@ -113,6 +115,7 @@ export class MainLayout {
         ];
       case 'DCL':
         return [
+          { label: 'Dashboard', route: '/dashboard', icon: 'fas fa-home' },
           {
             label: 'Masters',
             icon: 'fas fa-database',
@@ -125,19 +128,18 @@ export class MainLayout {
         ];
       case 'SEC':
         return [
-          { label: 'Vehicle Status Update', route: '/vehicle/status-update', icon: 'fas fa-sync' },
-          { label: 'User Management', route: '/user-management', icon: 'fas fa-users' },
-          { label: 'Reports', route: '/reports', icon: 'fas fa-chart-line' }
+          { label: 'Reports', route: '/reports', icon: 'fas fa-chart-line' },
+          { label: 'Vehicle Status Update by FD', route: '/vehicles/condemned/fd-approval', icon: 'fas fa-sync' }
         ];
       case 'FD':
         return [
+          { label: 'Dashboard', route: '/dashboard', icon: 'fas fa-home' },
           { label: 'Reports', route: '/reports', icon: 'fas fa-chart-bar' },
           { label: 'Vehicle Status Update by FD', route: '/vehicles/condemned/fd-approval', icon: 'fas fa-sync' }
         ];
       case 'NDOF':
         return [
-          { label: 'Claim Verification', route: '/claim-verification', icon: 'fas fa-clipboard-check' },
-          { label: 'Reports', route: '/reports', icon: 'fas fa-chart-bar' }
+          { label: 'Claim Verification', route: '/claim-verification', icon: 'fas fa-clipboard-check' }
         ];
       case 'PPOF':
         return [

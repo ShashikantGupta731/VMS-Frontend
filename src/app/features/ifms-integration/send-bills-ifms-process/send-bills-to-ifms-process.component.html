@@ -55,7 +55,7 @@
                 </div>
                 <div class="col-md-6">
                   <label class="form-label" for="billTypeSelect">Bill Type *</label>
-                  <select id="billTypeSelect" class="form-select" [(ngModel)]="billType" [disabled]="billTypeLocked">
+                  <select id="billTypeSelect" class="form-select" [(ngModel)]="billType" (change)="onChangeBillType()" [disabled]="billTypeLocked">
                     <option *ngFor="let bt of billTypeArray" [value]="bt.value">{{ bt.label }}</option>
                   </select>
                   <small *ngIf="billTypeLocked" class="text-muted d-block mt-1 font-sm">
@@ -98,14 +98,21 @@
                 </form>
               </div>
  
-              <div *ngIf="billType === 6" class="mt-3 p-3 panel-muted border-warning" [formGroup]="dcbillForm">
+              <div *ngIf="+billType === 6" class="mt-3 p-3 panel-muted border-warning" [formGroup]="dcbillForm">
                 <h6 class="text-dark-blue fw-bold mb-3">AC Bill Details</h6>
                 <div class="row g-2">
                   <div class="col-6">
-                    <app-input label="AC Voucher No." type="text" formControlName="vch_no" placeholder="Enter AC Vch No"></app-input>
+                    <app-input label="AC Voucher No. *" type="text" formControlName="vch_no" placeholder="Enter AC Vch No"></app-input>
+                    <div *ngIf="dcbillForm.get('vch_no')?.touched && dcbillForm.get('vch_no')?.invalid" class="text-danger font-xs mt-1">
+                      <span *ngIf="dcbillForm.get('vch_no')?.errors?.['required']">Voucher number is required.</span>
+                      <span *ngIf="dcbillForm.get('vch_no')?.errors?.['pattern']">Voucher number must be numeric.</span>
+                    </div>
                   </div>
                   <div class="col-6">
-                    <app-input label="AC Voucher Date" type="date" formControlName="vch_dt"></app-input>
+                    <app-input label="AC Voucher Date *" type="date" formControlName="vch_dt"></app-input>
+                    <div *ngIf="dcbillForm.get('vch_dt')?.touched && dcbillForm.get('vch_dt')?.invalid" class="text-danger font-xs mt-1">
+                      <span *ngIf="dcbillForm.get('vch_dt')?.errors?.['required']">Voucher date is required.</span>
+                    </div>
                   </div>
                 </div>
               </div>

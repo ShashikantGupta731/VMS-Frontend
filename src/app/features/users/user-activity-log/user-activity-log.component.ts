@@ -4,12 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { AppCardComponent } from '@shared/components/ui/app-card/card.component';
 import { AppButtonComponent } from '@shared/components/ui/app-button/button.component';
 import { AppDataTableComponent, TableColumn } from '@shared/components/ui/app-data-table/data-table.component';
+import { AppPaginationComponent } from '@shared/components/ui/app-pagination/pagination.component';
 import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-user-activity-log',
   standalone: true,
-  imports: [CommonModule, FormsModule, AppCardComponent, AppButtonComponent, AppDataTableComponent],
+  imports: [CommonModule, FormsModule, AppCardComponent, AppButtonComponent, AppDataTableComponent, AppPaginationComponent],
   template: `
     <div class="dashboard-container">
       <app-card customClass="no-padding">
@@ -30,7 +31,7 @@ import { UserService } from '../user.service';
             <input type="date" class="form-control" [(ngModel)]="toDate">
           </div>
           <div class="col-md-2">
-            <app-btn label="Search" (click)="search(1)" variant="primary" size="md" icon="pi pi-search" customClass="w-100"></app-btn>
+            <app-btn label="Search" (click)="search(1)" variant="dark-blue" size="md" icon="pi pi-search" customClass="w-100"></app-btn>
           </div>
         </div>
 
@@ -51,13 +52,13 @@ import { UserService } from '../user.service';
           </app-data-table>
 
           @if (totalCount() > 0) {
-            <div class="d-flex justify-content-between align-items-center mt-3 mx-2">
-              <span class="small text-muted">Showing {{ ((currentPage() - 1) * pageSize) + 1 }} to {{ Math.min(currentPage() * pageSize, totalCount()) }} of {{ totalCount() }} entries</span>
-              <div class="btn-group">
-                <button class="btn btn-outline-secondary btn-sm" [disabled]="currentPage() === 1" (click)="search(currentPage() - 1)">Previous</button>
-                <button class="btn btn-outline-secondary btn-sm" [disabled]="currentPage() * pageSize >= totalCount()" (click)="search(currentPage() + 1)">Next</button>
-              </div>
-            </div>
+            <app-pagination
+              [currentPage]="currentPage()"
+              [totalPages]="Math.ceil(totalCount() / pageSize)"
+              [totalItems]="totalCount()"
+              [itemsPerPage]="pageSize"
+              (pageChange)="search($event)">
+            </app-pagination>
           }
         </div>
       </app-card>

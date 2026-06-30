@@ -13,30 +13,24 @@
     </div>
 
     <!-- Search Section -->
-    <div class="search-section mb-4 p-4 bg-light rounded border border-light-subtle">
+    <div class="search-section mb-4 p-4 ">
       <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
         <div class="row align-items-end">
           <div class="col-md-4">
-            <app-input
-              type="select"
-              label="Search Type"
-              formControlName="searchType"
-              [options]="searchTypeOptions"
+            <app-input type="select" label="Search Type" formControlName="searchType" [options]="searchTypeOptions"
               [required]="true">
             </app-input>
           </div>
           <div class="col-md-5">
-            <app-input
-              label="ID Number"
-              formControlName="searchValue"
-              placeholder="Enter ID..."
-              [required]="true"
+            <app-input label="ID Number" formControlName="searchValue" placeholder="Enter ID..." [required]="true"
               [error]="searchForm.get('searchValue')?.touched && searchForm.get('searchValue')?.invalid ? 'ID is required' : ''">
             </app-input>
           </div>
           <div class="col-md-3 mb-3">
-            <app-btn label="Search" variant="dark-blue" size="sm" type="submit" icon="pi pi-search" [disabled]="searchForm.invalid || isLoading"></app-btn>
-            <app-btn label="Clear" variant="outline-secondary" size="sm" customClass="ms-2" (click)="clearSearch()"></app-btn>
+            <app-btn label="Search" variant="dark-blue" size="sm" type="submit" icon="pi pi-search"
+              [disabled]="searchForm.invalid || isLoading"></app-btn>
+            <app-btn label="Clear" variant="outline-secondary" size="sm" customClass="ms-2"
+              (click)="clearSearch()"></app-btn>
           </div>
         </div>
       </form>
@@ -45,14 +39,9 @@
     <!-- Data Table -->
     <div class="table-responsive">
       <h5 class="mb-3" *ngIf="hasSearched">Found Bills</h5>
-      <app-data-table 
-        *ngIf="hasSearched"
-        [columns]="tableColumns" 
-        [data]="bills" 
-        [actions]="tableActions" 
+      <app-data-table *ngIf="hasSearched" [columns]="tableColumns" [data]="bills" [actions]="tableActions"
         [isLoading]="isLoading"
-        emptyMessage="No matching bills found. Please check the ID and try again."
-      ></app-data-table>
+        emptyMessage="No matching bills found. Please check the ID and try again."></app-data-table>
     </div>
   </app-card>
 </div>

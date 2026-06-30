@@ -4,11 +4,12 @@ import { AppDataTableComponent, TableColumn } from '../../../ui/app-data-table/d
 import { BillRecord } from '../../vehicle-details-modal.interfaces';
 import { VehicleDetailsModalService } from '../../vehicle-details-modal.service';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { AppDocumentViewerComponent } from '../../../ui/app-document-viewer/document-viewer.component';
 
 @Component({
   selector: 'app-service-tab',
   standalone: true,
-  imports: [CommonModule, AppDataTableComponent],
+  imports: [CommonModule, AppDataTableComponent, AppDocumentViewerComponent],
   templateUrl: './service-tab.component.html',
   styleUrl: './service-tab.component.scss',
 })
@@ -48,10 +49,14 @@ export class ServiceTabComponent {
     }
   ];
 
+  viewerVisible = false;
+  viewerDocumentPath = '';
+
   constructor(private vehicleDetailsService: VehicleDetailsModalService) {}
 
   showPdfViewer(path: string) {
     if (!path) return;
-    window.open(path, '_blank');
+    this.viewerDocumentPath = path;
+    this.viewerVisible = true;
   }
 }

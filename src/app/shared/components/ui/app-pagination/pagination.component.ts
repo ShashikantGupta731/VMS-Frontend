@@ -1,10 +1,11 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-pagination',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './pagination.component.html',
   styleUrl: './pagination.component.scss',
 })
@@ -13,10 +14,12 @@ export class AppPaginationComponent {
   @Input() totalPages: number = 1;
   @Input() totalItems: number = 0;
   @Input() itemsPerPage: number = 10;
+  @Input() pageSizeOptions: number[] = [10, 20, 50, 100];
   @Input() showInfo: boolean = true;
   @Input() customClass?: string;
 
   @Output() pageChange = new EventEmitter<number>();
+  @Output() itemsPerPageChange = new EventEmitter<number>();
 
   get startIndex(): number {
     return (this.currentPage - 1) * this.itemsPerPage + 1;
@@ -70,6 +73,23 @@ export class AppPaginationComponent {
   onNext(): void {
     if (this.currentPage < this.totalPages) {
       this.pageChange.emit(this.currentPage + 1);
+    }
+  }
+
+  goToPageValue: string = '';
+
+  onItemsPerPageChange(event: Event): void {
+    const value = parseInt((event.target as HTMLSelectElement).value, 10);
+    if (!isNaN(value)) {
+      this.itemsPerPageChange.emit(value);
+    }
+  }
+
+  onGoToPage(): void {
+    const page = parseInt(this.goToPageValue, 10);
+    if (!isNaN(page) && page >= 1 && page <= this.totalPages) {
+      this.pageChange.emit(page);
+      this.goToPageValue = ''; // Clear after navigating
     }
   }
 }

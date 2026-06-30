@@ -1,34 +1,49 @@
 <div class="app-pagination" [class]="customClass">
-  @if (showInfo) {
-    <div class="app-pagination-info">
-      <span>Showing {{ startIndex }}-{{ endIndex }} of {{ totalItems }} entries</span>
+  <!-- Left Side: Rows per page -->
+  <div class="app-pagination-left">
+    <div class="app-pagination-rows">
+      <label for="rowsPerPage">Rows per page:</label>
+      <select id="rowsPerPage" class="app-select" (change)="onItemsPerPageChange($event)">
+        @for (option of pageSizeOptions; track option) {
+          <option [value]="option" [selected]="option === itemsPerPage">{{ option }}</option>
+        }
+      </select>
     </div>
-  }
-  <div class="app-pagination-controls">
-    <button
-      class="app-btn btn-sm"
-      (click)="onPrevious()"
-      [disabled]="currentPage === 1"
-    >
-      Previous
-    </button>
-    @for (page of pages; track $index) {
-      <button
-        class="app-btn btn-sm"
-        [class.active]="page === currentPage"
-        [class.ellipsis]="page === '...'"
-        [disabled]="page === '...'"
-        (click)="onPageChange(page)"
-      >
-        {{ page }}
+  </div>
+
+  <!-- Center: Pagination Controls & Info -->
+  <div class="app-pagination-center">
+    <div class="app-pagination-controls">
+      <button class="app-btn btn-sm previous-btn" (click)="onPrevious()" [disabled]="currentPage === 1">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        Previous
       </button>
+      
+      @for (page of pages; track $index) {
+        <button class="app-btn btn-sm page-btn" [class.active]="page === currentPage" [class.ellipsis]="page === '...'" [disabled]="page === '...'" (click)="onPageChange(page)">
+          {{ page }}
+        </button>
+      }
+      
+      <button class="app-btn btn-sm next-btn" (click)="onNext()" [disabled]="currentPage === totalPages">
+        Next
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+    </div>
+    
+    @if (showInfo) {
+      <div class="app-pagination-info">
+        <span>Showing {{ startIndex }}-{{ endIndex }} of {{ totalItems }} results</span>
+      </div>
     }
-    <button
-      class="app-btn btn-sm"
-      (click)="onNext()"
-      [disabled]="currentPage === totalPages"
-    >
-      Next
-    </button>
+  </div>
+
+  <!-- Right Side: Go to page -->
+  <div class="app-pagination-right">
+    <div class="app-pagination-goto">
+      <label for="goToPage">Go to page</label>
+      <input type="text" id="goToPage" class="app-input-goto" [(ngModel)]="goToPageValue" (keyup.enter)="onGoToPage()">
+      <button class="app-btn-goto" (click)="onGoToPage()">Go</button>
+    </div>
   </div>
 </div>

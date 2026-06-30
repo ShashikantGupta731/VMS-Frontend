@@ -8,7 +8,9 @@
       <div class="header-right">
         <div class="d-flex gap-2">
           <app-btn label="Refresh" variant="outline-secondary" icon="pi pi-refresh" (click)="refresh()"></app-btn>
-          <app-btn label="Add New User" variant="dark-blue" icon="pi pi-plus" routerLink="/user-management/add"></app-btn>
+          @if (canAddUser()) {
+            <app-btn label="Add New User" variant="dark-blue" icon="pi pi-plus" routerLink="/user-management/add"></app-btn>
+          }
         </div>
       </div>
     </div>
@@ -24,3 +26,25 @@
     </div>
   </app-card>
 </div>
+
+<!-- Reset Password Modal -->
+<p-dialog header="Reset User Password" [modal]="true" [(visible)]="displayResetModal" [style]="{width: '450px'}" [draggable]="false" [resizable]="false">
+  <div class="p-fluid">
+    <div class="mb-3">
+      <p>Resetting password for: <strong>{{ selectedUser?.username }}</strong></p>
+    </div>
+    <div class="field mb-3">
+      <label for="newPassword" class="form-label">New Password</label>
+      <input id="newPassword" type="password" class="form-control" [(ngModel)]="newPassword" placeholder="Enter new password">
+      <small class="text-muted">Must be at least 8 characters</small>
+    </div>
+    
+    <div *ngIf="resetError" class="alert alert-danger mt-2">{{ resetError }}</div>
+    <div *ngIf="resetSuccess" class="alert alert-success mt-2">{{ resetSuccess }}</div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <button class="btn btn-secondary me-2" (click)="displayResetModal = false">Cancel</button>
+    <button class="btn btn-primary" (click)="confirmResetPassword()" [disabled]="!newPassword || newPassword.length < 8">Reset Password</button>
+  </ng-template>
+</p-dialog>

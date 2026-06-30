@@ -82,44 +82,45 @@
 }
 
 .custom-admn-table {
-  background: #ffffff;
+  width: 100% !important;
+  background: $bg-white;
   border-collapse: separate;
   border-spacing: 0;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  border: 1px solid #e2e8f0;
 
   thead {
     tr {
       th {
-        background: #003366;
-        color: #ffffff;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        font-size: 0.72rem;
-        padding: 12px 14px;
-        border-color: rgba(255, 255, 255, 0.15);
-        vertical-align: middle;
+        background: $bg-white !important;
+        color: $text-dark !important;
+        font-weight: 700 !important;
+        font-size: $font-size-sm !important;
+        padding: $spacing-sm $spacing-md !important;
+        border-bottom: 1px solid $border-color !important;
+        border-top: 1px solid $border-color !important;
+        vertical-align: top;
+        border-left: none;
+        border-right: none;
       }
     }
   }
 
   tbody {
     tr {
-      transition: background-color 0.2s ease;
+      transition: background $transition-base;
 
-      &:hover {
-        background-color: #f8fafc !important;
+      &:hover td {
+        background: $bg-gray-light !important;
       }
 
       td {
-        padding: 12px 14px;
-        border-color: #e2e8f0;
-        color: #334155;
-        vertical-align: middle;
-        font-size: 0.8rem;
+        background: $bg-white !important;
+        color: $text-dark !important;
+        font-size: $font-size-sm !important;
+        padding: $spacing-sm $spacing-md !important;
+        vertical-align: top;
+        border-bottom: 1px solid $border-color-light !important;
+        border-left: none;
+        border-right: none;
         line-height: 1.5;
 
         a.text-primary {

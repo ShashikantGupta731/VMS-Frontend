@@ -6,10 +6,12 @@ import { Router } from '@angular/router';
 import { ApiService } from '@core/services/api';
 import { ToastrService } from 'ngx-toastr';
 
+import { AuthLayoutComponent } from '@shared/layouts/auth-layout/auth-layout.component';
+
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, AuthLayoutComponent],
   templateUrl: './signup.html',
   styleUrl: './signup.scss',
 })

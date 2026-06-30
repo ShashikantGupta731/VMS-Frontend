@@ -18,60 +18,107 @@
 
     <div *ngIf="!isLoading">
       <!-- Stats Widgets -->
-      <div class="row mb-4" *ngIf="stats">
-        <div class="col-md-4 mb-3 mb-md-0">
-          <div class="card border-0 shadow-sm rounded-3">
-            <div class="card-body p-4 d-flex align-items-center justify-content-between">
-              <div>
-                <p class="text-muted mb-1 fs-6 fw-semibold">Total Fuel (Litres)</p>
-                <h2 class="text-primary fw-bold mb-0">{{ stats.totalLitresFilled | number:'1.2-2' }}</h2>
+      <div class="row mb-4 px-2" *ngIf="stockAmount">
+        <!-- Diesel Card -->
+        <div class="col-md-2 col-6 mb-3">
+          <div class="card h-100" style="background-color: #eef4ff; border: 1px solid #c6dafc; border-radius: 8px;">
+            <div class="card-body p-2 d-flex align-items-center justify-content-between">
+              <div class="bg-white rounded d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <i class="pi pi-truck" style="color: #2b70f6; font-size: 1rem;"></i>
               </div>
-              <div class="bg-primary bg-opacity-10 p-3 rounded-circle text-primary">
-                <i class="fas fa-gas-pump fs-3"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4 mb-3 mb-md-0">
-          <div class="card border-0 shadow-sm rounded-3">
-            <div class="card-body p-4 d-flex align-items-center justify-content-between">
-              <div>
-                <p class="text-muted mb-1 fs-6 fw-semibold">Total Cost (₹)</p>
-                <h2 class="text-success fw-bold mb-0">₹{{ stats.totalAmount | number:'1.2-2' }}</h2>
-              </div>
-              <div class="bg-success bg-opacity-10 p-3 rounded-circle text-success">
-                <i class="fas fa-rupee-sign fs-3"></i>
+              <div class="text-end">
+                <div class="mb-1" style="color: #2b70f6; font-size: 0.75rem; font-weight: 500;">Diesel</div>
+                <div class="fw-bold m-0" style="color: #2b70f6; font-size: 1.25rem; line-height: 1;">{{ stockAmount.diesel | number:'1.0-0' }}</div>
               </div>
             </div>
           </div>
         </div>
-        <div class="col-md-4">
-          <div class="card border-0 shadow-sm rounded-3">
-            <div class="card-body p-4 d-flex align-items-center justify-content-between">
-              <div>
-                <p class="text-muted mb-1 fs-6 fw-semibold">Vehicles Served</p>
-                <h2 class="text-info fw-bold mb-0">{{ stats.totalVehiclesServed }}</h2>
+        <!-- Petrol Card -->
+        <div class="col-md-2 col-6 mb-3">
+          <div class="card h-100" style="background-color: #eefaf4; border: 1px solid #cdeadd; border-radius: 8px;">
+            <div class="card-body p-2 d-flex align-items-center justify-content-between">
+              <div class="bg-white rounded d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <i class="pi pi-car" style="color: #1a9459; font-size: 1rem;"></i>
               </div>
-              <div class="bg-info bg-opacity-10 p-3 rounded-circle text-info">
-                <i class="fas fa-truck fs-3"></i>
+              <div class="text-end">
+                <div class="mb-1" style="color: #1a9459; font-size: 0.75rem; font-weight: 500;">Petrol</div>
+                <div class="fw-bold m-0" style="color: #1a9459; font-size: 1.25rem; line-height: 1;">{{ stockAmount.petrol | number:'1.0-0' }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Mobil Oil Card -->
+        <div class="col-md-2 col-6 mb-3">
+          <div class="card h-100" style="background-color: #faeded; border: 1px solid #f2d1d1; border-radius: 8px;">
+            <div class="card-body p-2 d-flex align-items-center justify-content-between">
+              <div class="bg-white rounded d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <i class="pi pi-cog" style="color: #dc3545; font-size: 1rem;"></i>
+              </div>
+              <div class="text-end">
+                <div class="mb-1" style="color: #dc3545; font-size: 0.75rem; font-weight: 500;">Mobil Oil</div>
+                <div class="fw-bold m-0" style="color: #dc3545; font-size: 1.25rem; line-height: 1;">{{ stockAmount.mobilOil | number:'1.0-0' }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Engine Oil Card -->
+        <div class="col-md-2 col-6 mb-3">
+          <div class="card h-100" style="background-color: #fef9e8; border: 1px solid #f7e8b6; border-radius: 8px;">
+            <div class="card-body p-2 d-flex align-items-center justify-content-between">
+              <div class="bg-white rounded d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <i class="pi pi-wrench" style="color: #b38300; font-size: 1rem;"></i>
+              </div>
+              <div class="text-end">
+                <div class="mb-1" style="color: #b38300; font-size: 0.75rem; font-weight: 500;">Engine Oil</div>
+                <div class="fw-bold m-0" style="color: #b38300; font-size: 1.25rem; line-height: 1;">{{ stockAmount.engineOil | number:'1.0-0' }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Gear Oil Card -->
+        <div class="col-md-2 col-6 mb-3">
+          <div class="card h-100" style="background-color: #f3effc; border: 1px solid #d9cbf7; border-radius: 8px;">
+            <div class="card-body p-2 d-flex align-items-center justify-content-between">
+              <div class="bg-white rounded d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <i class="pi pi-sync" style="color: #6f42c1; font-size: 1rem;"></i>
+              </div>
+              <div class="text-end">
+                <div class="mb-1" style="color: #6f42c1; font-size: 0.75rem; font-weight: 500;">Gear Oil</div>
+                <div class="fw-bold m-0" style="color: #6f42c1; font-size: 1.25rem; line-height: 1;">{{ stockAmount.gearOil | number:'1.0-0' }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Break Oil Card -->
+        <div class="col-md-2 col-6 mb-3">
+          <div class="card h-100" style="background-color: #eafaf9; border: 1px solid #c2efec; border-radius: 8px;">
+            <div class="card-body p-2 d-flex align-items-center justify-content-between">
+              <div class="bg-white rounded d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <i class="pi pi-stop-circle" style="color: #0fa59d; font-size: 1rem;"></i>
+              </div>
+              <div class="text-end">
+                <div class="mb-1" style="color: #0fa59d; font-size: 0.75rem; font-weight: 500;">Break Oil</div>
+                <div class="fw-bold m-0" style="color: #0fa59d; font-size: 1.25rem; line-height: 1;">{{ stockAmount.breakOil | number:'1.0-0' }}</div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Actions -->
-      <div class="d-flex justify-content-end mb-4">
-        <app-btn label="Log New Fuel Entry" routerLink="/ppo/fill-fuel" variant="dark-blue" size="sm" icon="pi pi-plus-circle"></app-btn>
+      <hr class="text-muted opacity-25 mb-4">
+
+      <!-- Actions & Data Grid Header -->
+      <div class="d-flex justify-content-between align-items-center mb-3 px-2">
+        <h5 class="text-secondary fw-bold mb-0" style="color: #6c757d !important;">Fuel Filling Details</h5>
+        <app-btn label="Fill Fuel" routerLink="/ppo/fill-fuel" customClass="p-button-rounded px-4 light-blue-pill-btn" icon="pi pi-plus-circle"></app-btn>
       </div>
 
       <!-- Data Grid -->
       <div class="mb-4">
-        <h6 class="text-dark-blue fw-bold mb-3 px-2">Recent Fuel Logs</h6>
         <app-data-table
           [columns]="tableColumns"
           [data]="logs"
-          [emptyMessage]="'No fuel logs found.'"
+          [emptyMessage]="'No Record Found'"
         ></app-data-table>
       </div>
     </div>

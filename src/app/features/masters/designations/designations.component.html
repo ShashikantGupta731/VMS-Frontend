@@ -16,9 +16,9 @@
       <div class="d-flex gap-2">
         <!-- Add Search input if needed later -->
       </div>
-      <div class="search-box">
-        <i class="pi pi-search"></i>
-        <input type="text" placeholder="Search by Designation / Department" class="form-control d-inline-block w-auto ms-2">
+      <div class="search-box d-flex align-items-center">
+        <input type="text" placeholder="Search by Designation / Department" class="form-control rounded-pill d-inline-block me-2" style="min-width: 300px;" [ngModel]="searchText()" (ngModelChange)="searchText.set($event)">
+        <i class="pi pi-search" style="font-size: 1.1rem; color: #4b5563;"></i>
       </div>
     </div>
 

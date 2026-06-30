@@ -1,0 +1,75 @@
+.dashboard-container {
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 60px);
+}
+
+.welcome-banner {
+  background: linear-gradient(135deg, #fff 0%, #f1f3f5 100%);
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  border: 1px solid #e9ecef;
+
+  .welcome-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: 0.5rem;
+  }
+
+  .welcome-subtitle {
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.activity-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  .activity-item {
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+
+    &:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 19px;
+      top: 40px;
+      bottom: -15px;
+      width: 2px;
+      background-color: #e9ecef;
+    }
+
+    .activity-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+      z-index: 1;
+      font-size: 1.1rem;
+    }
+
+    .activity-content {
+      flex: 1;
+      padding-top: 0.25rem;
+    }
+
+    .activity-time {
+      padding-top: 0.25rem;
+      white-space: nowrap;
+    }
+  }
+}
+
+// Global utility text sizing
+.text-sm {
+  font-size: 0.875rem !important;
+}

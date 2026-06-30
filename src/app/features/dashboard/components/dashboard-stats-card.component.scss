@@ -1,0 +1,101 @@
+@use "sass:color";
+
+.stats-card {
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0,0,0,0.05);
+
+  &.cursor-pointer {
+    cursor: pointer;
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+  }
+
+  // Variants Base Colors
+  $primary: #0d6efd;
+  $primary-bg: rgba(13, 110, 253, 0.08);
+  $primary-hover: rgba(13, 110, 253, 0.25);
+
+  $success: #198754;
+  $success-bg: rgba(25, 135, 84, 0.08);
+  $success-hover: rgba(25, 135, 84, 0.25);
+
+  $warning: #ffc107;
+  $warning-bg: rgba(255, 193, 7, 0.1);
+  $warning-hover: rgba(255, 193, 7, 0.3);
+
+  $danger: #dc3545;
+  $danger-bg: rgba(220, 53, 69, 0.08);
+  $danger-hover: rgba(220, 53, 69, 0.25);
+
+  $info: #0dcaf0;
+  $info-bg: rgba(13, 202, 240, 0.08);
+  $info-hover: rgba(13, 202, 240, 0.25);
+
+  &.primary { 
+    background-color: $primary-bg; border-color: rgba(13, 110, 253, 0.2);
+    &:hover { background-color: $primary-hover; border-color: rgba(13, 110, 253, 0.4); } 
+  }
+  &.success { 
+    background-color: $success-bg; border-color: rgba(25, 135, 84, 0.2);
+    &:hover { background-color: $success-hover; border-color: rgba(25, 135, 84, 0.4); } 
+  }
+  &.warning { 
+    background-color: $warning-bg; border-color: rgba(255, 193, 7, 0.2);
+    &:hover { background-color: $warning-hover; border-color: rgba(255, 193, 7, 0.4); } 
+  }
+  &.danger { 
+    background-color: $danger-bg; border-color: rgba(220, 53, 69, 0.2);
+    &:hover { background-color: $danger-hover; border-color: rgba(220, 53, 69, 0.4); } 
+  }
+  &.info { 
+    background-color: $info-bg; border-color: rgba(13, 202, 240, 0.2);
+    &:hover { background-color: $info-hover; border-color: rgba(13, 202, 240, 0.4); } 
+  }
+
+  .stats-info {
+    text-align: right;
+  }
+
+  .stats-title {
+    color: #495057;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 0.1rem;
+  }
+
+  .stats-value {
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .primary-text { color: $primary; }
+  .success-text { color: color.adjust($success, $lightness: -5%); }
+  .warning-text { color: color.adjust($warning, $lightness: -25%); }
+  .danger-text { color: $danger; }
+  .info-text { color: color.adjust($info, $lightness: -15%); }
+
+  .stats-icon-wrapper {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.04);
+
+    &.primary-icon { color: $primary; }
+    &.success-icon { color: color.adjust($success, $lightness: -5%); }
+    &.warning-icon { color: color.adjust($warning, $lightness: -25%); }
+    &.danger-icon { color: $danger; }
+    &.info-icon { color: color.adjust($info, $lightness: -15%); }
+  }
+}

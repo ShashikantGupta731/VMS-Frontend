@@ -7,8 +7,8 @@
   height: 100vh;
   z-index: 9999;
   
-  /* Glassmorphism Effect */
-  background: rgba(0, 0, 0, 0.4);
+  /* Glassmorphism Effect - Transparent base with blur */
+  background: rgba(15, 23, 42, 0.2);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   
@@ -17,22 +17,180 @@
   align-items: center;
 }
 
-.loader-container {
+/* Container for premium layout */
+.loader-wrapper {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 25px 40px;
+  border-radius: 20px;
+  /* Removed solid card background/border/shadow per user request */
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+
+/* Animation Box containing car, road, and motion lines */
+.animation-container {
+  position: relative;
+  width: 280px;
+  height: 90px;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 
-/* Sleek CSS Spinner */
-.css-spinner {
-  width: 60px;
-  height: 60px;
-  border: 5px solid rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  border-top-color: #ffffff;
-  animation: spin 1s ease-in-out infinite;
+/* The Car SVG Styling - Standing in place with vibration */
+.car-svg {
+  z-index: 2;
+  transform-origin: center;
+  /* Stays in center position */
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+/* Car body vibrations (simulating engine + road bumps) */
+.car-body {
+  animation: driveVibration 0.35s infinite ease-in-out;
+}
+
+@keyframes driveVibration {
+  0% { transform: translateY(0); }
+  25% { transform: translateY(-0.8px) rotate(-0.5deg); }
+  50% { transform: translateY(0) rotate(0); }
+  75% { transform: translateY(-0.5px) rotate(0.5deg); }
+  100% { transform: translateY(0); }
+}
+
+/* Wheels spin animation (Clockwise for forward movement) */
+.wheel {
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: wheelSpin 0.4s infinite linear;
+}
+
+@keyframes wheelSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Moving Road Styling */
+.road {
+  position: absolute;
+  bottom: 14px;
+  width: 240px;
+  height: 3px;
+  background-color: #334155;
+  border-radius: 2px;
+  z-index: 1;
+  overflow: hidden;
+}
+
+/* Road dashes/stripes scrolling infinitely to mock motion */
+.road-stripes {
+  width: 200%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 8px,
+    #ffffff 8px,
+    #ffffff 16px
+  );
+  animation: roadScroll 0.4s infinite linear;
+}
+
+@keyframes roadScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-40px); }
+}
+
+/* Motion / Wind lines flowing from front-to-back (right-to-left) */
+.wind-line {
+  position: absolute;
+  height: 2px;
+  background: linear-gradient(270deg, rgba(102, 126, 234, 0.4), transparent);
+  border-radius: 1px;
+  z-index: 0;
+  animation: windMove 0.8s infinite linear;
+  opacity: 0;
+}
+
+.wind-1 {
+  top: 15px;
+  right: 10px;
+  width: 40px;
+  animation-delay: 0s;
+}
+
+.wind-2 {
+  top: 28px;
+  right: 15px;
+  width: 25px;
+  animation-delay: 0.25s;
+}
+
+.wind-3 {
+  top: 40px;
+  right: 5px;
+  width: 35px;
+  animation-delay: 0.1s;
+}
+
+@keyframes windMove {
+  0% {
+    transform: translateX(140px);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.7;
+  }
+  70% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateX(-60px);
+    opacity: 0;
+  }
+}
+
+/* Staggered loading text animation */
+.loading-label {
+  margin-top: 15px;
+  font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #667eea;
+  letter-spacing: 2px;
+  display: flex;
+  gap: 2px;
+}
+
+.loading-label span {
+  display: inline-block;
+  animation: textBounce 1.4s infinite ease-in-out;
+}
+
+/* Calculate animation delay for each letter to make it wave-like */
+.loading-label span:nth-child(1) { animation-delay: 0.0s; }
+.loading-label span:nth-child(2) { animation-delay: 0.1s; }
+.loading-label span:nth-child(3) { animation-delay: 0.2s; }
+.loading-label span:nth-child(4) { animation-delay: 0.3s; }
+.loading-label span:nth-child(5) { animation-delay: 0.4s; }
+.loading-label span:nth-child(6) { animation-delay: 0.5s; }
+.loading-label span:nth-child(7) { animation-delay: 0.6s; }
+.loading-label span:nth-child(8) { animation-delay: 0.7s; }
+.loading-label span:nth-child(9) { animation-delay: 0.8s; }
+.loading-label span:nth-child(10) { animation-delay: 0.9s; }
+
+@keyframes textBounce {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(-4px);
+    opacity: 1;
+    color: #8a9cfa;
+  }
 }

@@ -8,3 +8,5 @@
   @if (error()) {
     <div class="error-message">{{ error() }}</div>
   }
+  
+  <app-document-viewer [(visible)]="viewerVisible" [documentPath]="viewerDocumentPath"></app-document-viewer>

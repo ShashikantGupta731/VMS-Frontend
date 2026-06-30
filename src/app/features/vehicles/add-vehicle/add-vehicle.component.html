@@ -11,29 +11,24 @@
       </nav>
     </div>
   </div>
-    
 
-    <form [formGroup]="vehicleForm" (ngSubmit)="onSubmit()">
-      
-      <!-- Section: Purchase Info -->
-      <div class="card border-0 mb-4">
-        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
-          <h6 class="text-dark-blue fw-bold mb-1">Purchase Info</h6>
-        </div>
-        <div class="card-body p-0">
+
+  <form [formGroup]="vehicleForm" (ngSubmit)="onSubmit()">
+
+    <!-- Section: Purchase Info -->
+    <div class="card border-0 mb-4">
+      <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+        <h6 class="text-dark-blue fw-bold mb-1">Purchase Info</h6>
+      </div>
+      <div class="card-body p-0">
         <div class="row">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
               <label for="purchasedNewVehicle" class="form-label fw-semibold">Have You Purchased New Vehicle</label>
               <div class="radio-group">
                 <div class="form-check form-check-inline" *ngFor="let option of yesNoOptions">
-                  <input
-                    type="radio"
-                    class="form-check-input"
-                    id="purchasedNewVehicle_{{option}}"
-                    formControlName="purchasedNewVehicle"
-                    [value]="option"
-                  />
+                  <input type="radio" class="form-check-input" id="purchasedNewVehicle_{{option}}"
+                    formControlName="purchasedNewVehicle" [value]="option" />
                   <label class="form-check-label" for="purchasedNewVehicle_{{option}}">{{option}}</label>
                 </div>
               </div>
@@ -48,14 +43,8 @@
         <div class="row" *ngIf="isPurchasedNewVehicle()">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Upload FD Approval"
-                type="file"
-                accept=".jpg,.jpeg,.png,.pdf"
-                (change)="onFdApprovalChange($event)"
-                [required]="true"
-                width="100%"
-              ></app-input>
+              <app-input label="Upload FD Approval" type="file" accept=".jpg,.jpeg,.png,.pdf"
+                (change)="onFdApprovalChange($event)" [required]="true" width="100%"></app-input>
               <small class="text-muted">Max size: 5MB. Formats: JPG, JPEG, PNG, PDF</small>
               <div *ngIf="existingFdApprovalUrl && isEditMode" class="mt-2">
                 <a [href]="existingFdApprovalUrl" target="_blank" class="text-primary small text-decoration-none">
@@ -73,15 +62,9 @@
 
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Vehicle Purchase Type"
-                type="select"
-                [options]="vehiclePurchaseTypeOptions"
-                formControlName="vehiclePurchaseType"
-                placeholder="Select Purchase Type"
-                [required]="true"
-                width="100%"
-              ></app-input>
+              <app-input label="Vehicle Purchase Type" type="select" [options]="vehiclePurchaseTypeOptions"
+                formControlName="vehiclePurchaseType" placeholder="Select Purchase Type" [required]="true"
+                width="100%"></app-input>
               <div *ngIf="getErrorMessage('vehiclePurchaseType')" class="text-danger error-message">
                 {{getErrorMessage('vehiclePurchaseType')}}
               </div>
@@ -93,14 +76,8 @@
         <div class="row" *ngIf="isPurchasedNewVehicle() && isAnyOtherPurchaseType()">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Other Purchase Type Details"
-                type="text"
-                formControlName="otherPurchaseTypeDetails"
-                placeholder="Enter details"
-                [required]="true"
-                width="100%"
-              ></app-input>
+              <app-input label="Other Purchase Type Details" type="text" formControlName="otherPurchaseTypeDetails"
+                placeholder="Enter details" [required]="true" width="100%"></app-input>
               <div *ngIf="getErrorMessage('otherPurchaseTypeDetails')" class="text-danger error-message">
                 {{getErrorMessage('otherPurchaseTypeDetails')}}
               </div>
@@ -116,14 +93,8 @@
         <div class="row" *ngIf="isPurchasedNewVehicle() && isFleetStrengthIncreased()">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Enter New Fleet Strength"
-                type="number"
-                formControlName="newFleetStrength"
-                placeholder="Enter fleet strength"
-                [required]="true"
-                width="100%"
-              ></app-input>
+              <app-input label="Enter New Fleet Strength" type="number" formControlName="newFleetStrength"
+                placeholder="Enter fleet strength" [required]="true" width="100%"></app-input>
               <div *ngIf="getErrorMessage('newFleetStrength')" class="text-danger error-message">
                 {{getErrorMessage('newFleetStrength')}}
               </div>
@@ -132,17 +103,12 @@
 
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Upload Fleet Strength Letter"
-                type="file"
-                accept=".jpg,.jpeg,.png,.pdf"
-                (change)="onFleetStrengthLetterChange($event)"
-                [required]="true"
-                width="100%"
-              ></app-input>
+              <app-input label="Upload Fleet Strength Letter" type="file" accept=".jpg,.jpeg,.png,.pdf"
+                (change)="onFleetStrengthLetterChange($event)" [required]="true" width="100%"></app-input>
               <small class="text-muted">Max size: 5MB. Formats: JPG, JPEG, PNG, PDF</small>
               <div *ngIf="existingFleetStrengthLetterUrl && isEditMode" class="mt-2">
-                <a [href]="existingFleetStrengthLetterUrl" target="_blank" class="text-primary small text-decoration-none">
+                <a [href]="existingFleetStrengthLetterUrl" target="_blank"
+                  class="text-primary small text-decoration-none">
                   <i class="pi pi-external-link me-1"></i> View Current Letter
                 </a>
               </div>
@@ -165,15 +131,9 @@
         <div class="row" *ngIf="isPurchasedNewVehicle() && isPurchasedAgainstCondemned()">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Condemned Vehicle Registration No."
-                type="select"
-                [options]="condemnedVehicleRegNoOptions"
-                formControlName="condemnedVehicleRegNo"
-                placeholder="Select Registration No."
-                [required]="true"
-                width="100%"
-              ></app-input>
+              <app-input label="Condemned Vehicle Registration No." type="select"
+                [options]="condemnedVehicleRegNoOptions" formControlName="condemnedVehicleRegNo"
+                placeholder="Select Registration No." [required]="true" width="100%"></app-input>
               <div *ngIf="getErrorMessage('condemnedVehicleRegNo')" class="text-danger error-message">
                 {{getErrorMessage('condemnedVehicleRegNo')}}
               </div>
@@ -182,14 +142,8 @@
 
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Condemned Vehicle Chassis No."
-                type="text"
-                formControlName="condemnedVehicleChassisNo"
-                placeholder="Auto-filled"
-                width="100%"
-                [disabled]="true"
-              ></app-input>
+              <app-input label="Condemned Vehicle Chassis No." type="text" formControlName="condemnedVehicleChassisNo"
+                placeholder="Auto-filled" width="100%" [disabled]="true"></app-input>
             </div>
           </div>
 
@@ -204,14 +158,8 @@
         <div class="row" *ngIf="isNotPurchasedNewVehicle()">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="From where you got the Vehicle"
-                type="text"
-                formControlName="vehicleSource"
-                placeholder="Enter source (minimum 40 characters)"
-                [required]="true"
-                width="100%"
-              ></app-input>
+              <app-input label="From where you got the Vehicle" type="text" formControlName="vehicleSource"
+                placeholder="Enter source (minimum 40 characters)" [required]="true" width="100%"></app-input>
               <div *ngIf="getErrorMessage('vehicleSource')" class="text-danger error-message">
                 {{getErrorMessage('vehicleSource')}}
               </div>
@@ -222,29 +170,22 @@
               <app-btn label="Validate" variant="dark-blue" type="button" (click)="validatePurchaseInfo()"></app-btn>
             </div>
           </div>
-      </div>
-      </div>
-      </div>
-
-      <!-- Section: Office & Assignment -->
-      <div class="card border-0 mb-4">
-        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
-          <h6 class="text-dark-blue fw-bold mb-1">Office & Assignment</h6>
         </div>
-        <div class="card-body p-0">
+      </div>
+    </div>
+
+    <!-- Section: Office & Assignment -->
+    <div class="card border-0 mb-4">
+      <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+        <h6 class="text-dark-blue fw-bold mb-1">Office & Assignment</h6>
+      </div>
+      <div class="card-body p-0">
         <div class="row">
           <div class="col-md-6 col-lg-6">
             <div class="mb-3">
-              <app-input
-                label="Office Name"
-                [required]="true"
-                type="select"
-                [options]="officeOptions"
-                formControlName="officeName"
-                placeholder="Select Office"
-                width="100%"
-                [disabled]="isNotInUseContractualPooled()"
-              ></app-input>
+              <app-input label="Office Name" [required]="true" type="select" [options]="officeOptions"
+                formControlName="officeName" placeholder="Select Office" width="100%"
+                [disabled]="isNotInUseContractualPooled()"></app-input>
               <div *ngIf="getErrorMessage('officeName')" class="text-danger error-message">
                 {{getErrorMessage('officeName')}}
               </div>
@@ -253,14 +194,8 @@
 
           <div class="col-md-6 col-lg-6">
             <div class="mb-3">
-              <app-input
-                label="Current Status"
-                type="select"
-                [options]="currentStatusOptions"
-                formControlName="currentStatus"
-                placeholder="Select Status"
-                width="100%"
-              ></app-input>
+              <app-input label="Current Status" type="select" [options]="currentStatusOptions"
+                formControlName="currentStatus" placeholder="Select Status" width="100%"></app-input>
               <div *ngIf="getErrorMessage('currentStatus')" class="text-danger error-message">
                 {{getErrorMessage('currentStatus')}}
               </div>
@@ -269,14 +204,8 @@
 
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Vehicle Allocation Type"
-                type="select"
-                [options]="vehicleAllocationTypeOptions"
-                formControlName="vehicleAllocationType"
-                placeholder="Select Allocation Type"
-                width="100%"
-              ></app-input>
+              <app-input label="Vehicle Allocation Type" type="select" [options]="vehicleAllocationTypeOptions"
+                formControlName="vehicleAllocationType" placeholder="Select Allocation Type" width="100%"></app-input>
               <div *ngIf="getErrorMessage('vehicleAllocationType')" class="text-danger error-message">
                 {{getErrorMessage('vehicleAllocationType')}}
               </div>
@@ -285,15 +214,9 @@
 
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Designation"
-                type="select"
-                [options]="designationOptions"
-                formControlName="designation"
-                placeholder="Select Designation"
-                width="100%"
-                [disabled]="isContractualPooled() || isPooled() || isRequisitionPooled() || isNotInUseContractualPooled()"
-              ></app-input>
+              <app-input label="Designation" type="select" [options]="designationOptions" formControlName="designation"
+                placeholder="Select Designation" width="100%"
+                [disabled]="isContractualPooled() || isPooled() || isRequisitionPooled() || isNotInUseContractualPooled()"></app-input>
               <div *ngIf="getErrorMessage('designation')" class="text-danger error-message">
                 {{getErrorMessage('designation')}}
               </div>
@@ -302,14 +225,8 @@
 
           <div class="col-md-6 col-lg-4" *ngIf="isProjectAllocation()">
             <div class="mb-3">
-              <app-input
-                label="Project"
-                type="select"
-                [options]="projectOptions"
-                formControlName="project"
-                placeholder="Select Project"
-                width="100%"
-              ></app-input>
+              <app-input label="Project" type="select" [options]="projectOptions" formControlName="project"
+                placeholder="Select Project" width="100%"></app-input>
               <div *ngIf="getErrorMessage('project')" class="text-danger error-message">
                 {{getErrorMessage('project')}}
               </div>
@@ -320,23 +237,11 @@
             <div class="mb-3">
               <div class="d-flex gap-2 align-items-end">
                 <div class="flex-grow-1">
-                  <app-input
-                    label="HRMS Code"
-                    type="text"
-                    formControlName="hrmsCode"
-                    placeholder="Enter HRMS Code"
-                    width="100%"
-                    [disabled]="isNotInUseContractualPooled()"
-                  ></app-input>
+                  <app-input label="HRMS Code" type="text" formControlName="hrmsCode" placeholder="Enter HRMS Code"
+                    width="100%" [disabled]="isNotInUseContractualPooled()"></app-input>
                 </div>
-                <app-btn 
-                  label="Verify" 
-                  variant="dark-blue" 
-                  type="button" 
-                  [isLoading]="isVerifyingHrms()"
-                  (click)="verifyHrms()"
-                  style="margin-bottom: 0.5rem;"
-                ></app-btn>
+                <app-btn label="Verify" variant="dark-blue" type="button" [isLoading]="isVerifyingHrms()"
+                  (click)="verifyHrms()" style="margin-bottom: 0.5rem;"></app-btn>
               </div>
               <div *ngIf="getErrorMessage('hrmsCode')" class="text-danger error-message">
                 {{getErrorMessage('hrmsCode')}}
@@ -346,41 +251,29 @@
 
           <div class="col-md-6 col-lg-4" *ngIf="isPoliticalPosition()">
             <div class="mb-3">
-              <app-input
-                label="Officer Name"
-                type="select"
-                [options]="officerOptions"
-                formControlName="officerName"
-                placeholder="Select Officer"
-                width="100%"
-                [disabled]="isContractualPooled() || isPooled() || isRequisitionPooled() || isNotInUseContractualPooled()"
-              ></app-input>
+              <app-input label="Officer Name" type="select" [options]="officerOptions" formControlName="officerName"
+                placeholder="Select Officer" width="100%"
+                [disabled]="isContractualPooled() || isPooled() || isRequisitionPooled() || isNotInUseContractualPooled()"></app-input>
               <div *ngIf="getErrorMessage('officerName')" class="text-danger error-message">
                 {{getErrorMessage('officerName')}}
               </div>
             </div>
           </div>
-      </div>
-      </div>
-      </div>
-
-      <!-- Section: Driver Details -->
-      <div class="card border-0 mb-4" *ngIf="isInUse() && (isEarmarked() || isPooled())">
-        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
-          <h6 class="text-dark-blue fw-bold mb-1">Driver Details</h6>
         </div>
-        <div class="card-body p-0">
+      </div>
+    </div>
+
+    <!-- Section: Driver Details -->
+    <div class="card border-0 mb-4" *ngIf="isInUse() && (isEarmarked() || isPooled())">
+      <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+        <h6 class="text-dark-blue fw-bold mb-1">Driver Details</h6>
+      </div>
+      <div class="card-body p-0">
         <div class="row">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Driver Type"
-                type="select"
-                [options]="driverTypeOptions"
-                formControlName="driverType"
-                placeholder="Select Driver Type"
-                width="100%"
-              ></app-input>
+              <app-input label="Driver Type" type="select" [options]="driverTypeOptions" formControlName="driverType"
+                placeholder="Select Driver Type" width="100%"></app-input>
               <div *ngIf="getErrorMessage('driverType')" class="text-danger error-message">
                 {{getErrorMessage('driverType')}}
               </div>
@@ -389,13 +282,8 @@
 
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Driver Name"
-                type="text"
-                formControlName="driverName"
-                placeholder="Enter Driver Name"
-                width="100%"
-              ></app-input>
+              <app-input label="Driver Name" type="text" formControlName="driverName" placeholder="Enter Driver Name"
+                width="100%"></app-input>
               <div *ngIf="getErrorMessage('driverName')" class="text-danger error-message">
                 {{getErrorMessage('driverName')}}
               </div>
@@ -404,39 +292,29 @@
 
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Driver Contact Number"
-                type="text"
-                formControlName="driverContactNumber"
-                placeholder="Enter Contact Number"
-                [maxLength]="10"
-                width="100%"
-              ></app-input>
+              <app-input label="Driver Contact Number" type="text" formControlName="driverContactNumber"
+                placeholder="Enter Contact Number" [maxLength]="10" width="100%"></app-input>
               <div *ngIf="getErrorMessage('driverContactNumber')" class="text-danger error-message">
                 {{getErrorMessage('driverContactNumber')}}
               </div>
             </div>
           </div>
-      </div>
-      </div>
-      </div>
-
-      <!-- Section: Contractor Details -->
-      <div class="card border-0 mb-4" *ngIf="(isInUse() || isCondemned() || isNotInUse()) && (isContractualEarmarked() || isContractualPooled())">
-        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
-          <h6 class="text-dark-blue fw-bold mb-1">Contractor Details</h6>
         </div>
-        <div class="card-body p-0">
+      </div>
+    </div>
+
+    <!-- Section: Contractor Details -->
+    <div class="card border-0 mb-4"
+      *ngIf="(isInUse() || isCondemned() || isNotInUse()) && (isContractualEarmarked() || isContractualPooled())">
+      <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+        <h6 class="text-dark-blue fw-bold mb-1">Contractor Details</h6>
+      </div>
+      <div class="card-body p-0">
         <div class="row">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Contractor Name"
-                type="text"
-                formControlName="contractorName"
-                placeholder="Enter Contractor Name"
-                width="100%"
-              ></app-input>
+              <app-input label="Contractor Name" type="text" formControlName="contractorName"
+                placeholder="Enter Contractor Name" width="100%"></app-input>
               <div *ngIf="getErrorMessage('contractorName')" class="text-danger error-message">
                 {{getErrorMessage('contractorName')}}
               </div>
@@ -445,40 +323,28 @@
 
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Contractor Contact Number"
-                type="text"
-                formControlName="contractorContactNumber"
-                placeholder="Enter Contact Number"
-                [maxLength]="10"
-                width="100%"
-              ></app-input>
+              <app-input label="Contractor Contact Number" type="text" formControlName="contractorContactNumber"
+                placeholder="Enter Contact Number" [maxLength]="10" width="100%"></app-input>
               <div *ngIf="getErrorMessage('contractorContactNumber')" class="text-danger error-message">
                 {{getErrorMessage('contractorContactNumber')}}
               </div>
             </div>
           </div>
-      </div>
-      </div>
-      </div>
-
-      <!-- Section: Requisition Details -->
-      <div class="card border-0 mb-4" *ngIf="(isInUse() || isCondemned() || isNotInUse()) && isRequisitionType()">
-        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
-          <h6 class="text-dark-blue fw-bold mb-1">Requisition Details</h6>
         </div>
-        <div class="card-body p-0">
+      </div>
+    </div>
+
+    <!-- Section: Requisition Details -->
+    <div class="card border-0 mb-4" *ngIf="(isInUse() || isCondemned() || isNotInUse()) && isRequisitionType()">
+      <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+        <h6 class="text-dark-blue fw-bold mb-1">Requisition Details</h6>
+      </div>
+      <div class="card-body p-0">
         <div class="row">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Department"
-                type="select"
-                [options]="departmentOptions"
-                formControlName="department"
-                placeholder="Select Department"
-                width="100%"
-              ></app-input>
+              <app-input label="Department" type="select" [options]="departmentOptions" formControlName="department"
+                placeholder="Select Department" width="100%"></app-input>
               <div *ngIf="getErrorMessage('department')" class="text-danger error-message">
                 {{getErrorMessage('department')}}
               </div>
@@ -487,40 +353,28 @@
 
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Vehicle Owner Office"
-                type="select"
-                [options]="vehicleOwnerOfficeOptions"
-                formControlName="vehicleOwnerOffice"
-                placeholder="Select Vehicle Owner Office"
-                width="100%"
-              ></app-input>
+              <app-input label="Vehicle Owner Office" type="select" [options]="vehicleOwnerOfficeOptions"
+                formControlName="vehicleOwnerOffice" placeholder="Select Vehicle Owner Office" width="100%"></app-input>
               <div *ngIf="getErrorMessage('vehicleOwnerOffice')" class="text-danger error-message">
                 {{getErrorMessage('vehicleOwnerOffice')}}
               </div>
             </div>
           </div>
-      </div>
-      </div>
-      </div>
-
-      <!-- Section: Registration Details -->
-      <div class="card border-0 mb-4">
-        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
-          <h6 class="text-dark-blue fw-bold mb-1">Registration Details</h6>
         </div>
-        <div class="card-body p-0">
+      </div>
+    </div>
+
+    <!-- Section: Registration Details -->
+    <div class="card border-0 mb-4">
+      <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+        <h6 class="text-dark-blue fw-bold mb-1">Registration Details</h6>
+      </div>
+      <div class="card-body p-0">
         <div class="row">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Registration Type"
-                type="select"
-                [options]="registrationTypeOptions"
-                formControlName="registrationType"
-                placeholder="Select Type"
-                width="100%"
-              ></app-input>
+              <app-input label="Registration Type" type="select" [options]="registrationTypeOptions"
+                formControlName="registrationType" placeholder="Select Type" width="100%"></app-input>
               <div *ngIf="getErrorMessage('registrationType')" class="text-danger error-message">
                 {{getErrorMessage('registrationType')}}
               </div>
@@ -529,16 +383,8 @@
 
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Registration Number"
-                [required]="true"
-                type="text"
-                formControlName="registrationNumber"
-                placeholder="MH12AB1234"
-                [maxLength]="13"
-                customClass="text-uppercase"
-                width="100%"
-              ></app-input>
+              <app-input label="Registration Number" [required]="true" type="text" formControlName="registrationNumber"
+                placeholder="MH12AB1234" [maxLength]="13" customClass="text-uppercase" width="100%"></app-input>
               <div *ngIf="getErrorMessage('registrationNumber')" class="text-danger error-message">
                 {{getErrorMessage('registrationNumber')}}
               </div>
@@ -547,14 +393,8 @@
 
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Manufacture Year"
-                type="select"
-                [options]="manufactureYearOptions"
-                formControlName="manufactureYear"
-                placeholder="Select Year"
-                width="100%"
-              ></app-input>
+              <app-input label="Manufacture Year" type="select" [options]="manufactureYearOptions"
+                formControlName="manufactureYear" placeholder="Select Year" width="100%"></app-input>
               <div *ngIf="getErrorMessage('manufactureYear')" class="text-danger error-message">
                 {{getErrorMessage('manufactureYear')}}
               </div>
@@ -563,40 +403,28 @@
 
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Seating Capacity"
-                type="number"
-                formControlName="seatingCapacity"
-                placeholder="Enter seating capacity"
-                width="100%"
-              ></app-input>
+              <app-input label="Seating Capacity" type="number" formControlName="seatingCapacity"
+                placeholder="Enter seating capacity" width="100%"></app-input>
               <div *ngIf="getErrorMessage('seatingCapacity')" class="text-danger error-message">
                 {{getErrorMessage('seatingCapacity')}}
               </div>
             </div>
           </div>
-      </div>
-      </div>
-      </div>
-
-      <!-- Section: Vehicle Details -->
-      <div class="card border-0 mb-4">
-        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
-          <h6 class="text-dark-blue fw-bold mb-1">Vehicle Details</h6>
         </div>
-        <div class="card-body p-0">
+      </div>
+    </div>
+
+    <!-- Section: Vehicle Details -->
+    <div class="card border-0 mb-4">
+      <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+        <h6 class="text-dark-blue fw-bold mb-1">Vehicle Details</h6>
+      </div>
+      <div class="card-body p-0">
         <div class="row">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Vehicle Type"
-                [required]="true"
-                type="select"
-                [options]="vehicleTypeOptions"
-                formControlName="vehicleType"
-                placeholder="Select Vehicle Type"
-                width="100%"
-              ></app-input>
+              <app-input label="Vehicle Type" [required]="true" type="select" [options]="vehicleTypeOptions"
+                formControlName="vehicleType" placeholder="Select Vehicle Type" width="100%"></app-input>
               <div *ngIf="getErrorMessage('vehicleType')" class="text-danger error-message">
                 {{getErrorMessage('vehicleType')}}
               </div>
@@ -605,15 +433,8 @@
 
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Manufacturer"
-                [required]="true"
-                type="select"
-                [options]="manufacturerOptions"
-                formControlName="manufacturer"
-                placeholder="Select Manufacturer"
-                width="100%"
-              ></app-input>
+              <app-input label="Manufacturer" [required]="true" type="select" [options]="manufacturerOptions"
+                formControlName="manufacturer" placeholder="Select Manufacturer" width="100%"></app-input>
               <div *ngIf="getErrorMessage('manufacturer')" class="text-danger error-message">
                 {{getErrorMessage('manufacturer')}}
               </div>
@@ -622,39 +443,28 @@
 
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Model"
-                type="select"
-                [options]="modelOptions"
-                formControlName="model"
-                placeholder="Select Model"
-                width="100%"
-              ></app-input>
+              <app-input label="Model" type="select" [options]="modelOptions" formControlName="model"
+                placeholder="Select Model" width="100%"></app-input>
               <div *ngIf="getErrorMessage('model')" class="text-danger error-message">
                 {{getErrorMessage('model')}}
               </div>
             </div>
           </div>
-      </div>
-      </div>
-      </div>
-
-      <!-- Section: Uploads -->
-      <div class="card border-0 mb-4">
-        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
-          <h6 class="text-dark-blue fw-bold mb-1">Uploads</h6>
         </div>
-        <div class="card-body p-0">
+      </div>
+    </div>
+
+    <!-- Section: Uploads -->
+    <div class="card border-0 mb-4">
+      <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+        <h6 class="text-dark-blue fw-bold mb-1">Uploads</h6>
+      </div>
+      <div class="card-body p-0">
         <div class="row">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Vehicle Photo"
-                type="file"
-                accept=".jpg,.jpeg,.png"
-                (change)="onVehiclePhotoChange($event)"
-                width="100%"
-              ></app-input>
+              <app-input label="Vehicle Photo" type="file" accept=".jpg,.jpeg,.png"
+                (change)="onVehiclePhotoChange($event)" width="100%"></app-input>
               <small class="text-muted">Max size: 2MB. Formats: JPG, JPEG, PNG</small>
               <div *ngIf="existingVehiclePhotoUrl && isEditMode" class="mt-2">
                 <a [href]="existingVehiclePhotoUrl" target="_blank" class="text-primary small text-decoration-none">
@@ -669,16 +479,12 @@
 
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Registration Certificate"
-                type="file"
-                accept=".jpg,.jpeg,.png"
-                (change)="onRegistrationCertificateChange($event)"
-                width="100%"
-              ></app-input>
+              <app-input label="Registration Certificate" type="file" accept=".jpg,.jpeg,.png"
+                (change)="onRegistrationCertificateChange($event)" width="100%"></app-input>
               <small class="text-muted">Max size: 2MB. Formats: JPG, JPEG, PNG</small>
               <div *ngIf="existingRegistrationCertificateUrl && isEditMode" class="mt-2">
-                <a [href]="existingRegistrationCertificateUrl" target="_blank" class="text-primary small text-decoration-none">
+                <a [href]="existingRegistrationCertificateUrl" target="_blank"
+                  class="text-primary small text-decoration-none">
                   <i class="pi pi-external-link me-1"></i> View Current Certificate
                 </a>
               </div>
@@ -687,28 +493,22 @@
               </div>
             </div>
           </div>
-      </div>
-      </div>
-      </div>
-
-      <!-- Section: Technical Details -->
-      <div class="card border-0 mb-4">
-        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
-          <h6 class="text-dark-blue fw-bold mb-1">Technical Details</h6>
         </div>
-        <div class="card-body p-0">
+      </div>
+    </div>
+
+    <!-- Section: Technical Details -->
+    <div class="card border-0 mb-4">
+      <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+        <h6 class="text-dark-blue fw-bold mb-1">Technical Details</h6>
+      </div>
+      <div class="card-body p-0">
         <div class="row">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Chassis Number"
-                type="text"
-                formControlName="chassisNumber"
-                placeholder="17-character alphanumeric"
-                [maxLength]="17"
-                customClass="text-uppercase"
-                width="100%"
-              ></app-input>
+              <app-input label="Chassis Number" type="text" formControlName="chassisNumber"
+                placeholder="17-character alphanumeric" [maxLength]="17" customClass="text-uppercase"
+                width="100%"></app-input>
               <div *ngIf="getErrorMessage('chassisNumber')" class="text-danger error-message">
                 {{getErrorMessage('chassisNumber')}}
               </div>
@@ -717,13 +517,8 @@
 
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Vehicle Cost (₹)"
-                type="number"
-                formControlName="vehicleCost"
-                placeholder="Enter vehicle cost"
-                width="100%"
-              ></app-input>
+              <app-input label="Vehicle Cost (₹)" type="number" formControlName="vehicleCost"
+                placeholder="Enter vehicle cost" width="100%"></app-input>
               <div *ngIf="getErrorMessage('vehicleCost')" class="text-danger error-message">
                 {{getErrorMessage('vehicleCost')}}
               </div>
@@ -732,39 +527,27 @@
 
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Fuel Used"
-                [required]="true"
-                type="select"
-                [options]="fuelTypeOptions"
-                formControlName="fuelUsed"
-                placeholder="Select Fuel Type"
-                width="100%"
-              ></app-input>
+              <app-input label="Fuel Used" [required]="true" type="select" [options]="fuelTypeOptions"
+                formControlName="fuelUsed" placeholder="Select Fuel Type" width="100%"></app-input>
               <div *ngIf="getErrorMessage('fuelUsed')" class="text-danger error-message">
                 {{getErrorMessage('fuelUsed')}}
               </div>
             </div>
           </div>
-      </div>
-      </div>
-      </div>
-
-      <!-- Section: Dates & Usage -->
-      <div class="card border-0 mb-4">
-        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
-          <h6 class="text-dark-blue fw-bold mb-1">Dates & Usage</h6>
         </div>
-        <div class="card-body p-0">
+      </div>
+    </div>
+
+    <!-- Section: Dates & Usage -->
+    <div class="card border-0 mb-4">
+      <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+        <h6 class="text-dark-blue fw-bold mb-1">Dates & Usage</h6>
+      </div>
+      <div class="card-body p-0">
         <div class="row">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Purchase Date"
-                type="date"
-                formControlName="purchaseDate"
-                width="100%"
-              ></app-input>
+              <app-input label="Purchase Date" type="date" formControlName="purchaseDate" width="100%"></app-input>
               <div *ngIf="getErrorMessage('purchaseDate')" class="text-danger error-message">
                 {{getErrorMessage('purchaseDate')}}
               </div>
@@ -773,12 +556,7 @@
 
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Fitness Valid Upto"
-                type="date"
-                formControlName="fitnessUpto"
-                width="100%"
-              ></app-input>
+              <app-input label="Fitness Valid Upto" type="date" formControlName="fitnessUpto" width="100%"></app-input>
               <div *ngIf="getErrorMessage('fitnessUpto')" class="text-danger error-message">
                 {{getErrorMessage('fitnessUpto')}}
               </div>
@@ -787,13 +565,8 @@
 
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="KMs Covered"
-                type="number"
-                formControlName="kmsCovered"
-                placeholder="Enter kilometers covered"
-                width="100%"
-              ></app-input>
+              <app-input label="KMs Covered" type="number" formControlName="kmsCovered"
+                placeholder="Enter kilometers covered" width="100%"></app-input>
               <div *ngIf="getErrorMessage('kmsCovered')" class="text-danger error-message">
                 {{getErrorMessage('kmsCovered')}}
               </div>
@@ -801,23 +574,18 @@
           </div>
         </div>
       </div>
+    </div>
+    <!-- Section: Fuel & Maintenance (Last 3 Months) -->
+    <div class="card border-0 mb-4">
+      <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+        <h6 class="text-dark-blue fw-bold mb-1">Fuel & Maintenance (Last 3 Months)</h6>
       </div>
-      <!-- Section: Fuel & Maintenance (Last 3 Months) -->
-      <div class="card border-0 mb-4">
-        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
-          <h6 class="text-dark-blue fw-bold mb-1">Fuel & Maintenance (Last 3 Months)</h6>
-        </div>
-        <div class="card-body p-0">
+      <div class="card-body p-0">
         <div class="row">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Fuel Cost (₹)"
-                type="number"
-                formControlName="fuelCostLast3Months"
-                placeholder="Enter fuel cost"
-                width="100%"
-              ></app-input>
+              <app-input label="Fuel Cost (₹)" type="number" formControlName="fuelCostLast3Months"
+                placeholder="Enter fuel cost" width="100%"></app-input>
               <div *ngIf="getErrorMessage('fuelCostLast3Months')" class="text-danger error-message">
                 {{getErrorMessage('fuelCostLast3Months')}}
               </div>
@@ -826,13 +594,8 @@
 
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Fuel Litres"
-                type="number"
-                formControlName="fuelLitresLast3Months"
-                placeholder="Enter fuel litres"
-                width="100%"
-              ></app-input>
+              <app-input label="Fuel Litres" type="number" formControlName="fuelLitresLast3Months"
+                placeholder="Enter fuel litres" width="100%"></app-input>
               <div *ngIf="getErrorMessage('fuelLitresLast3Months')" class="text-danger error-message">
                 {{getErrorMessage('fuelLitresLast3Months')}}
               </div>
@@ -841,39 +604,28 @@
 
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Maintenance Cost (₹)"
-                type="number"
-                formControlName="maintenanceCostLast3Months"
-                placeholder="Enter maintenance cost"
-                width="100%"
-              ></app-input>
+              <app-input label="Maintenance Cost (₹)" type="number" formControlName="maintenanceCostLast3Months"
+                placeholder="Enter maintenance cost" width="100%"></app-input>
               <div *ngIf="getErrorMessage('maintenanceCostLast3Months')" class="text-danger error-message">
                 {{getErrorMessage('maintenanceCostLast3Months')}}
               </div>
             </div>
           </div>
-      </div>
-      </div>
-      </div>
-
-      <!-- Section: Tyre Details -->
-      <div class="card border-0 mb-4">
-        <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
-          <h6 class="text-dark-blue fw-bold mb-1">Tyre Details</h6>
         </div>
-        <div class="card-body p-0">
+      </div>
+    </div>
+
+    <!-- Section: Tyre Details -->
+    <div class="card border-0 mb-4">
+      <div class="card-header bg-transparent border-bottom-dark-blue px-0 mb-3">
+        <h6 class="text-dark-blue fw-bold mb-1">Tyre Details</h6>
+      </div>
+      <div class="card-body p-0">
         <div class="row">
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Is Tyre Original?"
-                type="select"
-                [options]="yesNoOptionOptions"
-                formControlName="isTyreOriginal"
-                placeholder="Select Option"
-                width="100%"
-              ></app-input>
+              <app-input label="Is Tyre Original?" type="select" [options]="yesNoOptionOptions"
+                formControlName="isTyreOriginal" placeholder="Select Option" width="100%"></app-input>
               <div *ngIf="getErrorMessage('isTyreOriginal')" class="text-danger error-message">
                 {{getErrorMessage('isTyreOriginal')}}
               </div>
@@ -882,12 +634,8 @@
 
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Tyre Changed Date"
-                type="date"
-                formControlName="tyreChangedDate"
-                width="100%"
-              ></app-input>
+              <app-input label="Tyre Changed Date" type="date" formControlName="tyreChangedDate"
+                width="100%"></app-input>
               <div *ngIf="getErrorMessage('tyreChangedDate')" class="text-danger error-message">
                 {{getErrorMessage('tyreChangedDate')}}
               </div>
@@ -896,13 +644,8 @@
 
           <div class="col-md-6 col-lg-4">
             <div class="mb-3">
-              <app-input
-                label="Tyre Changed Meter Reading (KM)"
-                type="number"
-                formControlName="tyreChangedMeterReading"
-                placeholder="Enter meter reading"
-                width="100%"
-              ></app-input>
+              <app-input label="Tyre Changed Meter Reading (KM)" type="number" formControlName="tyreChangedMeterReading"
+                placeholder="Enter meter reading" width="100%"></app-input>
               <div *ngIf="getErrorMessage('tyreChangedMeterReading')" class="text-danger error-message">
                 {{getErrorMessage('tyreChangedMeterReading')}}
               </div>
@@ -910,18 +653,19 @@
           </div>
         </div>
       </div>
-      </div>
+    </div>
 
-      <!-- Action Buttons -->
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <app-btn label="← Back" variant="dark-blue" size="sm" (click)="goBack()"></app-btn>
-        <div class="d-flex align-items-center gap-2">
-          <!-- Dev helper: shows which fields are invalid -->
+    <!-- Action Buttons -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <app-btn label="← Back" variant="dark-blue" size="sm" (click)="goBack()"></app-btn>
+      <div class="d-flex align-items-center gap-2">
+        <!-- Dev helper: shows which fields are invalid
           <small *ngIf="vehicleForm.invalid" class="text-danger me-2">
             Invalid: {{ getInvalidFields() }}
-          </small>
-          <app-btn [label]="isEditMode ? 'Update Vehicle' : 'Save Vehicle'" variant="dark-blue" size="sm" type="submit" [disabled]="vehicleForm.invalid || isSubmitting()" icon="pi pi-save"></app-btn>
-        </div>
+          </small> -->
+        <app-btn [label]="isEditMode ? 'Update Vehicle' : 'Save Vehicle'" variant="dark-blue" size="sm" type="submit"
+          [disabled]="vehicleForm.invalid || isSubmitting()" icon="pi pi-save"></app-btn>
       </div>
-    </form>
+    </div>
+  </form>
 </div>

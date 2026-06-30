@@ -8,13 +8,12 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '@env/environment';
 import { ButtonModule } from 'primeng/button';
 import { AppButtonComponent } from '@shared/components/ui/app-button/button.component';
-
-
+import { AuthLayoutComponent } from '@shared/layouts/auth-layout/auth-layout.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, AppButtonComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, AppButtonComponent, AuthLayoutComponent],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
@@ -121,6 +120,7 @@ export class Login {
   }
 
   onSubmit(): void {
+    debugger;
     const rawForm = this.loginForm.getRawValue();
     console.log('--- LOGIN FLOW START ---');
     console.log('1. LoginComponent.onSubmit: Raw Form Data:', JSON.stringify({ ...rawForm, password: '***' }));

@@ -20,6 +20,7 @@ export class MarkCondemnedComponent implements OnInit {
   isLoading = false;
   selectedFile: File | null = null;
   markedVehicles: any[] = [];
+  condemnedVehicleOptions: { label: string; value: string }[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -42,6 +43,10 @@ export class MarkCondemnedComponent implements OnInit {
     this.vehicleService.getVehicles().subscribe({
       next: (res: any[]) => {
         this.markedVehicles = res.filter((v: any) => v.currentStatus === 'CONDEMNED' || v.currentStatus === 'Marked for Condemned by FD');
+        this.condemnedVehicleOptions = this.markedVehicles.map(v => ({
+          label: v.registrationNumber,
+          value: v.registrationNumber
+        }));
       },
       error: () => {
         Swal.fire('Error', 'Failed to load condemned vehicles', 'error');
@@ -92,7 +97,7 @@ export class MarkCondemnedComponent implements OnInit {
       next: () => {
         this.isLoading = false;
         Swal.fire('Success', 'Vehicle replacement details submitted successfully!', 'success').then(() => {
-          this.router.navigate(['/vehicles/dashboard']);
+          this.router.navigate(['/vehicle']);
         });
       },
       error: (err: any) => {
@@ -103,6 +108,6 @@ export class MarkCondemnedComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/vehicles/dashboard']);
+    this.router.navigate(['/vehicle']);
   }
 }

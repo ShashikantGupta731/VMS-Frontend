@@ -1,5 +1,163 @@
 <div class="loader-overlay" *ngIf="isLoading$ | async">
-  <div class="loader-container">
-    <div class="css-spinner"></div>
+  <div class="loader-wrapper">
+    <div class="animation-container">
+      <!-- Sleek Mustang Classic Car SVG -->
+      <svg class="car-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 60" width="200" height="75">
+        <defs>
+          <!-- Solid Indigo Body Color to match project theme (#667eea) -->
+          <linearGradient id="carIndigo" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#8a9cfa" />
+            <stop offset="100%" stop-color="#4c51bf" />
+          </linearGradient>
+          <!-- Silver/Chrome for bumpers and trim -->
+          <linearGradient id="chrome" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#ffffff" />
+            <stop offset="50%" stop-color="#d1d5db" />
+            <stop offset="100%" stop-color="#9ca3af" />
+          </linearGradient>
+          <!-- Glass reflection -->
+          <linearGradient id="glass" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ebf8ff" />
+            <stop offset="100%" stop-color="#bee3f8" />
+          </linearGradient>
+        </defs>
+
+        <!-- Car Body Group (vibrates/bounces) -->
+        <g class="car-body">
+          <!-- Under-car Shadow -->
+          <ellipse cx="80" cy="50" rx="72" ry="3" fill="#1a202c" opacity="0.3" />
+
+          <!-- Rear Chrome Bumper -->
+          <path d="M 8,32 L 8,36 C 8,37.5 9,38 10,38 L 13,38 L 12,32 Z" fill="url(#chrome)" stroke="#718096" stroke-width="0.5" />
+          
+          <!-- Front Chrome Bumper -->
+          <path d="M 148,34 L 148,39 L 144,39 C 142,39 141.5,38 141,36 L 141,34 Z" fill="url(#chrome)" stroke="#718096" stroke-width="0.5" />
+
+          <!-- Main Car Body Path -->
+          <path d="M 10,38 
+                   L 10,31 
+                   Q 9.5,29 11,29
+                   L 15,29
+                   L 21,24
+                   L 30,23
+                   L 60,11
+                   L 94,11
+                   L 107,23
+                   L 144,24
+                   Q 146,24 146,26
+                   L 144,34
+                   L 142,38
+                   L 125,38
+                   A 12,12 0 0,0 101,38
+                   L 53,38
+                   A 12,12 0 0,0 29,38
+                   L 10,38 Z" 
+                fill="url(#carIndigo)" stroke="#312e81" stroke-width="0.75" />
+
+          <!-- White racing stripe near bottom -->
+          <path d="M 29,35 L 53,35 M 101,35 L 125,35" stroke="#ffffff" stroke-width="2.5" />
+          
+          <!-- Thin dark indigo line under the white stripe (rocker panel) -->
+          <path d="M 29,37 L 53,37 M 101,37 L 125,37" stroke="#312e81" stroke-width="1" />
+
+          <!-- Window Chrome Trim Outline -->
+          <path d="M 52,22 
+                   L 94,22 
+                   L 86,13 
+                   L 58,13 Z" 
+                fill="url(#chrome)" />
+
+          <!-- Window Glass -->
+          <path d="M 54,21 
+                   L 92,21 
+                   L 85,14 
+                   L 59,14 Z" 
+                fill="url(#glass)" stroke="#4a5568" stroke-width="0.5" />
+
+          <!-- Window Pillars -->
+          <!-- B-pillar separating door and rear quarter window -->
+          <line x1="74" y1="14" x2="74" y2="21" stroke="#4a5568" stroke-width="1.5" />
+          <!-- Vent window pillar at front -->
+          <line x1="86" y1="14" x2="88" y2="21" stroke="#4a5568" stroke-width="1" />
+
+          <!-- Taillight (yellow/orange side marker) -->
+          <path d="M 10.5,25 L 12.5,25 L 12.5,29 L 10.5,29 Z" fill="#dd6b20" />
+
+          <!-- Headlight (silver trim with bulb) -->
+          <circle cx="141.5" cy="28.5" r="2" fill="#fff" stroke="#cbd5e0" stroke-width="0.5" />
+          <circle cx="141.5" cy="28.5" r="1" fill="#ffeb3b" />
+
+          <!-- Door Handle -->
+          <rect x="68" y="24.5" width="5" height="1" rx="0.5" fill="url(#chrome)" stroke="#718096" stroke-width="0.25" />
+
+          <!-- Side Mirror -->
+          <path d="M 90,21 L 93,19 L 91,19 Z" fill="url(#chrome)" stroke="#718096" stroke-width="0.5" />
+
+          <!-- Front Fender Badge/Indicator -->
+          <circle cx="127" cy="27" r="0.75" fill="#ecc94b" />
+
+          <!-- Antenna -->
+          <line x1="97" y1="23" x2="94" y2="15" stroke="#718096" stroke-width="0.75" />
+        </g>
+
+        <!-- Wheels Group -->
+        <!-- Rear Wheel (Centered at 41, 38) -->
+        <g transform="translate(41, 38)">
+          <g class="wheel wheel-back">
+            <circle cx="0" cy="0" r="10" fill="#2d3748" stroke="#1a202c" stroke-width="1" />
+            <circle cx="0" cy="0" r="7.5" fill="#4a5568" />
+            <!-- Silver Rim Edge -->
+            <circle cx="0" cy="0" r="7.5" fill="none" stroke="#e2e8f0" stroke-width="1.2" />
+            <!-- 5 Spokes -->
+            <g class="spokes">
+              <path d="M 0,0 L 0,-7" stroke="#edf2f7" stroke-width="1.5" stroke-linecap="round" />
+              <path d="M 0,0 L 6,-3.5" stroke="#edf2f7" stroke-width="1.5" stroke-linecap="round" />
+              <path d="M 0,0 L 4,5.5" stroke="#edf2f7" stroke-width="1.5" stroke-linecap="round" />
+              <path d="M 0,0 L -4,5.5" stroke="#edf2f7" stroke-width="1.5" stroke-linecap="round" />
+              <path d="M 0,0 L -6,-3.5" stroke="#edf2f7" stroke-width="1.5" stroke-linecap="round" />
+            </g>
+            <!-- Center Hub -->
+            <circle cx="0" cy="0" r="2.5" fill="#cbd5e0" stroke="#718096" stroke-width="0.5" />
+            <circle cx="0" cy="0" r="1" fill="#1a202c" />
+          </g>
+        </g>
+
+        <!-- Front Wheel (Centered at 113, 38) -->
+        <g transform="translate(113, 38)">
+          <g class="wheel wheel-front">
+            <circle cx="0" cy="0" r="10" fill="#2d3748" stroke="#1a202c" stroke-width="1" />
+            <circle cx="0" cy="0" r="7.5" fill="#4a5568" />
+            <!-- Silver Rim Edge -->
+            <circle cx="0" cy="0" r="7.5" fill="none" stroke="#e2e8f0" stroke-width="1.2" />
+            <!-- 5 Spokes -->
+            <g class="spokes">
+              <path d="M 0,0 L 0,-7" stroke="#edf2f7" stroke-width="1.5" stroke-linecap="round" />
+              <path d="M 0,0 L 6,-3.5" stroke="#edf2f7" stroke-width="1.5" stroke-linecap="round" />
+              <path d="M 0,0 L 4,5.5" stroke="#edf2f7" stroke-width="1.5" stroke-linecap="round" />
+              <path d="M 0,0 L -4,5.5" stroke="#edf2f7" stroke-width="1.5" stroke-linecap="round" />
+              <path d="M 0,0 L -6,-3.5" stroke="#edf2f7" stroke-width="1.5" stroke-linecap="round" />
+            </g>
+            <!-- Center Hub -->
+            <circle cx="0" cy="0" r="2.5" fill="#cbd5e0" stroke="#718096" stroke-width="0.5" />
+            <circle cx="0" cy="0" r="1" fill="#1a202c" />
+          </g>
+        </g>
+      </svg>
+      
+      <!-- Road Surface below the wheels -->
+      <div class="road">
+        <div class="road-stripes"></div>
+      </div>
+      
+      <!-- Wind / Motion Lines for speed effect -->
+      <div class="wind-line wind-1"></div>
+      <div class="wind-line wind-2"></div>
+      <div class="wind-line wind-3"></div>
+    </div>
+    
+    <!-- Premium loading text with letter spacing / staggered fade -->
+    <div class="loading-label">
+      <span>L</span><span>o</span><span>a</span><span>d</span><span>i</span><span>n</span><span>g</span><span>.</span><span>.</span><span>.</span>
+    </div>
   </div>
 </div>

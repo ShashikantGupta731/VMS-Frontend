@@ -1,228 +1,145 @@
-<div class="d-flex min-vh-100 align-items-center justify-content-between login-container position-relative"
-  style="background-image: url('login_background1.png'); background-size: cover; background-position: center; overflow: hidden;">
-
-  <!-- Top Left Logo -->
-  <div class="position-absolute" style="z-index: 10; top: -15px; left: -10px;">
-    <img src="vms_logo.png" alt="VMS Logo" class="top-left-logo" style="max-height: 110px; width: auto;" />
-  </div>
-
-  <!-- Main Card Container -->
-  <div class="w-100 d-flex align-items-center justify-content-center p-3 p-md-5" style="z-index: 2;">
-
-    <div class="login-form-container d-flex flex-row position-relative"
-      style="max-width: 1200px; width: 100%; min-height: 550px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-
-      <!-- Left Section (Image) -->
-      <div class="d-none d-lg-flex align-items-center justify-content-center flex-grow-1 overflow-hidden"
-        style="border-right: 2px solid rgba(255, 255, 255, 0.4);">
-        <img src="login_element1.png" alt="VMS Illustration"
-          style="width: 100%; height: 100%; object-fit: cover; object-position: center;" />
+<app-auth-layout>
+  @if (authView() === 'login') {
+    <!-- Header -->
+    <div class="avatar-header-container">
+      <div class="avatar-circle">
+        <i class="fas fa-user-shield"></i>
       </div>
-
-      <!-- Right Section (Form) -->
-      <div class="d-flex flex-column position-relative"
-        style="width: 100%; max-width: 400px; flex-shrink: 0; margin: 0 auto;">
-        @if (authView() === 'login') {
-        <!-- Header -->
-        <div class="login-header text-center">
-          <h2 class="text-uppercase m-0 pt-4 pb-4"
-            style="letter-spacing: 2px; font-weight: 300; font-size: 18px; color: #000000; border-bottom: 1px solid rgba(0,0,0,0.1);">
-            LOGIN</h2>
-        </div>
-
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form-content pt-4">
-          <!-- Username Field -->
-          <div class="mb-4 position-relative">
-            <label for="username" class="d-none" style="color: #000000;">Username</label>
-            <i class="fas fa-envelope position-absolute" style="left: 0; top: 12px; color: #000000;"></i>
-            <input type="text" id="username" class="form-control minimal-input" formControlName="username"
-              placeholder="Username" />
-          </div>
-
-          <!-- Password Field -->
-          <div class="mb-4 position-relative">
-            <label for="password" class="d-none" style="color: #000000;">Password</label>
-            <i class="fas fa-lock position-absolute" style="left: 0; top: 12px; color: #000000;"></i>
-            <input [type]="showPassword() ? 'text' : 'password'" id="password" class="form-control minimal-input"
-              formControlName="password" placeholder="Password" />
-            <button type="button" (click)="togglePasswordVisibility()" class="password-toggle-btn"
-              style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #000000; padding: 5px;">
-              <i [ngClass]="showPassword() ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
-            </button>
-          </div>
-
-          <!-- Captcha Field -->
-          <div class="mb-4 position-relative">
-            <label for="captcha" class="d-none" style="color: #000000;">Captcha</label>
-            <div class="d-flex align-items-center">
-              <div class="position-relative" style="flex: 1;">
-                <i class="fas fa-shield-alt position-absolute" style="left: 0; top: 12px; color: #000000;"></i>
-                <input type="text" id="captcha" class="form-control minimal-input" formControlName="captcha"
-                  maxlength="6" placeholder="Captcha" />
-              </div>
-              <div class="captcha-display d-flex align-items-center justify-content-between px-2 ms-3"
-                style="width: 140px; height: 35px; background: transparent; border-radius: 5px; box-shadow: none;">
-                <div
-                  style="flex: 1; height: 100%; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-                  <img *ngIf="captchaImageUrl" [src]="captchaImageUrl" alt="Captcha"
-                    style="max-width: 100%; max-height: 100%; object-fit: contain; filter: grayscale(1) contrast(1.5); mix-blend-mode: multiply;" />
-                </div>
-                <button type="button" (click)="refreshCaptcha()"
-                  class="captcha-refresh-btn d-flex align-items-center justify-content-center flex-shrink-0"
-                  style="width: 24px; height: 24px; background: transparent; border: none; cursor: pointer; color: #000000; transition: transform 0.2s;"
-                  title="Refresh Captcha" onmouseover="this.style.transform='rotate(90deg)'"
-                  onmouseout="this.style.transform='rotate(0deg)'">
-                  <i class="fas fa-redo-alt" style="font-size: 12px;"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Sign In Button -->
-          <div class="mt-4 mb-4 text-center">
-            <app-btn [type]="'submit'" [label]="'LOGIN'" [loading]="isLoadingCaptcha"
-              [customClass]="'light-pill-btn w-100'"></app-btn>
-          </div>
-
-          <!-- Footer Links -->
-          <div class="text-center d-flex flex-column gap-2 pb-2">
-            <div>
-              <a routerLink="/signup" class="text-decoration-none fw-bold"
-                style="color: #000000; font-size: 14px;">Signup</a>
-              <span class="mx-2" style="color: #000000; font-weight: bold;">|</span>
-              <a href="javascript:void(0)" (click)="showResetPassword()" class="text-decoration-none fw-bold"
-                style="color: #000000; font-size: 14px;">Forgot Password?</a>
-            </div>
-            <div style="color: rgba(0,0,0,0.7); font-size: 12px; font-weight: 400; padding: 0 10px; margin-top: 5px;">
-              © 2025-2026, Designed and Developed by NIC, Punjab. <br>All rights reserved.
-            </div>
-            <div style="margin-top: 5px;">
-              <a href="javascript:void(0)" class="text-decoration-none fw-bold"
-                style="color: #000000; font-size: 14px;">Contact Us</a>
-            </div>
-          </div>
-
-          <!-- Login as Guest Button -->
-          <div class="mt-3 text-center">
-            <a href="javascript:void(0)" (click)="onGuestLogin()" class="text-decoration-none fw-bold"
-              style="color: #000000; font-size: 14px;">
-              <i class="fas fa-user-circle me-1"></i> Continue as Guest
-            </a>
-          </div>
-        </form>
-        } @else if (authView() === 'guest') {
-        <!-- Header -->
-        <div class="login-header text-center">
-          <h2 class="text-uppercase m-0 pt-4 pb-4"
-            style="letter-spacing: 2px; font-weight: 300; font-size: 18px; color: #000000; border-bottom: 1px solid rgba(0,0,0,0.1);">
-            GUEST ACCESS</h2>
-        </div>
-
-        <form [formGroup]="guestForm" (ngSubmit)="getOtp()" class="form-content pt-4">
-          <p class="text-center text-muted mb-4" style="font-size: 13px;">Enter your details to receive an OTP</p>
-
-          <div class="mb-4 position-relative">
-            <label class="d-none" style="color: #000000;">Full Name</label>
-            <i class="fas fa-user position-absolute" style="left: 0; top: 12px; color: #000000;"></i>
-            <input type="text" class="form-control minimal-input" formControlName="fullName"
-              placeholder="Enter your name" />
-          </div>
-
-          <div class="mb-4 position-relative">
-            <label class="d-none" style="color: #000000;">Mobile Number</label>
-            <i class="fas fa-phone position-absolute" style="left: 0; top: 12px; color: #000000;"></i>
-            <input type="text" class="form-control minimal-input" formControlName="phone"
-              placeholder="10-digit mobile number" maxlength="10" />
-          </div>
-
-          <div class="mt-4 mb-4 text-center">
-            <app-btn [type]="'submit'" [label]="'GET OTP'" [disabled]="guestForm.invalid"
-              [customClass]="'light-pill-btn w-100'"></app-btn>
-          </div>
-
-          <div class="text-center pb-2">
-            <a href="javascript:void(0)" (click)="showLogin()" class="text-decoration-none"
-              style="color: #000000; font-size: 13px; font-weight: 300;">Back to Login</a>
-          </div>
-        </form>
-        } @else if (authView() === 'otp') {
-        <!-- Header -->
-        <div class="login-header text-center">
-          <h2 class="text-uppercase m-0 pt-4 pb-4"
-            style="letter-spacing: 2px; font-weight: 300; font-size: 18px; color: #000000; border-bottom: 1px solid rgba(0,0,0,0.1);">
-            VERIFY OTP</h2>
-        </div>
-
-        <form [formGroup]="otpForm" (ngSubmit)="onVerifyOtp()" class="form-content pt-4">
-          <p class="text-center text-muted mb-4" style="font-size: 13px;">We've sent a code to +91-{{phone}}</p>
-
-          <div class="mb-4">
-            <div class="d-flex justify-content-center gap-2">
-              <input type="text" class="form-control minimal-input text-center fw-bold"
-                style="width: 220px; font-size: 24px; letter-spacing: 8px; padding-left: 0;" formControlName="otp"
-                placeholder="------" maxlength="6" />
-            </div>
-          </div>
-
-          <div class="mt-4 mb-4 text-center">
-            <app-btn [type]="'submit'" [label]="'VERIFY & LOGIN'" [disabled]="otpForm.invalid"
-              [customClass]="'light-pill-btn w-100'"></app-btn>
-          </div>
-
-          <div class="text-center pb-2">
-            <a href="javascript:void(0)" (click)="onGuestLogin()" class="text-decoration-none"
-              style="color: #000000; font-size: 13px; font-weight: 300;">Change Details</a>
-          </div>
-        </form>
-        } @else if (authView() === 'reset') {
-        <!-- Header -->
-        <div class="login-header text-center">
-          <h2 class="text-uppercase m-0 pt-4 pb-4"
-            style="letter-spacing: 2px; font-weight: 300; font-size: 18px; color: #000000; border-bottom: 1px solid rgba(0,0,0,0.1);">
-            RESET PASSWORD</h2>
-        </div>
-
-        <form [formGroup]="resetForm" (ngSubmit)="onResetSubmit()" class="form-content pt-4">
-          <div class="mb-4 position-relative">
-            <label class="d-none" style="color: #000000;">Mobile Number</label>
-            <i class="fas fa-phone position-absolute" style="left: 0; top: 12px; color: #000000;"></i>
-            <input type="text" class="form-control minimal-input" formControlName="phone"
-              placeholder="Enter mobile number" />
-          </div>
-
-          <div class="mb-4 position-relative">
-            <label class="d-none" style="color: #000000;">OTP</label>
-            <i class="fas fa-key position-absolute" style="left: 0; top: 12px; color: #000000;"></i>
-            <input type="text" class="form-control minimal-input" formControlName="otp" placeholder="Enter 6-digit OTP"
-              maxlength="6" />
-          </div>
-
-          <div class="mb-4 position-relative">
-            <label class="d-none" style="color: #000000;">New Password</label>
-            <i class="fas fa-lock position-absolute" style="left: 0; top: 12px; color: #000000;"></i>
-            <input type="password" class="form-control minimal-input" formControlName="newPassword"
-              placeholder="Enter new password" />
-          </div>
-
-          <div class="mb-4 position-relative">
-            <label class="d-none" style="color: #000000;">Confirm Password</label>
-            <i class="fas fa-check-circle position-absolute" style="left: 0; top: 12px; color: #000000;"></i>
-            <input type="password" class="form-control minimal-input" formControlName="confirmPassword"
-              placeholder="Confirm password" />
-          </div>
-
-          <div class="mt-4 mb-4 text-center">
-            <app-btn [type]="'submit'" [label]="'RESET PASSWORD'" [customClass]="'light-pill-btn w-100'"></app-btn>
-          </div>
-
-          <div class="text-center pb-2">
-            <a href="javascript:void(0)" (click)="showLogin()" class="text-decoration-none"
-              style="color: #000000; font-size: 13px; font-weight: 300;">Back to Login</a>
-          </div>
-        </form>
-        }
-      </div>
+      <h3 class="welcome-title">Welcome Back!</h3>
+      <p class="welcome-subtitle">Login to continue</p>
+      <div class="accent-bar"></div>
     </div>
 
-  </div>
-</div>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form-content pt-2">
+      <!-- Username Field -->
+      <div class="rounded-input-container">
+        <i class="fas fa-user input-icon"></i>
+        <input type="text" id="username" class="form-control" formControlName="username"
+          placeholder="Username" />
+      </div>
+
+      <!-- Password Field -->
+      <div class="rounded-input-container">
+        <i class="fas fa-lock input-icon"></i>
+        <input [type]="showPassword() ? 'text' : 'password'" id="password" class="form-control"
+          formControlName="password" placeholder="Password" />
+        <button type="button" (click)="togglePasswordVisibility()" class="password-toggle-btn">
+          <i [ngClass]="showPassword() ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
+        </button>
+      </div>
+
+      <!-- Captcha Field -->
+      <div class="d-flex align-items-center gap-2 mb-2">
+        <div class="rounded-input-container m-0" style="flex: 1;">
+          <i class="fas fa-shield-alt input-icon"></i>
+          <input type="text" id="captcha" class="form-control" formControlName="captcha"
+            maxlength="6" placeholder="Captcha" />
+        </div>
+        <div class="captcha-display d-flex align-items-center justify-content-between px-2"
+          style="width: 140px; height: 42px; background: #f4f8fc; border: 1px solid #dbeafe; border-radius: 10px;">
+          <div style="flex: 1; height: 100%; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+            <img *ngIf="captchaImageUrl" [src]="captchaImageUrl" alt="Captcha"
+              style="max-width: 100%; max-height: 100%; object-fit: contain; mix-blend-mode: multiply;" />
+          </div>
+          <button type="button" (click)="refreshCaptcha()"
+            class="captcha-refresh-btn d-flex align-items-center justify-content-center flex-shrink-0"
+            style="width: 28px; height: 28px; background: transparent; border: none; cursor: pointer; color: #1c7cd5; transition: transform 0.2s;"
+            title="Refresh Captcha" onmouseover="this.style.transform='rotate(90deg)'"
+            onmouseout="this.style.transform='rotate(0deg)'">
+            <i class="fas fa-sync-alt" style="font-size: 14px;"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Sign In Button -->
+      <div class="mt-3 mb-2">
+        <app-btn [type]="'submit'" [label]="'LOGIN'" [loading]="isLoadingCaptcha"
+          [customClass]="'light-pill-btn w-100'"></app-btn>
+      </div>
+
+      <!-- Forgot Password Link -->
+      <div class="text-center mb-2">
+        <a routerLink="/auth/forgot-password" class="text-decoration-none fw-bold"
+          style="color: #1c7cd5; font-size: 14px; transition: color 0.2s;">Forgot Password?</a>
+      </div>
+
+      <!-- Decorative Divider -->
+      <div class="auth-separator">
+        <span>OR</span>
+      </div>
+
+      <!-- Login as Guest Button -->
+      <div class="mb-2 d-flex justify-content-center">
+        <a href="javascript:void(0)" (click)="onGuestLogin()" class="guest-btn">
+          <i class="fas fa-user"></i> Continue as Guest
+        </a>
+      </div>
+
+
+    </form>
+  } @else if (authView() === 'guest') {
+    <!-- Header -->
+    <div class="avatar-header-container">
+      <div class="avatar-circle">
+        <i class="fas fa-user-clock"></i>
+      </div>
+      <h3 class="welcome-title">Guest Access</h3>
+      <p class="welcome-subtitle">Enter details to receive an OTP</p>
+      <div class="accent-bar"></div>
+    </div>
+
+    <form [formGroup]="guestForm" (ngSubmit)="getOtp()" class="form-content pt-2">
+      <div class="rounded-input-container">
+        <i class="fas fa-user input-icon"></i>
+        <input type="text" class="form-control" formControlName="fullName"
+          placeholder="Enter your name" />
+      </div>
+
+      <div class="rounded-input-container">
+        <i class="fas fa-phone input-icon"></i>
+        <input type="text" class="form-control" formControlName="phone"
+          placeholder="10-digit mobile number" maxlength="10" />
+      </div>
+
+      <div class="mt-3 mb-2">
+        <app-btn [type]="'submit'" [label]="'GET OTP'" [disabled]="guestForm.invalid"
+          [customClass]="'light-pill-btn w-100'"></app-btn>
+      </div>
+
+      <div class="text-center mt-3">
+        <a href="javascript:void(0)" (click)="showLogin()" class="text-decoration-none fw-bold"
+          style="color: #1c7cd5; font-size: 13.5px;">Back to Login</a>
+      </div>
+    </form>
+  } @else if (authView() === 'otp') {
+    <!-- Header -->
+    <div class="avatar-header-container">
+      <div class="avatar-circle">
+        <i class="fas fa-key"></i>
+      </div>
+      <h3 class="welcome-title">Verify OTP</h3>
+      <p class="welcome-subtitle">We've sent a code to +91-{{phone}}</p>
+      <div class="accent-bar"></div>
+    </div>
+
+    <form [formGroup]="otpForm" (ngSubmit)="onVerifyOtp()" class="form-content pt-2">
+      <div class="mb-4">
+        <div class="d-flex justify-content-center">
+          <input type="text" class="form-control text-center fw-bold"
+            style="width: 220px; height: 48px; font-size: 24px; letter-spacing: 8px; border-radius: 10px; background: #f4f8fc; border: 1px solid #dbeafe;"
+            formControlName="otp" placeholder="------" maxlength="6" />
+        </div>
+      </div>
+
+      <div class="mt-3 mb-2">
+        <app-btn [type]="'submit'" [label]="'VERIFY & LOGIN'" [disabled]="otpForm.invalid"
+          [customClass]="'light-pill-btn w-100'"></app-btn>
+      </div>
+
+      <div class="text-center mt-3">
+        <a href="javascript:void(0)" (click)="onGuestLogin()" class="text-decoration-none fw-bold"
+          style="color: #1c7cd5; font-size: 13.5px;">Change Details</a>
+      </div>
+    </form>
+  }
+</app-auth-layout>

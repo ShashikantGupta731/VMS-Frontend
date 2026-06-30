@@ -5,12 +5,14 @@ import { AppCardComponent } from '@shared/components/ui/app-card/card.component'
 import { AppButtonComponent } from '@shared/components/ui/app-button/button.component';
 import { AppInputComponent } from '@shared/components/ui/app-input/input.component';
 import { VehicleService } from '@shared/services/vehicle.service';
+import { AppDocumentViewerComponent } from '@shared/components/ui/app-document-viewer/document-viewer.component';
+import { AppDataTableComponent, TableAction, TableColumn } from '@shared/components/ui/app-data-table/data-table.component';
 import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-fd-approval',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, AppCardComponent, AppButtonComponent, AppInputComponent],
+  imports: [CommonModule, ReactiveFormsModule, AppCardComponent, AppButtonComponent, AppInputComponent, AppDocumentViewerComponent, AppDataTableComponent],
   templateUrl: './fd-approval.html',
   styleUrls: ['./fd-approval.scss']
 })
@@ -18,13 +20,31 @@ export class FdApprovalComponent implements OnInit {
   searchForm: FormGroup;
   vehicles: any[] = [];
   isLoading = false;
+  viewerVisible = false;
+  viewerDocumentPath = '';
+
+  tableColumns: TableColumn[] = [
+    { key: 'index', label: '#', allowHtml: true },
+    { key: 'departmentLocation', label: 'DEPARTMENT <br><br> LOCATION', allowHtml: true },
+    { key: 'officeInfo', label: 'OFFICE NAME,DDO CODE AND ADDRESS <br><br> ALLOTED TO OFFICER NAME <br> ALLOTED TO DESIGNATION', allowHtml: true },
+    { key: 'vehicleDetails', label: 'VEHICLE NUMBER <br> VEHICLE TYPE <br> MAKE OR MODEL <br> MANUFACTURER <br> MANUFACTURE YEAR <br> SEATING CAPACITY', allowHtml: true },
+    { key: 'fuelFitnessStatus', label: 'FUEL USED <br> FITNESS UPTO <br> ENGINE NO. OR CHASIS NO. <br> CURRENT STATUS <br> IS VERIFIED <br> TREASURY TYPE', allowHtml: true },
+    { key: 'fitnessUpto', label: 'FITNESS UPTO', allowHtml: true },
+  ];
+
+  tableActions: TableAction[] = [
+    { label: 'Details', icon: '<i class="pi pi-eye"></i>', action: (row: any) => this.viewDocument(row.original.fdApproval) },
+    { label: 'Mark for Condemned', icon: '<i class="pi pi-check-square"></i>', action: (row: any) => this.markForCondemned(row.original.vehicleNumber || row.original.registrationNumber) }
+  ];
+
+  tableData: any[] = [];
 
   constructor(
     private fb: FormBuilder,
     private vehicleService: VehicleService
   ) {
     this.searchForm = this.fb.group({
-      ddoCode: ['', Validators.required]
+      vehicleNumber: ['', Validators.required]
     });
   }
 
@@ -36,22 +56,51 @@ export class FdApprovalComponent implements OnInit {
       return;
     }
 
-    const ddoCode = this.searchForm.get('ddoCode')?.value;
+    const vehicleNumber = this.searchForm.get('vehicleNumber')?.value;
     this.isLoading = true;
     
-    this.vehicleService.getVehiclesByDdo(ddoCode).subscribe({
+    this.vehicleService.getVehiclesByNumber(vehicleNumber).subscribe({
       next: (res: any[]) => {
         this.isLoading = false;
         // Filter out vehicles that are already condemned/sold/marked
         this.vehicles = res.filter(v => !['Condemned', 'Sold', 'Marked for Condemned by FD'].includes(v.currentStatus));
         if (this.vehicles.length === 0) {
-          Swal.fire('Info', 'No eligible vehicles found for this DDO code.', 'info');
+          this.tableData = [];
+          Swal.fire('Info', 'No eligible vehicles found for this Vehicle Number.', 'info');
+        } else {
+          this.mapTableData();
         }
       },
       error: (err) => {
         this.isLoading = false;
+        this.tableData = [];
         Swal.fire('Error', 'Failed to fetch vehicles', 'error');
       }
+    });
+  }
+
+  private mapTableData() {
+    this.tableData = this.vehicles.map((v, i) => {
+      const isVerified = v.verificationStatus === 1;
+      const verifiedStr = isVerified 
+        ? `<span style="color: rgb(9, 207, 10)">Verified <i class="fas fa-check-circle"></i></span>`
+        : `<span>Unverified</span>`;
+        
+      const formatDate = (dateString: string) => {
+        if (!dateString) return 'N/A';
+        const d = new Date(dateString);
+        return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-');
+      };
+        
+      return {
+        index: `<strong>${i + 1}</strong>`,
+        departmentLocation: `<div>${v.department || 'N/A'}</div><br><div>${v.district || 'N/A'}</div>`,
+        officeInfo: `<div>${v.officeName || 'N/A'},</div><div>${v.officeAddress || 'N/A'}</div><br><div>${v.officerName || 'N/A'}</div><br><div>${v.designation || 'N/A'}</div>`,
+        vehicleDetails: `<div>${v.registrationNumber || v.vehicleNumber || 'N/A'}</div><div>${v.vehicleType || 'N/A'}</div><div>${v.model || 'N/A'}</div><div>${v.manufacturer || 'N/A'}</div><div>${v.manufactureYear || 'N/A'}</div><div>${v.seatingCapacity || 'N/A'}</div>`,
+        fuelFitnessStatus: `<div>${v.fuelUsed || 'N/A'}</div><div>${formatDate(v.fitnessUpto)}</div><div>${v.chassisNumber || 'N/A'}</div><div>${v.currentStatus || 'N/A'}</div><div>${verifiedStr}</div><div>${v.treasuryType || 'N/A'}</div>`,
+        fitnessUpto: `<div>${formatDate(v.fitnessUpto)}</div>`,
+        original: v
+      };
     });
   }
 
@@ -119,8 +168,7 @@ export class FdApprovalComponent implements OnInit {
       Swal.fire('Info', 'No document available.', 'info');
       return;
     }
-    // Assuming the backend serves files from a static path or similar. Adjust if API base is needed.
-    const fullUrl = url.startsWith('http') ? url : `http://localhost:5000/${url}`;
-    window.open(fullUrl, '_blank');
+    this.viewerDocumentPath = url;
+    this.viewerVisible = true;
   }
 }

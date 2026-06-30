@@ -12,12 +12,13 @@ import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth-interceptor';
 import { errorInterceptor } from './core/interceptors/error-interceptor';
 import { loaderInterceptor } from './core/interceptors/loader.interceptor';
+import { encryptionInterceptor } from './core/interceptors/encryption.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor, loaderInterceptor])),
+    provideHttpClient(withInterceptors([encryptionInterceptor, authInterceptor, errorInterceptor, loaderInterceptor])),
     provideToastr(),
 
     // 1. Enable animations for PrimeNG dropdowns/modals

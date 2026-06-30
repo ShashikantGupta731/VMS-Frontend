@@ -141,6 +141,19 @@
       &:hover {
         background: #ffffff;
         color: #1a237e;
+
+        .menu-icon {
+          color: #1a237e;
+        }
+      }
+
+      &.active {
+        background: #1a237e;
+        color: #ffffff;
+
+        .menu-icon {
+          color: #ffffff;
+        }
       }
     }
 

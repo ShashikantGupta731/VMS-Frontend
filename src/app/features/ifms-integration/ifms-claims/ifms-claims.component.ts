@@ -6,7 +6,6 @@ import { ToastrService } from 'ngx-toastr';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
 import Swal from 'sweetalert2';
 import { IfmsClaimsService, IfmsClaim, FilterSummary } from './ifms-claims.service';
-import { AppCardComponent } from '@shared/components/ui/app-card/card.component';
 import { AppButtonComponent } from '@shared/components/ui/app-button/button.component';
 import { AppPaginationComponent } from '@shared/components/ui/app-pagination/pagination.component';
 import { AppDataTableComponent, TableColumn, TableAction } from '@shared/components/ui/app-data-table/data-table.component';
@@ -19,7 +18,7 @@ interface ExtendedIfmsClaim extends IfmsClaim {
 @Component({
   selector: 'app-ifms-claims',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, AppCardComponent, AppButtonComponent, AppPaginationComponent, AppDataTableComponent, AppInputComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, AppButtonComponent, AppPaginationComponent, AppDataTableComponent, AppInputComponent],
   providers: [IfmsClaimsService],
   templateUrl: './ifms-claims.component.html',
   styleUrl: './ifms-claims.component.scss'

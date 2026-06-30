@@ -1,5 +1,6 @@
 import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AppCardComponent } from '@shared/components/ui/app-card/card.component';
 import { AppButtonComponent } from '@shared/components/ui/app-button/button.component';
@@ -12,7 +13,7 @@ import { Designation } from '@core/services/master';
 @Component({
   selector: 'app-designations',
   standalone: true,
-  imports: [CommonModule, RouterModule, AppCardComponent, AppButtonComponent, AppPaginationComponent, AppDataTableComponent],
+  imports: [CommonModule, FormsModule, RouterModule, AppCardComponent, AppButtonComponent, AppPaginationComponent, AppDataTableComponent],
   templateUrl: './designations.component.html',
   styleUrl: './designations.component.scss',
 })
@@ -21,6 +22,7 @@ export class DesignationsComponent {
 
   currentPage = signal(1);
   itemsPerPage = signal(10);
+  searchText = signal('');
 
   private designationsResource = rxResource({
     stream: () => this.designationsService.getDesignations()
@@ -34,14 +36,24 @@ export class DesignationsComponent {
       maintenanceLimitHtml: `Petrol - ${d.petrolMaintenanceLimit}<br>Diesel - ${d.dieselMaintenanceLimit}`
     }));
   });
+  
+  filteredDesignations = computed(() => {
+    const search = this.searchText().toLowerCase().trim();
+    const data = this.allDesignations();
+    if (!search) return data;
+    return data.filter((d: any) => 
+      d.designationName?.toLowerCase().includes(search) || 
+      d.departmentName?.toLowerCase().includes(search)
+    );
+  });
 
   isLoading = this.designationsResource.isLoading;
-  totalItems = computed(() => this.allDesignations().length);
+  totalItems = computed(() => this.filteredDesignations().length);
 
   paginatedDesignations = computed(() => {
     const startIndex = (this.currentPage() - 1) * this.itemsPerPage();
     const endIndex = startIndex + this.itemsPerPage();
-    return this.allDesignations().slice(startIndex, endIndex);
+    return this.filteredDesignations().slice(startIndex, endIndex);
   });
 
   totalPages = computed(() => Math.ceil(this.totalItems() / this.itemsPerPage()));

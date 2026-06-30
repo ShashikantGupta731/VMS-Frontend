@@ -1,100 +1,53 @@
-<div class="page-container">
-  <div class="page-header">
-    <h1 class="page-title">Vehicle Status Update by FD</h1>
-  </div>
+<div class="dashboard-container">
+  <app-card customClass="no-padding">
+    <div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pb-2 mb-2 border-bottom px-4 pt-4">
+      <div>
+        <h1 class="page-title m-0 fs-24 fw-bold">Mark for Condemned By FD</h1>
+      </div>
+      <div class="mt-2 mt-md-0">
+        <app-btn variant="outline-primary" routerLink="/reports" size="sm">Back</app-btn>
+      </div>
+    </div>
 
-  <app-card>
-    <div class="search-section">
+    <div class="search-section px-4 pb-2">
       <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
-        <div class="form-row">
-          <div class="form-group">
+        <div class="form-row align-items-end d-flex gap-3">
+          <div class="form-group flex-grow-1 mb-0">
             <app-input
-              label="Enter DDO Code"
-              formControlName="ddoCode"
-              placeholder="E.g., DDO-001"
-              [error]="searchForm.get('ddoCode')?.touched && searchForm.get('ddoCode')?.invalid ? 'DDO Code is required' : ''"
+              label="Vehicle Registration No"
+              formControlName="vehicleNumber"
+              placeholder="Vehicle Registration Number"
+              [error]="searchForm.get('vehicleNumber')?.touched && searchForm.get('vehicleNumber')?.invalid ? 'Vehicle Number is required' : ''"
             ></app-input>
           </div>
-          <div class="form-actions align-bottom">
+          <div class="form-actions mb-0 pb-1">
             <app-btn
               type="submit"
               variant="dark-blue"
               [loading]="isLoading"
               [disabled]="isLoading"
+              label="Search"
             >
-              Search
             </app-btn>
           </div>
         </div>
       </form>
     </div>
-  </app-card>
 
-  <app-card *ngIf="vehicles.length > 0" class="mt-4">
-    <h3 class="section-title">Eligible Vehicles</h3>
-    <div class="table-responsive">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Condemned Vehicle Info</th>
-            <th>Replacement Info</th>
-            <th>Current Status</th>
-            <th class="text-right">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let vehicle of vehicles">
-            <td>
-              <strong>{{ vehicle.registrationNumber || vehicle.vehicleNumber }}</strong><br>
-              <small class="text-muted">Chassis: {{ vehicle.chassisNumber || 'N/A' }}</small><br>
-              <small class="text-muted">Type: {{ vehicle.vehicleType || 'N/A' }}</small>
-            </td>
-            <td>
-              <ng-container *ngIf="vehicle.condemnationReplacementRegNo; else noReplacement">
-                <strong>{{ vehicle.condemnationReplacementRegNo }}</strong><br>
-                <small class="text-muted">Chassis: {{ vehicle.condemnationReplacementChassisNo || 'N/A' }}</small>
-              </ng-container>
-              <ng-template #noReplacement>
-                <span class="text-muted">N/A</span>
-              </ng-template>
-            </td>
-            <td>
-              <span class="status-badge" [ngClass]="{'active': vehicle.currentStatus === 'In Use'}">
-                {{ vehicle.currentStatus || 'Unknown' }}
-              </span>
-            </td>
-            <td class="text-right d-flex justify-content-end gap-2">
-              <app-btn
-                *ngIf="vehicle.fdApproval"
-                variant="outline-primary"
-                size="sm"
-                (onClick)="viewDocument(vehicle.fdApproval)"
-                [disabled]="isLoading"
-              >
-                <i class="fas fa-file-pdf me-1"></i> View Doc
-              </app-btn>
-
-              <app-btn
-                variant="danger"
-                size="sm"
-                (onClick)="rejectCondemnation(vehicle.vehicleNumber || vehicle.registrationNumber)"
-                [disabled]="isLoading"
-              >
-                Reject
-              </app-btn>
-
-              <app-btn
-                variant="success"
-                size="sm"
-                (onClick)="markForCondemned(vehicle.vehicleNumber || vehicle.registrationNumber)"
-                [disabled]="isLoading"
-              >
-                Approve
-              </app-btn>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="mb-4 position-relative px-4">
+      <div *ngIf="isLoading" class="table-loading-overlay">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+      <app-data-table 
+        [columns]="tableColumns" 
+        [data]="tableData" 
+        [actions]="tableActions"
+        emptyMessage="No Record Found">
+      </app-data-table>
     </div>
   </app-card>
+
+  <app-document-viewer [(visible)]="viewerVisible" [documentPath]="viewerDocumentPath"></app-document-viewer>
 </div>
